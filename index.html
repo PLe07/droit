@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DCG1 — Droit | Révisions complètes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --bg:        #0f0f14;
+  --bg2:       #161620;
+  --bg3:       #1e1e2e;
+  --border:    #2a2a3e;
+  --border2:   #363650;
+  --accent:    #6c63ff;
+  --accent2:   #a78bfa;
+  --gold:      #f0c040;
+  --green:     #4ade80;
+  --red:       #f87171;
+  --orange:    #fb923c;
+  --text:      #e8e8f0;
+  --text-dim:  #8888aa;
+  --text-mute: #555570;
+  --radius:    10px;
+  --shadow:    0 4px 24px rgba(0,0,0,.45);
+  --sidebar-w: 280px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: rgba(15,15,20,.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 18px;
+}
+
+#hamburger {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-dim); font-size: 22px;
+  display: none;
+  padding: 4px;
+}
+
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  color: var(--text);
+  letter-spacing: -.01em;
+}
+.brand span { color: var(--accent2); }
+
+.mode-bar {
+  display: flex; gap: 4px;
+  margin-left: auto;
+}
+.mode-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.mode-btn:hover { color: var(--text); background: var(--bg3); }
+.mode-btn.active {
+  color: var(--accent2);
+  background: rgba(108,99,255,.15);
+  border-color: rgba(108,99,255,.4);
+}
+
+#chapter-title-bar {
+  font-size: 13px; color: var(--text-dim);
+  max-width: 220px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+#overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 199;
+  background: rgba(0,0,0,.6);
+}
+#overlay.show { display: block; }
+
+#sidebar {
+  position: fixed; top: 56px; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; overflow-x: hidden;
+  z-index: 200;
+  transition: transform .28s cubic-bezier(.4,0,.2,1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-track { background: transparent; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+#main {
+  margin-top: 56px;
+  margin-left: var(--sidebar-w);
+  padding: 32px 40px 80px;
+  max-width: 900px;
+  min-height: calc(100vh - 56px);
+}
+
+/* ============================================================
+   SIDEBAR NAV
+   ============================================================ */
+#nav-tree { padding: 12px 0 24px; }
+
+.partie-group { margin-bottom: 6px; }
+
+.partie-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  padding: 16px 16px 6px;
+}
+
+.ch-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13.5px;
+  padding: 8px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .15s;
+  border-left: 3px solid transparent;
+  line-height: 1.35;
+}
+.ch-btn:hover { background: var(--bg3); color: var(--text); }
+.ch-btn.active {
+  background: rgba(108,99,255,.12);
+  color: var(--accent2);
+  border-left-color: var(--accent);
+}
+
+.ch-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg3);
+  color: var(--text-mute);
+  padding: 2px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.ch-btn.active .ch-id { background: rgba(108,99,255,.2); color: var(--accent2); }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp .35s ease both; }
+
+/* ============================================================
+   SECTION HEADER
+   ============================================================ */
+.section-header {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--text);
+  line-height: 1.2;
+  width: 100%;
+}
+.partie-tag {
+  font-size: 11px; font-weight: 600;
+  background: rgba(108,99,255,.15);
+  color: var(--accent2);
+  padding: 3px 9px; border-radius: 20px;
+  letter-spacing: .03em;
+}
+.ch-id-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg3);
+  color: var(--text-dim);
+  padding: 3px 8px; border-radius: 5px;
+}
+
+/* ============================================================
+   COURS BODY
+   ============================================================ */
+.cours-body { line-height: 1.7; }
+
+.cours-body h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  color: var(--accent2);
+  margin: 28px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.cours-body h4 {
+  font-size: 15px; font-weight: 700;
+  color: var(--text);
+  margin: 18px 0 8px;
+}
+.cours-body p { margin-bottom: 12px; color: var(--text); }
+.cours-body b { color: #fff; }
+.cours-body em { color: var(--accent2); font-style: italic; }
+.cours-body ul { padding-left: 20px; margin-bottom: 14px; }
+.cours-body li { margin-bottom: 5px; color: var(--text); }
+
+.cours-body table {
+  width: 100%; border-collapse: collapse;
+  margin: 16px 0 20px;
+  font-size: 14px;
+}
+.cours-body th {
+  background: var(--bg3);
+  color: var(--accent2);
+  font-size: 12px; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 9px 12px;
+  text-align: left;
+  border: 1px solid var(--border);
+}
+.cours-body td {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+.cours-body tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+.quote {
+  border-left: 3px solid var(--accent);
+  background: rgba(108,99,255,.08);
+  padding: 12px 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 14px 0;
+  font-style: italic;
+  color: var(--text);
+  font-size: 15px;
+}
+.warn-box {
+  background: rgba(251,146,60,.08);
+  border: 1px solid rgba(251,146,60,.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--orange);
+  font-size: 14px;
+  margin: 12px 0;
+}
+.danger-box {
+  background: rgba(248,113,113,.08);
+  border: 1px solid rgba(248,113,113,.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--red);
+  font-size: 14px;
+  margin: 12px 0;
+}
+.retain-box {
+  background: rgba(74,222,128,.05);
+  border: 1px solid rgba(74,222,128,.25);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 22px 0;
+}
+.retain-box h3 {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green);
+  margin: 0 0 10px;
+  padding: 0; border: none;
+}
+.retain-box ul { padding-left: 18px; margin: 0; }
+.retain-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ============================================================
+   VOCAB
+   ============================================================ */
+.vocab-search { margin-bottom: 12px; }
+.vocab-search input {
+  width: 100%; max-width: 400px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  padding: 9px 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+.vocab-search input:focus { border-color: var(--accent); }
+.vocab-search input::placeholder { color: var(--text-mute); }
+
+.vocab-count {
+  font-size: 12px; color: var(--text-mute);
+  margin-bottom: 16px;
+}
+
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.vocab-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all .2s;
+  overflow: hidden;
+}
+.vocab-card:hover { border-color: var(--border2); background: #22223a; }
+.vocab-card .vt {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent2);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.vocab-card .vt::after {
+  content: '▸';
+  font-size: 11px; color: var(--text-mute);
+  margin-left: auto;
+  transition: transform .2s;
+}
+.vocab-card.open .vt::after { transform: rotate(90deg); }
+.vocab-card .vd {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  display: none;
+}
+.vocab-card.open .vd { display: block; }
+
+/* ============================================================
+   FLASHCARDS
+   ============================================================ */
+.flash-counter {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+.flash-progress {
+  background: var(--bg3);
+  border-radius: 4px; height: 4px;
+  margin-bottom: 8px; overflow: hidden;
+}
+.flash-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  transition: width .3s ease;
+}
+.flash-hint {
+  text-align: center; font-size: 12px;
+  color: var(--text-mute);
+  margin-bottom: 20px;
+}
+.flashcard-wrapper {
+  perspective: 1200px;
+  margin: 0 auto 22px;
+  max-width: 640px;
+  height: 220px;
+}
+.flashcard {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .5s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.card-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 28px 32px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.card-face.front {
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
+}
+.card-face.back {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  transform: rotateY(180deg);
+  border-color: rgba(108,99,255,.4);
+}
+.card-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 14px;
+}
+.card-text {
+  font-size: 16px; line-height: 1.6;
+  color: var(--text);
+}
+.back-text { color: var(--text); }
+
+.flash-nav {
+  display: flex; justify-content: center; gap: 12px;
+}
+.flash-nav button {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.flash-nav button:hover { background: var(--bg2); color: var(--text); border-color: var(--accent); }
+
+/* ============================================================
+   QCM
+   ============================================================ */
+.qcm-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.qcm-score-badge {
+  background: rgba(74,222,128,.15);
+  color: var(--green);
+  border: 1px solid rgba(74,222,128,.3);
+  border-radius: 20px;
+  font-size: 13px; font-weight: 600;
+  padding: 3px 12px;
+}
+.qcm-q {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  transition: border-color .2s;
+}
+.qcm-q.answered { border-color: var(--border2); }
+.qcm-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--accent2);
+  margin-bottom: 6px;
+}
+.qcm-q-text { font-size: 15px; margin-bottom: 14px; font-weight: 600; color: var(--text); }
+.opt-list { display: flex; flex-direction: column; gap: 7px; }
+.opt-btn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .2s;
+}
+.opt-btn:not(:disabled):hover { background: var(--bg3); color: var(--text); border-color: var(--accent); }
+.opt-btn.correct { background: rgba(74,222,128,.12); border-color: rgba(74,222,128,.5); color: var(--green); }
+.opt-btn.wrong   { background: rgba(248,113,113,.1);  border-color: rgba(248,113,113,.4); color: var(--red);   }
+.opt-btn:disabled { cursor: default; }
+
+.expl-box {
+  display: none; margin-top: 12px;
+  background: rgba(108,99,255,.08);
+  border-left: 3px solid var(--accent);
+  padding: 10px 14px;
+  border-radius: 0 8px 8px 0;
+  font-size: 14px; color: var(--text-dim);
+}
+.expl-box.show { display: block; }
+
+.qcm-reset {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all .2s;
+}
+.qcm-reset:hover { color: var(--text); border-color: var(--text-dim); }
+
+/* ============================================================
+   CAS PRATIQUE
+   ============================================================ */
+.metho-box {
+  background: rgba(167,139,250,.06);
+  border: 1px solid rgba(167,139,250,.25);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 22px;
+}
+.metho-box h4 { font-size: 14px; color: var(--accent2); margin-bottom: 14px; }
+.metho-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.metho-step {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px; font-weight: 600;
+  color: rgba(108,99,255,.4);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.step-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+
+.cas-context {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.cas-context h4 { font-size: 14px; color: var(--gold); margin-bottom: 8px; }
+.cas-context p { font-size: 15px; color: var(--text); line-height: 1.65; }
+
+.cas-q-block { margin-bottom: 18px; }
+.cas-q-block h4 { font-size: 15px; color: var(--text); margin-bottom: 8px; }
+.cas-q-block textarea {
+  width: 100%; min-height: 120px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  padding: 12px 14px;
+  resize: vertical; outline: none;
+  transition: border-color .2s;
+  line-height: 1.6;
+}
+.cas-q-block textarea:focus { border-color: var(--accent); }
+
+.corr-toggle-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 14px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: all .2s;
+}
+.corr-toggle-btn:hover { color: var(--text); border-color: var(--gold); }
+
+.corr-body {
+  display: none;
+  background: rgba(240,192,64,.04);
+  border: 1px solid rgba(240,192,64,.25);
+  border-radius: 10px;
+  padding: 20px 22px;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+}
+.corr-body.show { display: block; }
+
+/* ============================================================
+   WELCOME SCREEN
+   ============================================================ */
+.welcome-screen {
+  max-width: 600px;
+  padding: 20px 0;
+}
+.welcome-screen h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px; line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.welcome-screen p {
+  font-size: 16px; color: var(--text-dim);
+  line-height: 1.65; margin-bottom: 32px;
+}
+.welcome-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.welcome-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  transition: border-color .2s;
+}
+.welcome-card:hover { border-color: var(--border2); }
+.wc-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 38px; color: var(--accent2);
+  line-height: 1; margin-bottom: 4px;
+}
+.wc-label { font-size: 13px; color: var(--text-dim); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  #hamburger { display: block; }
+  #sidebar {
+    transform: translateX(-100%);
+  }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; padding: 20px 18px 60px; }
+  .mode-bar { display: none; }
+  #chapter-title-bar { display: none; }
+  .welcome-screen h2 { font-size: 26px; }
+  .welcome-grid { grid-template-columns: 1fr 1fr; }
+  .metho-steps { grid-template-columns: 1fr 1fr; }
+  .flashcard-wrapper { height: 190px; }
+}
+
+@media (max-width: 420px) {
+  .welcome-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   MOBILE MODE BUTTONS (bottom bar on mobile)
+   ============================================================ */
+#mobile-modes {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+  background: rgba(15,15,20,.96);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  padding: 8px 10px 10px;
+  gap: 4px;
+  justify-content: space-around;
+}
+@media (max-width: 768px) {
+  #mobile-modes { display: flex; }
+}
+.mob-mode-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 11px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  transition: all .2s;
+}
+.mob-mode-btn:hover { color: var(--text); }
+.mob-mode-btn.active {
+  color: var(--accent2);
+  background: rgba(108,99,255,.15);
+  border-color: rgba(108,99,255,.35);
+}
+.mob-icon { font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header id="topbar">
+  <button id="hamburger" onclick="toggleSidebar()">☰</button>
+  <div class="brand">DCG1 <span>Droit</span></div>
+  <span id="chapter-title-bar">Sélectionnez un chapitre</span>
+  <div class="mode-bar">
+    <button class="mode-btn" onclick="setMode('cours')">📖 Cours</button>
+    <button class="mode-btn" onclick="setMode('vocab')">📚 Vocabulaire</button>
+    <button class="mode-btn" onclick="setMode('flash')">🃏 Flashcards</button>
+    <button class="mode-btn" onclick="setMode('qcm')">✅ QCM</button>
+    <button class="mode-btn" onclick="setMode('cas')">✍️ Cas pratique</button>
+  </div>
+</header>
+
+<!-- OVERLAY (mobile) -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div id="nav-tree"></div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+  <div id="content"></div>
+</main>
+
+<!-- MOBILE BOTTOM BAR -->
+<div id="mobile-modes">
+  <button class="mob-mode-btn" onclick="setMode('cours')">
+    <span class="mob-icon">📖</span>Cours
+  </button>
+  <button class="mob-mode-btn" onclick="setMode('vocab')">
+    <span class="mob-icon">📚</span>Vocab
+  </button>
+  <button class="mob-mode-btn" onclick="setMode('flash')">
+    <span class="mob-icon">🃏</span>Flash
+  </button>
+  <button class="mob-mode-btn" onclick="setMode('qcm')">
+    <span class="mob-icon">✅</span>QCM
+  </button>
+  <button class="mob-mode-btn" onclick="setMode('cas')">
+    <span class="mob-icon">✍️</span>Cas
+  </button>
+</div>
+
+<script>
+// ============================================================
+// DONNÉES — DCG1 DROIT — PROGRAMME NATIONAL COMPLET
+// ============================================================
+const CHAPTERS = [
+
+// ============================================================
+// PARTIE 1 — INTRODUCTION GÉNÉRALE AU DROIT
+// ============================================================
+{
+  id:'1.1', partie:'P1 — Introduction générale au droit', title:'Introduction au droit',
+  cours:`<h3>I. Les finalités du droit</h3>
+<div class="quote">Adage latin : <b>« Ubi societas, ibi jus »</b> — Il n'y a pas de société sans droit, ni de droit sans société.</div>
+<p>Selon le <b>Vocabulaire Juridique</b> (Cornu), le droit est un <em>« ensemble de règles de conduite socialement édictées et sanctionnées qui s'imposent aux membres de la société »</em>.</p>
+<p>Le droit poursuit deux grandes finalités : <b>permettre la vie en société</b> (sécurité des personnes et des biens) et <b>organiser la Société</b> (organisation économique, politique et sociale).</p>
+<h3>II. Les caractères de la règle de droit</h3>
+<h4>A. Caractère général et abstrait</h4>
+<p>La règle de droit <b>s'applique à tous les citoyens</b> de manière impersonnelle. Cela traduit l'égalité devant la loi.</p>
+<h4>B. Caractère coercitif</h4>
+<p>Le non-respect de la règle de droit fait l'objet d'une <b>sanction étatique</b>. C'est ce qui distingue fondamentalement la règle de droit des autres règles sociales.</p>
+<h3>III. Les autres règles sociales : morale et éthique</h3>
+<h4>A. La morale</h4>
+<p>La morale a pour source une <b>conscience individuelle ou collective</b>. En cas de manquement, la sanction est <b>intérieure</b> (« mauvaise conscience »).</p>
+<h4>B. L'éthique</h4>
+<p>Les règles d'éthique trouvent leur source dans des <b>chartes ou des codes de déontologie</b>. Les sanctions sont <b>extérieures</b> : atteinte à la réputation.</p>
+<h3>IV. Les branches du droit</h3>
+<p>On distingue classiquement :</p>
+<ul>
+<li><b>Le droit privé</b> : régit les intérêts particuliers des individus (droit civil, commercial, du travail)</li>
+<li><b>Le droit public</b> : régit l'intérêt général des citoyens (droit constitutionnel, administratif, fiscal)</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Définition Cornu</b> : ensemble de règles socialement édictées et sanctionnées s'imposant aux membres de la société</li>
+<li><b>2 caractères</b> : général et abstrait + coercitif</li>
+<li><b>Sanctions</b> : Droit = étatique ; Morale = intérieure ; Éthique = extérieure (réputation)</li>
+<li><b>Droit privé</b> = intérêts particuliers ; <b>Droit public</b> = intérêt général</li>
+</ul></div>`,
+  vocab:[
+    {t:'Droit (sens objectif)',d:'Ensemble de règles de conduite <b>socialement édictées et sanctionnées</b> qui s\'imposent aux membres de la société (Cornu).'},
+    {t:'Caractère général et abstrait',d:'La règle de droit s\'applique à <b>tous les citoyens</b>, de manière impersonnelle.'},
+    {t:'Caractère coercitif',d:'Le non-respect de la règle de droit fait l\'objet d\'une <b>sanction étatique</b>.'},
+    {t:'Morale',d:'Règle sociale dont la source est la <b>conscience individuelle ou collective</b>. Sanction <b>intérieure</b> (mauvaise conscience).'},
+    {t:'Éthique',d:'Règle sociale dont la source est dans des <b>chartes ou codes de déontologie</b>. Sanction <b>extérieure</b> (atteinte à la réputation).'},
+    {t:'Droit privé',d:'Branche du droit qui concerne les <b>intérêts particuliers des individus</b> : droit civil, commercial, du travail.'},
+    {t:'Droit public',d:'Branche du droit qui concerne l\'<b>intérêt général des citoyens</b> : droit constitutionnel, administratif, fiscal.'},
+    {t:'Ubi societas, ibi jus',d:'Adage latin : <b>« Il n\'y a pas de société sans droit, ni de droit sans société »</b>.'},
+  ],
+  flashcards:[
+    {q:'Définition du droit selon le Vocabulaire Juridique (Cornu) ?',a:'<b>Ensemble de règles de conduite socialement édictées et sanctionnées qui s\'imposent aux membres de la société.</b>'},
+    {q:'Citez les 2 caractères essentiels de la règle de droit.',a:'1) <b>Général et abstrait</b> (s\'applique à tous, impersonnel).<br>2) <b>Coercitif</b> (non-respect = sanction étatique).'},
+    {q:'Quelles sont les 2 finalités du droit ?',a:'1) <b>Permettre la vie en société</b> (sécurité des personnes et des biens).<br>2) <b>Organiser la Société</b> (économique, politique, sociale).'},
+    {q:'Quelle est la sanction de la morale ?',a:'Sanction <b>intérieure</b> à la personne (mauvaise conscience). Source : conscience individuelle ou collective.'},
+    {q:'Quelle est la sanction de l\'éthique ?',a:'Sanction <b>extérieure</b> : atteinte à la réputation. Source : chartes ou codes de déontologie.'},
+    {q:'Différence droit privé / droit public ?',a:'<b>Droit privé</b> = intérêts particuliers (civil, commercial, travail).<br><b>Droit public</b> = intérêt général (constitutionnel, administratif, fiscal).'},
+    {q:'Traduction et sens de l\'adage « Ubi societas, ibi jus » ?',a:'<b>Il n\'y a pas de société sans droit, ni de droit sans société.</b>'},
+  ],
+  qcm:[
+    {q:'La règle de droit a un caractère :',opts:['A. Général et particulier','B. Général et abstrait','C. Spécifique et personnel','D. Moral et coercitif'],correct:1,expl:'La règle s\'applique à tous (général) et est formulée de manière impersonnelle (abstrait).'},
+    {q:'La sanction de la règle morale est :',opts:['A. Étatique','B. Intérieure à la personne','C. Pénale','D. Administrative'],correct:1,expl:'La morale a pour source la conscience individuelle ; sa sanction est intérieure.'},
+    {q:'Le droit civil appartient à :',opts:['A. La branche du droit public','B. La branche du droit privé','C. Les deux','D. Ni l\'un ni l\'autre'],correct:1,expl:'Le droit civil régit les intérêts particuliers des individus : droit privé.'},
+    {q:'Quel auteur définit le droit comme « ensemble de règles socialement édictées et sanctionnées » ?',opts:['A. Kelsen','B. Aubry et Rau','C. Cornu (Vocabulaire Juridique)','D. Planiol'],correct:2,expl:'Cette définition est celle du Vocabulaire Juridique de Gérard Cornu.'},
+    {q:'Le caractère coercitif de la règle de droit signifie que :',opts:['A. Elle est facultative','B. Son non-respect entraîne une sanction étatique','C. Elle est inscrite dans la Constitution','D. Elle est universelle'],correct:1,expl:'Coercitif = qui contraint. La sanction est étatique, contrairement à la morale ou l\'éthique.'},
+  ],
+  cas:{
+    contexte:'M. Dupont est employé dans une grande entreprise. Il découvre que son collègue M. Martin a falsifié ses notes de frais pour 5 000 €. M. Dupont hésite à dénoncer son collègue à la direction. Par ailleurs, l\'entreprise dispose d\'un code de déontologie qui oblige à signaler les fraudes.',
+    questions:['<b>Q1</b> : Quelle est la nature des règles en jeu (morale, éthique, droit) ?','<b>Q2</b> : Quelles sanctions M. Martin encourt-il ?','<b>Q3</b> : Si M. Dupont ne dit rien malgré le code de déontologie, peut-il être sanctionné ?'],
+    correction:`Q1 — Nature des règles en jeu :
+Trois registres coexistent ici :
+1) MORALE : conscience individuelle de M. Dupont tiraillé entre loyauté et honnêteté. Sanction intérieure (mauvaise conscience).
+2) ÉTHIQUE : le code de déontologie de l'entreprise crée une obligation de signalement. Sanction extérieure (disciplinaire + réputation).
+3) DROIT : la falsification de notes de frais est une infraction pénale à sanction étatique.
+
+Q2 — Sanctions de M. Martin :
+• Disciplinaires (droit du travail) : licenciement pour faute grave/lourde
+• Civiles : restitution des 5 000 € + dommages-intérêts
+• Pénales : faux et usage de faux (3 ans + 45 000 €), escroquerie (5 ans + 375 000 €), abus de confiance (3 ans + 375 000 €)
+
+Q3 — Silence de M. Dupont malgré le code de déontologie :
+• Sanction morale : oui, intérieure (mauvaise conscience).
+• Sanction éthique : oui — le code impose le signalement. M. Dupont risque une sanction disciplinaire (avertissement, blâme).
+• Sanction juridique : limitée. Il n'existe pas d'obligation légale générale de dénonciation des délits entre collègues. M. Dupont encourt principalement une sanction éthique/disciplinaire.`
+  }
+},
+
+{
+  id:'1.2', partie:'P1 — Introduction générale au droit', title:'Les sources du droit',
+  cours:`<h3>I. Les sources internationales</h3>
+<p>Les sources internationales sont principalement les <b>conventions et traités internationaux</b>. Ils créent des organisations internationales (ONU, OIT, OMC).</p>
+<h4>Le Conseil de l'Europe</h4>
+<p><b>46 États membres</b> (la Fédération de Russie n'en est plus membre depuis le <b>16 mars 2022</b>). Siège à <b>Strasbourg</b>. Convention européenne de sauvegarde des droits de l'homme (CEDH) signée le <b>4 novembre 1950</b>.</p>
+<div class="warn-box">⚠️ À distinguer de l'Union européenne (27 États membres).</div>
+<p><b>Adoption</b> = signature au niveau international. <b>Ratification</b> = procédure interne permettant d'intégrer le texte au droit national.</p>
+<h3>II. Les sources du droit de l'Union européenne</h3>
+<p>L'UE compte <b>27 États membres</b>. Traité en vigueur : <b>Traité de Lisbonne</b>, signé le <b>13 décembre 2007</b>, entré en vigueur le <b>1er décembre 2009</b>. Comprend TUE + TFUE.</p>
+<h4>Droit dérivé</h4>
+<table>
+<tr><th>Acte</th><th>Portée</th><th>Application</th></tr>
+<tr><td><b>Directive</b></td><td>Générale et impersonnelle</td><td><b>Transposition obligatoire</b> en droit interne. Prévoit objectif + délai.</td></tr>
+<tr><td><b>Règlement</b></td><td>Générale et impersonnelle</td><td><b>Directement applicable</b> (effet direct)</td></tr>
+</table>
+<h3>III. Les sources nationales</h3>
+<h4>A. Le bloc de constitutionnalité</h4>
+<p><b>Constitution du 4 octobre 1958</b> (Ve République). Le <b>bloc de constitutionnalité</b> comprend :</p>
+<ul>
+<li>La Constitution du 4 octobre 1958</li>
+<li>Le <b>Préambule de la Constitution du 27 octobre 1946</b></li>
+<li>La <b>Déclaration des Droits de l'Homme et du Citoyen de 1789</b></li>
+<li>La <b>Charte de l'environnement de 2004</b></li>
+</ul>
+<h4>B. Les types de lois</h4>
+<table>
+<tr><th>Type</th><th>Caractéristique</th></tr>
+<tr><td><b>Loi constitutionnelle</b></td><td>Révise la Constitution. Approbation par référendum OU par le Congrès à la majorité des <b>3/5</b></td></tr>
+<tr><td><b>Loi référendaire</b></td><td>Promulguée suite à un référendum</td></tr>
+<tr><td><b>Loi organique</b></td><td>Fixe les modalités d'organisation et de fonctionnement des pouvoirs publics</td></tr>
+<tr><td><b>Loi ordinaire</b></td><td>Toutes les lois ne répondant pas aux 3 définitions ci-dessus</td></tr>
+</table>
+<h4>C. Le règlement et l'ordonnance</h4>
+<p><b>Article 37</b> de la Constitution : matières ne relevant pas du domaine de la loi → décrets. L'<b>ordonnance</b> : Gouvernement intervient dans le domaine législatif. Procédure : <b>loi d'habilitation → rédaction → loi de ratification</b>.</p>
+<h4>D. La coutume</h4>
+<p>2 éléments : <b>matériel</b> (répétition) + <b>psychologique</b> (conviction de son caractère obligatoire).</p>
+<h3>IV. La hiérarchie des normes — Pyramide de Kelsen</h3>
+<p>De la plus haute à la plus basse : <b>bloc de constitutionnalité → bloc de conventionnalité (traités + UE) → lois → règlements</b>.</p>
+<p><b>Contrôle de constitutionnalité a priori</b> : avant la promulgation. Saisine par : Président de la République, Premier Ministre, Président AN, Président Sénat, <b>60 députés</b> ou <b>60 sénateurs</b>.</p>
+<p><b>QPC (a posteriori)</b> : soulevée au cours d'un litige. 3 critères : disposition applicable au litige + constitutionnalité non déjà vérifiée + caractère sérieux.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>CEDH</b> : 4 novembre 1950 ; Conseil de l'Europe : 46 États, Strasbourg</li>
+<li><b>UE</b> : 27 États ; Traité de Lisbonne : signé 13/12/2007, en vigueur 1/12/2009</li>
+<li><b>Directive</b> = transposition obligatoire ; <b>Règlement</b> = effet direct</li>
+<li><b>Constitution</b> : 4 octobre 1958</li>
+<li><b>Bloc constitutionnalité</b> : Constitution + Préambule 1946 + DDHC 1789 + Charte env. 2004</li>
+<li><b>Saisine a priori</b> : PR, PM, Président AN, Président Sénat, 60 députés, 60 sénateurs</li>
+<li><b>QPC (a posteriori)</b> : 3 critères → applicable + pas déjà vérifiée + caractère sérieux</li>
+<li><b>Ordonnance</b> : loi d'habilitation → rédaction → loi de ratification</li>
+</ul></div>`,
+  vocab:[
+    {t:'Traité international',d:'Accord entre États. Doit être <b>adopté</b> (signature internationale) puis <b>ratifié</b> (procédure interne) pour intégrer le droit national.'},
+    {t:'Convention CEDH',d:'Convention européenne de sauvegarde des droits de l\'homme, signée le <b>4 novembre 1950</b>, Conseil de l\'Europe (46 États, Strasbourg).'},
+    {t:'Traité de Lisbonne',d:'Signé le <b>13 décembre 2007</b>, en vigueur le <b>1er décembre 2009</b>. Comprend TUE + TFUE.'},
+    {t:'Directive (UE)',d:'Portée générale. <b>Transposition obligatoire</b> en droit interne. Prévoit un objectif + un délai.'},
+    {t:'Règlement (UE)',d:'Portée générale. <b>Directement applicable</b> en droit interne (effet direct).'},
+    {t:'Bloc de constitutionnalité',d:'Constitution 1958 + Préambule 1946 + DDHC 1789 + Charte de l\'environnement 2004.'},
+    {t:'Loi constitutionnelle',d:'Révise la Constitution. Approbation par référendum OU par le Congrès à la majorité des <b>3/5 des suffrages exprimés</b>.'},
+    {t:'Ordonnance',d:'Acte du Gouvernement dans le domaine législatif. Procédure : <b>loi d\'habilitation → rédaction → loi de ratification</b>.'},
+    {t:'Coutume',d:'Règle de droit non étatique. 2 éléments : <b>matériel</b> (répétition) + <b>psychologique</b> (conviction du caractère obligatoire).'},
+    {t:'Pyramide de Kelsen',d:'Hiérarchie des normes : constitutionnalité > conventionnalité > légalité > règlement.'},
+    {t:'Principe de primauté',d:'Les traités et le droit UE <b>priment sur les lois françaises</b>. La Constitution prime sur les traités.'},
+    {t:'QPC — Question Prioritaire de Constitutionnalité',d:'Contrôle <b>a posteriori</b>. Soulevée en litige. 3 critères : applicable + pas déjà vérifiée + caractère sérieux.'},
+  ],
+  flashcards:[
+    {q:'Date et lieu de signature de la CEDH ?',a:'<b>4 novembre 1950</b> à Strasbourg, Conseil de l\'Europe (46 États).'},
+    {q:'Différence adoption / ratification d\'un traité ?',a:'<b>Adoption</b> = signature au niveau international.<br><b>Ratification</b> = procédure interne pour intégrer au droit national.'},
+    {q:'Date du Traité de Lisbonne ?',a:'Signé le <b>13 décembre 2007</b>, en vigueur le <b>1er décembre 2009</b>.'},
+    {q:'Différence directive / règlement européen ?',a:'<b>Directive</b> : transposition obligatoire.<br><b>Règlement</b> : directement applicable (effet direct).'},
+    {q:'Quels textes composent le bloc de constitutionnalité ?',a:'1) Constitution 4 oct. 1958<br>2) Préambule 27 oct. 1946<br>3) DDHC 1789<br>4) Charte de l\'environnement 2004'},
+    {q:'Étapes d\'une ordonnance ?',a:'1) Vote d\'une <b>loi d\'habilitation</b><br>2) Rédaction de l\'<b>ordonnance</b><br>3) Vote d\'une <b>loi de ratification</b>'},
+    {q:'Qui peut saisir le Conseil constitutionnel a priori ?',a:'PR, PM, Président AN, Président Sénat, <b>60 députés</b> ou <b>60 sénateurs</b>.'},
+    {q:'3 critères de transmission d\'une QPC ?',a:'1) Disposition <b>applicable au litige</b><br>2) Constitutionnalité <b>pas déjà vérifiée</b><br>3) Question présente un <b>caractère sérieux</b>'},
+    {q:'Hiérarchie de la pyramide de Kelsen ?',a:'1) Bloc de <b>constitutionnalité</b><br>2) Bloc de <b>conventionnalité</b><br>3) Bloc de <b>légalité</b> (lois)<br>4) Bloc <b>règlementaire</b>'},
+  ],
+  qcm:[
+    {q:'La CEDH a été signée le :',opts:['A. 4 novembre 1950','B. 13 décembre 2007','C. 4 octobre 1958','D. 16 mars 2022'],correct:0,expl:'Convention européenne signée le 4 novembre 1950.'},
+    {q:'L\'Union européenne compte :',opts:['A. 27 États membres','B. 46 États membres','C. 28 États membres','D. 25 États membres'],correct:0,expl:'27 États membres (Conseil de l\'Europe : 46 États).'},
+    {q:'Une directive européenne :',opts:['A. Est directement applicable','B. Doit faire l\'objet d\'une transposition','C. N\'a pas de valeur juridique','D. Est facultative'],correct:1,expl:'Contrairement au règlement, la directive nécessite une transposition.'},
+    {q:'Combien faut-il de parlementaires pour saisir le Conseil constitutionnel a priori ?',opts:['A. 30','B. 60','C. 100','D. 250'],correct:1,expl:'60 députés OU 60 sénateurs.'},
+    {q:'La QPC est :',opts:['A. Un contrôle a priori','B. Un contrôle a posteriori soulevé en litige','C. Une procédure parlementaire','D. Un référendum'],correct:1,expl:'QPC : contrôle a posteriori, soulevé au cours d\'un litige.'},
+  ],
+  cas:{
+    contexte:'Le Parlement français adopte une loi le 15 mars 2024 interdisant aux entreprises de plus de 50 salariés de recruter des personnes de plus de 60 ans. Un chef d\'entreprise souhaite contester cette loi.',
+    questions:['<b>Q1</b> : Le chef d\'entreprise peut-il saisir directement le Conseil constitutionnel ?','<b>Q2</b> : Si impliqué dans un litige prud\'homal, comment invoquer l\'inconstitutionnalité ?','<b>Q3</b> : Le juge prud\'homal peut-il écarter la loi si contraire à un traité ?'],
+    correction:`Q1 — Recours possibles :
+Un particulier NE PEUT PAS saisir directement le Conseil constitutionnel (saisine a priori réservée au PR, PM, Président AN, Président Sénat, 60 députés ou sénateurs). Il peut toutefois invoquer la non-conformité aux traités devant toute juridiction (contrôle de conventionnalité).
+
+Q2 — La QPC en litige prud'homal :
+Le chef d'entreprise peut soulever une QPC devant le Conseil de prud'hommes via un mémoire distinct et motivé. Si les 3 critères sont remplis (applicable, pas déjà vérifiée, caractère sérieux), transmission → Cour de cassation → Conseil constitutionnel. Le litige est suspendu pendant la procédure.
+
+Q3 — Contrôle de conventionnalité :
+OUI. Le contrôle de conventionnalité est exercé DIRECTEMENT par les juridictions ordinaires. Si la loi est contraire à un traité ratifié, le juge peut l'écarter. Cette voie est même plus directe que la QPC.`
+  }
+},
+
+{
+  id:'1.3', partie:'P1 — Introduction générale au droit', title:'La preuve des droits',
+  cours:`<h3>I. L'objet et la charge de la preuve</h3>
+<p>Il n'est pas nécessaire de <b>prouver la loi</b>. Il faut prouver les <b>faits et actes juridiques</b> dans le cadre d'un litige.</p>
+<ul>
+<li>Le <b>fait juridique</b> ne recherche pas d'effets de droit (accident, naissance)</li>
+<li>L'<b>acte juridique</b> a pour objectif de rechercher des effets de droit (contrat, testament)</li>
+</ul>
+<div class="quote"><b>Article 9 du Code de procédure civile</b> : <em>« Il incombe à chaque partie de prouver conformément à la loi les faits nécessaires au succès de sa prétention »</em>. Charge sur le <b>demandeur</b>.</div>
+<p>En droit civil : procédure <b>accusatoire</b> (preuves apportées par les parties). En droit pénal/administratif : procédure <b>inquisitoire</b> (le juge réunit les preuves).</p>
+<h3>II. Les moyens de preuve</h3>
+<h4>Système de la preuve légale (actes juridiques &gt; 1 500 €)</h4>
+<p>Les actes juridiques portant sur un montant <b>supérieur à 1 500 €</b> doivent être prouvés par un <b>écrit</b>.</p>
+<p><b>Exceptions (article 1360 du Code civil)</b> : preuve libre si :</p>
+<ul>
+<li>Impossibilité <b>matérielle</b> (urgence, accident imprévu)</li>
+<li>Impossibilité <b>morale</b> : acte entre membres de la même <b>famille</b>, lien de <b>subordination</b>, partie <b>incapable d'écrire</b></li>
+<li><b>Usage</b> de ne pas établir un écrit dans ce domaine</li>
+<li>Perte de l'écrit par <b>force majeure</b></li>
+</ul>
+<h4>Système de la preuve libre</h4>
+<p>Applicable pour : les faits juridiques, les actes ≤ 1 500 €, en <b>droit commercial</b>, en <b>droit pénal</b>, en <b>droit du travail</b>.</p>
+<h4>L'acte authentique</h4>
+<p>Reçu par un <b>officier public</b> (notaire, officier d'état civil). L'<b>original</b> = la <b>minute</b> (conservée par l'officier). Les <b>copies</b> = les <b>expéditions</b>. Pour contester : <b>inscription en faux</b>.</p>
+<h4>L'acte sous signature privée (SSP)</h4>
+<p>Rédigé directement entre les parties. Doit être <b>signé</b>. Formalités :</p>
+<ul>
+<li><b>Contrat synallagmatique</b> : <b>formalité du double</b></li>
+<li><b>Acte unilatéral mentionnant une somme</b> : somme écrite <b>en toutes lettres</b></li>
+</ul>
+<h4>Autres moyens de preuve</h4>
+<table>
+<tr><th>Moyen</th><th>Conditions</th><th>Sanction du faux</th></tr>
+<tr><td><b>Témoignage</b></td><td>Personnes majeures capables. Appréciation souveraine des juges du fond.</td><td><b>5 ans + 75 000 €</b></td></tr>
+<tr><td><b>Présomptions de fait</b></td><td>Doivent être <b>graves, précises et concordantes</b>.</td><td>—</td></tr>
+<tr><td><b>Serment décisoire</b></td><td>Demandé par une partie à l'autre. <b>Met fin au litige définitivement</b>.</td><td><b>3 ans + 45 000 €</b></td></tr>
+<tr><td><b>Serment supplétoire</b></td><td>Déféré d'office par le juge. <b>Ne met pas fin au litige</b>.</td><td><b>3 ans + 45 000 €</b></td></tr>
+<tr><td><b>Aveu judiciaire</b></td><td>Au cours de l'instruction/audience. <b>Indivisible et irrévocable</b>.</td><td>—</td></tr>
+<tr><td><b>Aveu extrajudiciaire</b></td><td>Hors juge. <b>Divisible et rétractable</b>.</td><td>—</td></tr>
+</table>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Art. 9 CPC</b> : charge de la preuve sur le demandeur</li>
+<li><b>Seuil 1 500 €</b> : preuve légale (écrit) au-delà / libre en deçà</li>
+<li><b>Art. 1360 exceptions</b> : impossibilité matérielle/morale, usage, force majeure</li>
+<li><b>Minute</b> = original acte authentique ; <b>Expédition</b> = copie</li>
+<li><b>Inscription en faux</b> = seule façon de contester un acte authentique</li>
+<li><b>SSP synallagmatique</b> → formalité du double</li>
+<li><b>Faux témoignage</b> : 5 ans + 75 000 € ; <b>Faux serment</b> : 3 ans + 45 000 €</li>
+<li><b>Aveu judiciaire</b> : indivisible et irrévocable</li>
+<li><b>Présomptions de fait</b> : graves, précises et concordantes</li>
+<li><b>Preuve libre</b> : droit commercial, pénal, travail</li>
+</ul></div>`,
+  vocab:[
+    {t:'Fait juridique',d:'Évènement produisant des effets de droit sans avoir été recherché (accident, naissance, décès).'},
+    {t:'Acte juridique',d:'Manifestation de volonté destinée à <b>produire des effets de droit</b> (contrat, testament).'},
+    {t:'Procédure accusatoire',d:'Preuves apportées par les parties. Applicable en droit civil.'},
+    {t:'Procédure inquisitoire',d:'Le juge réunit les preuves. Applicable en droit pénal et administratif.'},
+    {t:'Charge de la preuve',d:'Art. 9 CPC : repose sur le <b>demandeur</b>.'},
+    {t:'Présomption légale simple',d:'Renversable par la <b>preuve contraire</b>.'},
+    {t:'Présomption légale irréfragable',d:'La <b>preuve contraire n\'est pas admise</b>. Rare.'},
+    {t:'Présomption de fait',d:'Doit être <b>grave, précise et concordante</b>. Appréciation souveraine des juges du fond.'},
+    {t:'Acte authentique',d:'Reçu par un <b>officier public</b>. Original = <b>minute</b>, copies = <b>expéditions</b>.'},
+    {t:'Inscription en faux',d:'Seule procédure pour contester un <b>acte authentique</b>. Lourde et complexe.'},
+    {t:'Acte sous signature privée (SSP)',d:'Rédigé entre les parties sans officier public. SSP synallagmatique → formalité du double.'},
+    {t:'Faux témoignage',d:'Infraction pénale : <b>5 ans + 75 000 €</b>.'},
+    {t:'Faux serment',d:'Infraction pénale : <b>3 ans + 45 000 €</b>.'},
+    {t:'Serment décisoire',d:'Demandé par une partie à l\'autre. <b>Met fin au litige définitivement</b>. Juge sans pouvoir d\'appréciation.'},
+    {t:'Aveu judiciaire',d:'Au cours de l\'instruction. <b>Indivisible et irrévocable</b> (sauf erreur de fait).'},
+    {t:'Aveu extrajudiciaire',d:'Hors présence d\'un juge. <b>Divisible et rétractable</b>.'},
+  ],
+  flashcards:[
+    {q:'Que prévoit l\'article 9 du Code de procédure civile ?',a:'<b>Il incombe à chaque partie de prouver conformément à la loi les faits nécessaires au succès de sa prétention.</b>'},
+    {q:'À partir de quel montant la preuve d\'un acte juridique doit-elle être écrite ?',a:'Plus de <b>1 500 €</b>.'},
+    {q:'Quelles sont les 4 exceptions à la preuve légale (art. 1360) ?',a:'1) Impossibilité <b>matérielle</b><br>2) Impossibilité <b>morale</b> (famille, subordination)<br>3) <b>Usage</b><br>4) <b>Force majeure</b>'},
+    {q:'Dans quels domaines la preuve est-elle libre ?',a:'<b>Droit commercial</b>, <b>droit pénal</b>, <b>droit du travail</b>, faits juridiques, actes ≤ 1 500 €.'},
+    {q:'Qu\'est-ce qu\'un acte authentique et comment l\'appelle-t-on ?',a:'Reçu par un <b>officier public</b>. Original = <b>minute</b>, copies = <b>expéditions</b>.'},
+    {q:'Comment contester un acte authentique ?',a:'Par la <b>procédure d\'inscription en faux</b>.'},
+    {q:'Sanction du faux témoignage ?',a:'<b>5 ans + 75 000 €</b>.'},
+    {q:'Sanction du faux serment ?',a:'<b>3 ans + 45 000 €</b>.'},
+    {q:'Différence serment décisoire / supplétoire ?',a:'<b>Décisoire</b> : demandé par une partie, met fin au litige définitivement.<br><b>Supplétoire</b> : d\'office par le juge, ne met pas fin au litige.'},
+    {q:'Caractéristiques de l\'aveu judiciaire ?',a:'<b>Indivisible et irrévocable</b> (sauf erreur de fait).'},
+    {q:'Caractéristiques de l\'aveu extrajudiciaire ?',a:'<b>Divisible et rétractable</b>. Appréciation souveraine.'},
+  ],
+  qcm:[
+    {q:'La charge de la preuve repose en principe sur :',opts:['A. Le défendeur','B. Le demandeur','C. Le juge','D. L\'avocat'],correct:1,expl:'Art. 9 CPC : il incombe à chaque partie de prouver les faits nécessaires au succès de sa prétention — donc le demandeur.'},
+    {q:'Au-delà de quel montant la preuve d\'un acte juridique doit-elle être écrite ?',opts:['A. 750 €','B. 1 000 €','C. 1 500 €','D. 3 000 €'],correct:2,expl:'Au-delà de 1 500 €, la preuve légale (écrit) est obligatoire.'},
+    {q:'L\'original d\'un acte authentique s\'appelle :',opts:['A. L\'expédition','B. La minute','C. La grosse','D. La copie'],correct:1,expl:'L\'original = minute, conservée par l\'officier public. Les copies = expéditions.'},
+    {q:'Le faux témoignage est puni de :',opts:['A. 1 an et 15 000 €','B. 3 ans et 45 000 €','C. 5 ans et 75 000 €','D. 10 ans et 150 000 €'],correct:2,expl:'Faux témoignage : 5 ans + 75 000 €.'},
+    {q:'L\'aveu judiciaire est :',opts:['A. Divisible et rétractable','B. Indivisible et irrévocable','C. Soumis à l\'appréciation des juges','D. Une présomption légale'],correct:1,expl:'L\'aveu judiciaire est indivisible et irrévocable (sauf erreur de fait).'},
+  ],
+  cas:{
+    contexte:'M. Lefebvre a prêté 2 500 € à son frère sans écrit. Jean refuse de rembourser. M. Lefebvre retrouve un SMS indiquant : « Je te rembourserai les 2500€ promis ». Il a aussi vendu un ordinateur 700 € à son ami sans facture.',
+    questions:['<b>Q1</b> : M. Lefebvre peut-il prouver le prêt de 2 500 € sans écrit ?','<b>Q2</b> : Quelle est la valeur probatoire du SMS ?','<b>Q3</b> : Comment prouver la vente de l\'ordinateur à 700 € ?'],
+    correction:`Q1 — Preuve du prêt de 2 500 € :
+Principe : acte juridique > 1 500 € → preuve légale (écrit) obligatoire. Exception : IMPOSSIBILITÉ MORALE (art. 1360) entre membres de la même famille. Comme les deux frères, la preuve devient libre. M. Lefebvre peut produire témoignages, relevés bancaires, etc.
+
+Q2 — Valeur probatoire du SMS :
+Le SMS constitue à la fois :
+• Un COMMENCEMENT DE PREUVE PAR ÉCRIT (art. 1362) : émanant du frère, rendant vraisemblable le prêt. Peut être complété par tout moyen.
+• Un AVEU EXTRAJUDICIAIRE : divisible et rétractable, mais soumis à l'appréciation des juges du fond.
+• Un ÉCRIT ÉLECTRONIQUE : même force probante que l'écrit papier si l'auteur est identifiable.
+
+Q3 — Preuve de la vente à 700 € :
+700 € ≤ 1 500 € → preuve LIBRE. M. Lefebvre peut prouver par tout moyen : témoignages, relevés bancaires, SMS, photos, présomptions de fait. L'absence de facture n'est pas un obstacle.`
+  }
+},
+
+{
+  id:'1.4', partie:'P1 — Introduction générale au droit', title:'L\'organisation judiciaire',
+  cours:`<h3>I. Les juridictions européennes</h3>
+<h4>Cour européenne des Droits de l'Homme (CEDH)</h4>
+<p><b>Créée en 1959. Siège à Strasbourg.</b> Conditions pour la saisir : avoir <b>épuisé toutes les voies de recours internes</b> + saisine au <b>plus tard 4 mois après la dernière décision interne</b> + être <b>personnellement et directement victime</b>.</p>
+<h4>CJUE — Cour de justice de l'Union européenne</h4>
+<p>Créée en <b>1952</b>. Siège à <b>Luxembourg</b>. Compétences : <b>renvoi préjudiciel</b>, <b>recours en manquement</b>, <b>recours en annulation</b>, <b>pourvoi</b> contre le Tribunal.</p>
+<h3>II. Les juridictions nationales</h3>
+<h4>Ordre administratif</h4>
+<table>
+<tr><th>Degré</th><th>Juridiction</th></tr>
+<tr><td>1er degré</td><td>Tribunal administratif</td></tr>
+<tr><td>2e degré</td><td>Cour administrative d'appel</td></tr>
+<tr><td>Haute juridiction</td><td><b>Conseil d'État</b> (un seul pour la France)</td></tr>
+</table>
+<h4>Ordre judiciaire — Droit commun</h4>
+<table>
+<tr><th>Degré</th><th>Juridiction</th></tr>
+<tr><td>1er degré</td><td><b>Tribunal judiciaire</b> (litiges civils &gt; 10 000 €) ou <b>Tribunal de proximité</b> (≤ 10 000 €, juge unique)</td></tr>
+<tr><td>2e degré</td><td><b>Cour d'appel</b> (36 en France)</td></tr>
+<tr><td>Haute juridiction</td><td><b>Cour de cassation</b> (6 chambres : 3 civiles, commerciale, sociale, criminelle)</td></tr>
+</table>
+<h4>Juridictions d'exception</h4>
+<ul>
+<li><b>Tribunal de commerce</b> : litiges entre commerçants. Juges <b>élus parmi les commerçants</b>.</li>
+<li><b>Conseil de prud'hommes</b> : litiges salarié/employeur. Conseillers prud'hommes <b>élus parmi employeurs et salariés</b>.</li>
+<li><b>Juridictions pénales</b> : Tribunal de police (contraventions) / Tribunal correctionnel (délits) / Cour d'assises (crimes)</li>
+</ul>
+<h3>III. Compétences et procédure</h3>
+<p><b>Compétence matérielle</b> (d'attribution) : détermine la juridiction selon <b>l'objet du litige</b>.</p>
+<p><b>Compétence territoriale</b> : principe = <b>domicile du défendeur</b> (siège social pour PM).</p>
+<div class="danger-box">⚠️ Clauses attributives de compétence : valables <b>uniquement entre commerçants</b>.</div>
+<p><b>Prescription de droit commun : 5 ans</b>. Délai d'appel : <b>1 mois</b>. Pas d'appel si ≤ <b>5 000 €</b> (dernier ressort).</p>
+<p>La <b>Cour de cassation</b> statue <b>en droit uniquement</b>. 3 issues : rejet / cassation avec renvoi / cassation sans renvoi.</p>
+<h3>IV. Personnel de justice</h3>
+<p><b>ENM</b> : 31 mois. <b>CAPA</b> (avocat) : 18 mois. <b>Commissaires de justice</b> (depuis <b>1er juillet 2022</b>) : regroupent huissiers + commissaires-priseurs judiciaires.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>CEDH</b> : 1959, Strasbourg ; saisine sous 4 mois après épuisement recours internes</li>
+<li><b>CJUE</b> : 1952, Luxembourg ; renvoi préjudiciel, manquement, annulation</li>
+<li><b>TJ</b> : > 10 000 € ; <b>T. proximité</b> : ≤ 10 000 € (juge unique)</li>
+<li><b>36 Cours d'appel</b> ; <b>1 Cour de cassation</b> (6 chambres)</li>
+<li><b>Prescription droit commun</b> : 5 ans ; <b>Appel</b> : 1 mois ; <b>Dernier ressort</b> : ≤ 5 000 €</li>
+<li><b>ENM</b> : 31 mois ; <b>CAPA</b> : 18 mois</li>
+<li><b>Commissaires de justice</b> : depuis 1er juillet 2022</li>
+</ul></div>`,
+  vocab:[
+    {t:'CEDH (Cour européenne)',d:'Créée en <b>1959</b>, siège à <b>Strasbourg</b>. Saisine sous 4 mois après épuisement des recours internes.'},
+    {t:'CJUE',d:'Créée en <b>1952</b>, siège à <b>Luxembourg</b>. Renvoi préjudiciel, manquement, annulation, pourvoi.'},
+    {t:'Renvoi préjudiciel',d:'Procédure par laquelle une juridiction nationale saisit la CJUE pour l\'interprétation d\'un texte UE.'},
+    {t:'Tribunal judiciaire',d:'1er degré, droit commun. Compétent pour litiges <b>> 10 000 €</b>, divorce, successions, filiation, bail commercial.'},
+    {t:'Tribunal de proximité',d:'Litiges <b>≤ 10 000 €</b>, voisinage, funérailles. <b>Juge unique</b>.'},
+    {t:'Cour de cassation',d:'Une seule en France. <b>6 chambres</b>. <b>Statue en droit uniquement</b>.'},
+    {t:'Tribunal de commerce',d:'Litiges entre commerçants. Juges <b>élus parmi les commerçants</b>.'},
+    {t:'Conseil de prud\'hommes',d:'Litiges salarié/employeur. Élus parmi <b>employeurs et salariés</b>.'},
+    {t:'Compétence matérielle',d:'Détermine la juridiction selon <b>l\'objet du litige</b>.'},
+    {t:'Compétence territoriale',d:'Principe : <b>domicile du défendeur</b> (siège social pour PM).'},
+    {t:'Commissaire de justice',d:'Depuis le <b>1er juillet 2022</b> : regroupe les huissiers et commissaires-priseurs judiciaires.'},
+    {t:'Prescription de droit commun',d:'Délai de <b>5 ans</b> pour agir en justice.'},
+  ],
+  flashcards:[
+    {q:'Date et siège de la CEDH ?',a:'<b>1959, Strasbourg</b>.'},
+    {q:'Date et siège de la CJUE ?',a:'<b>1952, Luxembourg</b>.'},
+    {q:'Délai de saisine de la CEDH ?',a:'<b>4 mois</b> après la dernière décision interne (épuisement obligatoire).'},
+    {q:'Compétences du Tribunal judiciaire ?',a:'Litiges > <b>10 000 €</b>, divorce, successions, filiation, bail commercial.'},
+    {q:'Compétences du Tribunal de proximité ?',a:'Litiges <b>≤ 10 000 €</b>, juge unique.'},
+    {q:'Combien de Cours d\'appel en France ?',a:'<b>36</b>.'},
+    {q:'Combien de chambres à la Cour de cassation ?',a:'<b>6 chambres</b> : 3 civiles, commerciale, sociale, criminelle.'},
+    {q:'Quelle juridiction pour quelle infraction pénale ?',a:'Contraventions → Tribunal de police<br>Délits → Tribunal correctionnel<br>Crimes → Cour d\'assises'},
+    {q:'Délai de prescription de droit commun ?',a:'<b>5 ans</b>.'},
+    {q:'Délai pour interjeter appel ?',a:'<b>1 mois</b>.'},
+    {q:'Sur quoi statue la Cour de cassation ?',a:'<b>Uniquement en droit</b>. Ne réexamine pas l\'affaire au fond.'},
+    {q:'Durée formation ENM et CAPA ?',a:'<b>ENM</b> : 31 mois ; <b>CAPA</b> (avocat) : 18 mois.'},
+    {q:'Depuis quand existent les commissaires de justice ?',a:'<b>1er juillet 2022</b>.'},
+  ],
+  qcm:[
+    {q:'La CEDH siège à :',opts:['A. Bruxelles','B. Luxembourg','C. Strasbourg','D. La Haye'],correct:2,expl:'CEDH = Strasbourg (Conseil de l\'Europe, 1959). CJUE = Luxembourg (UE, 1952).'},
+    {q:'Délai de saisine de la CEDH après la dernière décision interne :',opts:['A. 1 mois','B. 2 mois','C. 4 mois','D. 6 mois'],correct:2,expl:'4 mois après la dernière décision interne (épuisement obligatoire).'},
+    {q:'Le Tribunal judiciaire connaît des litiges civils :',opts:['A. ≤ 10 000 €','B. > 10 000 €','C. > 5 000 €','D. > 75 000 €'],correct:1,expl:'TJ : > 10 000 €. Tribunal de proximité : ≤ 10 000 €.'},
+    {q:'Un jugement portant sur 4 000 € est rendu :',opts:['A. En premier ressort','B. En dernier ressort (non appelable)','C. Par la Cour d\'appel','D. Par la Cour de cassation'],correct:1,expl:'≤ 5 000 € : dernier ressort. Pas d\'appel possible.'},
+    {q:'La formation à l\'ENM dure :',opts:['A. 12 mois','B. 18 mois','C. 24 mois','D. 31 mois'],correct:3,expl:'ENM : 31 mois. CAPA (avocat) : 18 mois.'},
+  ],
+  cas:{
+    contexte:'M. Durand, particulier domicilié à Lyon, a acheté en ligne un téléviseur 1 200 € à la société TechnoPlus (siège à Marseille). Contrat avec clause attributive de compétence au TJ de Nice. Téléviseur défectueux. Perd en première instance et veut faire appel.',
+    questions:['<b>Q1</b> : Quelle juridiction est matériellement compétente ?','<b>Q2</b> : La clause attributive de compétence au TJ de Nice est-elle valable ?','<b>Q3</b> : M. Durand peut-il faire appel ?'],
+    correction:`Q1 — Compétence matérielle :
+Litige consommateur/société pour 1 200 €. Le montant est ≤ 10 000 € → Tribunal de proximité (ou Tribunal de commerce, au choix de M. Durand car acte mixte).
+
+Q2 — Clause attributive de compétence :
+Les clauses attributives de compétence sont valables UNIQUEMENT ENTRE COMMERÇANTS. M. Durand étant un particulier non-commerçant, la clause est RÉPUTÉE NON ÉCRITE. Compétence territoriale : TJ/Tribunal de proximité de Marseille (siège de TechnoPlus) ou de Lyon (lieu de livraison).
+
+Q3 — Possibilité d'appel :
+Le litige porte sur 1 200 €, somme ≤ 5 000 €. Jugement rendu en DERNIER RESSORT. M. Durand NE PEUT PAS faire appel. Sa seule voie de recours est le pourvoi en cassation (questions de droit uniquement, complexe et coûteux).`
+  }
+},
+
+{
+  id:'1.5', partie:'P1 — Introduction générale au droit', title:'Les MARD',
+  cours:`<h3>Modes Alternatifs de Règlement des Différends</h3>
+<p>Les MARD permettent de résoudre les litiges sans recourir à la procédure judiciaire étatique. Contribuent au <b>délai raisonnable</b> de la justice.</p>
+<h3>I. La conciliation</h3>
+<p><b>Objectif</b> : proposer aux parties une solution au litige.</p>
+<p>Le <b>conciliateur de justice</b> est un auxiliaire de justice assermenté exerçant à <b>titre bénévole</b> → <b>gratuit</b> pour les parties.</p>
+<p><b>Préalable obligatoire</b> à l'audience pour : litiges <b>≤ 5 000 €</b> et conflits de voisinage. En droit du travail : <b>bureau de conciliation et d'orientation</b> (étape obligatoire).</p>
+<p>Issue : <b>procès-verbal d'accord ou de désaccord</b>. Force exécutoire : <b>homologation par le juge</b>.</p>
+<h3>II. La médiation</h3>
+<p><b>Objectif</b> : aider les parties à parvenir à un accord. Médiateur <b>choisi et rémunéré par les parties</b> (à défaut d'accord : à parts égales).</p>
+<div class="warn-box">⚠️ Exception : en droit de la consommation, le consommateur peut saisir <b>gratuitement</b> un médiateur de la consommation.</div>
+<p>Issue : délai de réflexion de <b>8 jours</b> → constat d'accord ou de désaccord. Force exécutoire : <b>homologation du juge</b>.</p>
+<h3>III. L'arbitrage</h3>
+<h4>A. Clause compromissoire (avant le litige)</h4>
+<p>À peine de nullité : <b>écrite</b> + <b>désigner les arbitres</b> (ou leurs modalités). La clause est <b>autonome par rapport au contrat</b>.</p>
+<div class="danger-box">⚠️ Non valable dans les <b>contrats de travail</b> et les <b>actes mixtes</b>.</div>
+<h4>B. Compromis d'arbitrage (après le litige)</h4>
+<p>À peine de nullité : doit mentionner l'<b>objet du litige</b>.</p>
+<h4>Domaines exclus de l'arbitrage</h4>
+<p>État et capacité des personnes, divorce, collectivités publiques, sanctions pénales et administratives.</p>
+<h4>Le tribunal arbitral</h4>
+<p>Composé d'un <b>nombre impair d'arbitres</b> statuant à la <b>majorité des voix</b>. Peut statuer <b>en droit</b> ou <b>en amiable compositeur</b> (en équité). Force exécutoire : ordonnance d'<b>exequatur</b> du <b>Tribunal judiciaire</b>.</p>
+<h3>IV. Décret du 29 juillet 2023</h3>
+<ul>
+<li><b>Audience de règlement amiable</b> : menée par un juge hors formation de jugement.</li>
+<li><b>Césure du procès</b> : décision partielle sur le point le plus important. Demandée par les parties.</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Conciliation</b> : gratuite (bénévole) ; <b>Médiation</b> : payante (sauf conso)</li>
+<li><b>Préalable obligatoire</b> : litiges ≤ 5 000 € + conflits de voisinage</li>
+<li><b>Délai réflexion médiation</b> : 8 jours</li>
+<li><b>Clause compromissoire</b> : écrite + autonome ; NON valable dans contrats travail et actes mixtes</li>
+<li><b>Compromis d'arbitrage</b> : après litige, doit mentionner l'objet du litige</li>
+<li><b>Tribunal arbitral</b> : nombre impair, droit ou amiable compositeur</li>
+<li><b>Force exécutoire sentence</b> : ordonnance d'exequatur du TJ</li>
+<li><b>Décret 29 juillet 2023</b> : audience de règlement amiable + césure du procès</li>
+</ul></div>`,
+  vocab:[
+    {t:'MARD',d:'Modes Alternatifs de Règlement des Différends. Mécanismes hors procédure judiciaire étatique.'},
+    {t:'Conciliation',d:'MARD dans lequel un conciliateur <b>propose une solution</b>. Gratuite (conciliateur bénévole).'},
+    {t:'Conciliateur de justice',d:'Auxiliaire de justice assermenté exerçant à <b>titre bénévole</b>.'},
+    {t:'Médiation',d:'MARD dans lequel un médiateur <b>aide les parties à trouver un accord</b>. Payant (choisi par les parties).'},
+    {t:'Clause compromissoire',d:'Clause d\'arbitrage avant le litige. Écrite, autonome par rapport au contrat. NON valable dans contrats de travail et actes mixtes.'},
+    {t:'Compromis d\'arbitrage',d:'Signé après la naissance du litige. Doit mentionner l\'<b>objet du litige</b>.'},
+    {t:'Amiable compositeur',d:'Mode de statut du tribunal arbitral : juger <b>en équité</b>, même si non conforme à la loi. Doit respecter l\'ordre public.'},
+    {t:'Sentence arbitrale',d:'Décision du tribunal arbitral. Force exécutoire via ordonnance d\'<b>exequatur</b> du TJ.'},
+    {t:'Audience de règlement amiable',d:'Décret 29 juillet 2023. Menée par un juge hors formation de jugement.'},
+    {t:'Césure du procès',d:'Décret 29 juillet 2023. Décision partielle sur le point le plus important. Demandée par les parties.'},
+  ],
+  flashcards:[
+    {q:'Quels sont les 3 principaux MARD ?',a:'1) <b>Conciliation</b> (gratuite, propose la solution)<br>2) <b>Médiation</b> (payante, aide à l\'accord)<br>3) <b>Arbitrage</b>'},
+    {q:'Pourquoi la conciliation est-elle gratuite ?',a:'Le conciliateur est un <b>auxiliaire de justice assermenté qui exerce à titre bénévole</b>.'},
+    {q:'Dans quels cas conciliation/médiation est-elle préalable obligatoire ?',a:'1) Litiges <b>≤ 5 000 €</b><br>2) Conflits de voisinage'},
+    {q:'Délai de réflexion en médiation ?',a:'<b>8 jours</b>.'},
+    {q:'Différence clause compromissoire / compromis d\'arbitrage ?',a:'<b>Clause compromissoire</b> : dans le contrat, avant le litige.<br><b>Compromis</b> : après la naissance du litige.'},
+    {q:'Dans quels contrats la clause compromissoire n\'est-elle pas valable ?',a:'<b>Contrats de travail</b> et <b>actes mixtes</b>.'},
+    {q:'Nombre d\'arbitres dans le tribunal arbitral ?',a:'<b>Nombre impair</b>, statuant à la majorité.'},
+    {q:'Comment la sentence arbitrale acquiert-elle force exécutoire ?',a:'Par une <b>ordonnance d\'exequatur</b> rendue par le <b>Tribunal judiciaire</b>.'},
+    {q:'2 nouveaux dispositifs du décret du 29 juillet 2023 ?',a:'1) L\'<b>audience de règlement amiable</b><br>2) La <b>césure du procès</b>'},
+  ],
+  qcm:[
+    {q:'La conciliation est gratuite parce que :',opts:['A. La loi l\'impose','B. Le conciliateur est bénévole','C. C\'est une procédure judiciaire','D. Les parties la financent solidairement'],correct:1,expl:'Le conciliateur de justice est un auxiliaire assermenté qui exerce à titre bénévole.'},
+    {q:'La clause compromissoire est-elle valable dans un contrat de travail ?',opts:['A. Oui toujours','B. Non jamais','C. Seulement pour les cadres','D. Si le salarié l\'accepte'],correct:1,expl:'Non, jamais. Pas valable dans les contrats de travail ni dans les actes mixtes.'},
+    {q:'Un tribunal arbitral est composé de :',opts:['A. 1 arbitre','B. 2 arbitres','C. Un nombre pair','D. Un nombre impair'],correct:3,expl:'Nombre impair pour statuer à la majorité.'},
+    {q:'Délai de réflexion en médiation ?',opts:['A. 3 jours','B. 8 jours','C. 15 jours','D. 1 mois'],correct:1,expl:'8 jours de réflexion après la proposition du médiateur.'},
+    {q:'La clause compromissoire est autonome par rapport au contrat, ce qui signifie :',opts:['A. Elle peut être modifiée unilatéralement','B. La nullité du contrat n\'entraîne pas la nullité de la clause','C. Elle est valable dans tous les contrats','D. Elle peut être dans un acte séparé'],correct:1,expl:'L\'autonomie signifie que la nullité du contrat n\'entraîne pas la nullité de la clause compromissoire.'},
+  ],
+  cas:{
+    contexte:'La société Alpha (commerçante) et la société Bêta (commerçante) ont un contrat incluant une clause : « Tout litige sera soumis à un tribunal arbitral de 2 arbitres ». M. Durand (consommateur) a un litige de 3 200 € avec la société Gamma sans tentative amiable préalable.',
+    questions:['<b>Q1</b> : La clause d\'arbitrage Alpha/Bêta est-elle valable ?','<b>Q2</b> : L\'action de M. Durand contre Gamma est-elle recevable sans tentative amiable ?','<b>Q3</b> : Si la médiation aboutit à un accord, quand aura-t-il force exécutoire ?'],
+    correction:`Q1 — Validité de la clause Alpha/Bêta :
+La clause est valable entre commerçants. Cependant, elle prévoit 2 arbitres (nombre PAIR). Or le tribunal arbitral doit être composé d'un nombre IMPAIR. La clause est viciée sur ce point : les parties doivent s'accorder sur un 3e arbitre ou un arbitre unique.
+
+Q2 — Recevabilité de M. Durand sans tentative amiable :
+3 200 € < 5 000 € → le préalable obligatoire (conciliation/médiation) s'applique. L'action est donc NON RECEVABLE sans tentative préalable. M. Durand doit d'abord tenter une conciliation ou médiation.
+
+Q3 — Force exécutoire de l'accord de médiation :
+L'accord de médiation n'est pas automatiquement exécutoire. Il doit être HOMOLOGUÉ par le juge pour acquérir force exécutoire. Avant l'homologation, il a seulement force contractuelle.`
+  }
+},
+
+// ============================================================
+// PARTIE 2 — LES PERSONNES ET LES BIENS
+// ============================================================
+{
+  id:'2.1', partie:'P2 — Les personnes et les biens', title:'Les personnes',
+  cours:`<h3>I. La notion de personne juridique</h3>
+<p>La personnalité juridique est l'<em>« aptitude à être titulaire actif ou passif de droits subjectifs »</em> (Prof. Terré). Elle permet de faire valoir ses droits et de réaliser des actes juridiques.</p>
+<h4>Personnes physiques</h4>
+<p>Tout être humain. Personnalité juridique acquise à la <b>naissance</b> (né vivant) et perdue au <b>décès</b>. Exception : <b>infans conceptus pro nato habetur quoties de commodis ejus agitur</b> — l'enfant conçu peut hériter s'il naît viable.</p>
+<h4>Personnes morales</h4>
+<p>Entité abstraite à qui la loi reconnaît des droits et des obligations. Personnalité juridique distincte de celle des membres. Immatriculation au <b>RNE</b> (depuis 1er janvier 2023). Fin = <b>dissolution</b>. Règle : <b>1 personne juridique = 1 patrimoine</b>. Principe de <b>spécialité</b> : agit uniquement dans son objet social.</p>
+<h3>II. Capacité juridique</h3>
+<p><b>Capacité de jouissance</b> = aptitude à acquérir des droits. <b>Capacité d'exercice</b> = aptitude à exercer les droits dont on est titulaire. L'<b>incapacité d'exercice</b> concerne les mineurs non émancipés et les majeurs protégés.</p>
+<h3>III. Classification des actes juridiques</h3>
+<table>
+<tr><th>Type</th><th>Définition</th></tr>
+<tr><td><b>Actes de la vie courante</b></td><td>Vie quotidienne, faible montant</td></tr>
+<tr><td><b>Actes conservatoires/d'administration</b></td><td>Éviter une perte, gestion normale d'un bien</td></tr>
+<tr><td><b>Actes de disposition</b></td><td>Opération grave qui engage le patrimoine (vente, hypothèque)</td></tr>
+</table>
+<h3>IV. Protection des mineurs (majorité : 18 ans depuis 1974)</h3>
+<ul>
+<li>Actes de la <b>vie courante</b> → mineur seul (sauf lésion)</li>
+<li>Actes d'<b>administration</b> → représentation par les parents</li>
+<li>Actes de <b>disposition</b> → représentation + autorisation du juge des tutelles. Seul → <b>nullité relative</b></li>
+</ul>
+<p>Émancipation possible à <b>16 ans</b>.</p>
+<h3>V. Protection des majeurs</h3>
+<p>Justifiée uniquement par une <b>altération médicalement établie des facultés</b>. Principes : <b>nécessité</b>, <b>subsidiarité</b>, <b>proportionnalité</b>, <b>limitation dans le temps</b>. Le majeur protégé peut toujours accomplir seul les <b>actes purement personnels</b> (déclaration de naissance, vote, mariage…).</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Personnalité juridique PF</b> : naissance → décès</li>
+<li><b>Personnalité juridique PM</b> : immatriculation RNE → dissolution</li>
+<li><b>Principe de spécialité (PM)</b> : objet social uniquement</li>
+<li><b>1 PJ = 1 patrimoine</b></li>
+<li><b>Majorité</b> : 18 ans ; émancipation : 16 ans</li>
+<li><b>Acte de disposition mineur sans autorisation</b> → nullité relative</li>
+<li><b>Majeur protégé</b> : toujours actes purement personnels seul</li>
+</ul></div>`,
+  vocab:[
+    {t:'Personnalité juridique',d:'Aptitude à être titulaire actif ou passif de droits subjectifs.'},
+    {t:'Personne physique',d:'Tout être humain. Personnalité acquise à la naissance (né vivant), perdue au décès.'},
+    {t:'Personne morale',d:'Entité abstraite. Personnalité distincte des membres. Immatriculation RNE → dissolution.'},
+    {t:'Infans conceptus',d:'Adage : l\'enfant conçu peut hériter s\'il naît viable.'},
+    {t:'RNE — Registre National des Entreprises',d:'Registre depuis le <b>1er janvier 2023</b>. Remplace le RCS.'},
+    {t:'Principe de spécialité (PM)',d:'Une PM ne peut agir que dans le domaine de son <b>objet social</b>.'},
+    {t:'Capacité de jouissance',d:'Aptitude à <b>acquérir des droits</b>.'},
+    {t:'Capacité d\'exercice',d:'Aptitude à <b>exercer les droits</b> dont on est titulaire.'},
+    {t:'Incapacité d\'exercice',d:'La personne reste titulaire de ses droits mais ne peut les exercer seule.'},
+    {t:'Acte de disposition',d:'Opération grave qui <b>engage ou entame le patrimoine</b> (vente, hypothèque, donation).'},
+    {t:'Nullité relative',d:'Nullité ne pouvant être invoquée que par la personne protégée (ex : mineur).'},
+    {t:'Actes purement personnels',d:'Actes que le majeur protégé peut toujours accomplir seul : déclaration de naissance, vote, mariage, autorité parentale.'},
+  ],
+  flashcards:[
+    {q:'À quel moment la personnalité juridique d\'une PF est-elle acquise/perdue ?',a:'Acquise à la <b>naissance</b> (né vivant) et perdue au <b>décès</b>.'},
+    {q:'À quel moment la personnalité juridique d\'une PM est-elle acquise/perdue ?',a:'Acquise lors de l\'<b>immatriculation au RNE</b> et perdue lors de la <b>dissolution</b>.'},
+    {q:'Différence capacité de jouissance / d\'exercice ?',a:'<b>Jouissance</b> = aptitude à acquérir des droits.<br><b>Exercice</b> = aptitude à exercer les droits dont on est titulaire.'},
+    {q:'Quels actes un mineur peut-il réaliser seul ?',a:'Les actes de la <b>vie courante</b>.'},
+    {q:'Conséquence si un mineur réalise seul un acte de disposition ?',a:'<b>Nullité relative</b> (ne peut être invoquée que par le mineur).'},
+    {q:'Le majeur protégé peut-il toujours accomplir certains actes seul ?',a:'Oui : les <b>actes purement personnels</b> (vote, mariage, déclaration de naissance…).'},
+    {q:'Quel est le principe fondamental PM/patrimoine ?',a:'<b>1 personne juridique = 1 patrimoine</b>.'},
+  ],
+  qcm:[
+    {q:'La personnalité juridique d\'une personne physique est acquise :',opts:['A. À la conception','B. À la naissance (né vivant)','C. À 18 ans','D. Au mariage'],correct:1,expl:'Acquise à la naissance, dès lors que l\'enfant est né vivant.'},
+    {q:'Le RNE a remplacé le RCS depuis :',opts:['A. 15 mai 2022','B. 14 février 2022','C. 1er janvier 2023','D. 1er juillet 2022'],correct:2,expl:'Le RNE a remplacé le RCS depuis le 1er janvier 2023.'},
+    {q:'Un mineur qui réalise seul un acte de disposition encourt :',opts:['A. Une nullité absolue','B. Une nullité relative','C. Une amende','D. Aucune sanction'],correct:1,expl:'Nullité relative : ne peut être demandée que par le mineur.'},
+    {q:'Le principe de spécialité d\'une personne morale signifie :',opts:['A. Ne peut agir que dans les domaines publics','B. Ne peut agir que dans son objet social','C. Ne peut agir qu\'à travers ses fondateurs','D. Ne peut agir qu\'en droit commercial'],correct:1,expl:'Une PM ne peut agir que dans son objet social.'},
+  ],
+  cas:{
+    contexte:'La société TechPro SA souhaite acquérir un immeuble pour une exploitation agricole non prévue dans ses statuts. M. Lucas, 16 ans, a acheté seul un scooter à 2 000 € sans accord de ses parents.',
+    questions:['<b>Q1</b> : TechPro SA peut-elle acquérir cet immeuble ?','<b>Q2</b> : L\'achat du scooter par M. Lucas est-il valable ?'],
+    correction:`Q1 — TechPro SA et l'immeuble agricole :
+PRINCIPE DE SPÉCIALITÉ : une PM ne peut agir que dans le domaine prévu par son objet social. L'exploitation agricole n'étant pas prévue dans les statuts, TechPro SA ne peut valablement réaliser cet acte. Il faudrait d'abord modifier l'objet social en AGE (assemblée générale extraordinaire).
+
+Q2 — Achat du scooter par M. Lucas :
+M. Lucas, 16 ans, est mineur non émancipé. Il bénéficie d'une incapacité générale d'exercice. L'achat d'un scooter à 2 000 € est un ACTE DE DISPOSITION (engage le patrimoine). Réalisé seul sans autorisation parentale → NULLITÉ RELATIVE que M. Lucas (ou ses parents) peut invoquer. Le vendeur ne peut exiger le paiement si la nullité est invoquée.`
+  }
+},
+
+{
+  id:'2.2', partie:'P2 — Les personnes et les biens', title:'Les commerçants personnes physiques',
+  cours:`<h3>I. La liberté du commerce et de l'industrie</h3>
+<p>Affirmée par les <b>décrets d'Allarde des 2 et 17 mars 1791</b>. Valeur constitutionnelle (décision CC du <b>16 janvier 1982</b>).</p>
+<h3>II. Les actes de commerce</h3>
+<table>
+<tr><th>Type</th><th>Exemples</th></tr>
+<tr><td><b>Par nature</b></td><td>Négoce (achat pour revendre), transformation industrielle, services (banque, assurance, hôtellerie, spectacles)</td></tr>
+<tr><td><b>Par la forme</b></td><td>Lettres de change. Sociétés commerciales par la forme (SNC, SCS, SARL, SA, SAS)</td></tr>
+<tr><td><b>Par accessoire</b></td><td>Acte civil devenant commercial car accompli par un commerçant pour son commerce</td></tr>
+</table>
+<h3>III. Définition et obligations du commerçant</h3>
+<p><b>Art. L. 121-1 Code de commerce</b> : <em>« sont commerçants ceux qui exercent des actes de commerce et en font leur profession habituelle »</em>.</p>
+<p>Immatriculation au <b>RNE</b> : au plus tôt <b>1 mois avant</b> + au plus tard <b>15 jours après</b> le début de l'activité. Sans immatriculation = <b>commerçant de fait</b>.</p>
+<p><b>Comptes annuels</b> : bilan + compte de résultat + annexes → <b>image fidèle</b>. Sanction faux : <b>3 ans + 45 000 €</b>.</p>
+<h3>IV. Protection du patrimoine du commerçant</h3>
+<p><b>Résidence principale</b> : insaisissable de plein droit (loi Macron, <b>7 août 2015</b>).</p>
+<p><b>Statut EI</b> (loi du 14 février 2022, en vigueur le <b>15 mai 2022</b>) : séparation automatique entre patrimoine personnel et professionnel. Délai de réflexion de <b>7 jours</b> pour renoncer.</p>
+<p><b>Conjoint collaborateur</b> : depuis 2022 → durée limitée à <b>5 ans</b>. Au-delà : choix entre salarié ou associé.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Art. L. 121-1 C. com.</b> : commerçant = exerce actes de commerce + profession habituelle</li>
+<li><b>Immatriculation RNE</b> : 1 mois avant → 15 jours après</li>
+<li><b>Comptes annuels</b> : bilan + compte de résultat + annexes = image fidèle</li>
+<li><b>EI depuis 15 mai 2022</b> : séparation automatique patrimoine personnel/professionnel</li>
+<li><b>Résidence principale</b> : insaisissable de plein droit (loi Macron 2015)</li>
+<li><b>Conjoint collaborateur</b> : depuis 2022 → max 5 ans</li>
+</ul></div>`,
+  vocab:[
+    {t:'Liberté du commerce et de l\'industrie',d:'Principe de valeur constitutionnelle (décision 16 janvier 1982). Décrets d\'Allarde 1791.'},
+    {t:'Commerçant (art. L.121-1)',d:'<em>« Ceux qui exercent des actes de commerce et en font leur profession habituelle »</em>.'},
+    {t:'Acte de commerce par nature',d:'Acte de négoce, transformation industrielle ou service (banque, assurance, hôtellerie…).'},
+    {t:'Acte de commerce par la forme',d:'Toujours commercial quelle que soit la personne : lettres de change, sociétés commerciales par la forme.'},
+    {t:'Acte mixte',d:'Entre un commerçant et un non-commerçant. Régimes différents selon la partie.'},
+    {t:'Commerçant de fait',d:'Commerçant non immatriculé. Subit les obligations sans les avantages.'},
+    {t:'Comptes annuels',d:'Bilan + compte de résultat + annexes. Image fidèle du patrimoine.'},
+    {t:'Entrepreneur individuel (EI)',d:'Loi 14 fév. 2022, en vigueur <b>15 mai 2022</b>. Séparation automatique patrimoine personnel/professionnel.'},
+    {t:'Conjoint collaborateur',d:'Travaille dans l\'entreprise sans rémunération ni qualité d\'associé. Limité à <b>5 ans</b> depuis 2022.'},
+  ],
+  flashcards:[
+    {q:'Définition légale du commerçant (art. L.121-1 C. com.) ?',a:'<em>« Ceux qui <b>exercent des actes de commerce</b> et en font leur <b>profession habituelle</b> »</em>.'},
+    {q:'Délai d\'immatriculation au RNE ?',a:'Au plus tôt <b>1 mois avant</b> + au plus tard <b>15 jours après</b> le début de l\'activité.'},
+    {q:'3 types d\'actes de commerce ?',a:'1) Par <b>nature</b><br>2) Par la <b>forme</b> (lettres de change, sociétés commerciales par la forme)<br>3) Par <b>accessoire</b>'},
+    {q:'Quel est le principe du statut EI ?',a:'Séparation <b>automatique</b> patrimoine personnel / professionnel. En vigueur depuis <b>15 mai 2022</b>.'},
+    {q:'Durée maximale du conjoint collaborateur depuis 2022 ?',a:'<b>5 ans</b>. Au-delà : salarié ou associé.'},
+  ],
+  qcm:[
+    {q:'Selon l\'article L.121-1 du Code de commerce, le commerçant est celui qui :',opts:['A. Possède un fonds de commerce','B. Exerce des actes de commerce et en fait sa profession habituelle','C. Est immatriculé au RNE','D. Emploie au moins un salarié'],correct:1,expl:'Art. L.121-1 : « sont commerçants ceux qui exercent des actes de commerce et en font leur profession habituelle ».'},
+    {q:'Le statut d\'entrepreneur individuel (EI) est entré en vigueur le :',opts:['A. 14 février 2022','B. 1er janvier 2023','C. 15 mai 2022','D. 1er juillet 2022'],correct:2,expl:'Loi du 14 février 2022, entrée en vigueur le 15 mai 2022.'},
+    {q:'Le conjoint collaborateur peut exercer ce statut au maximum pendant :',opts:['A. 2 ans','B. 3 ans','C. 5 ans','D. 10 ans'],correct:2,expl:'Depuis 2022, limité à 5 ans.'},
+    {q:'Les lettres de change sont des actes de commerce :',opts:['A. Par nature','B. Par la forme','C. Par accessoire','D. Mixtes'],correct:1,expl:'Actes de commerce par la forme : toujours commerciaux quelle que soit la personne.'},
+  ],
+  cas:{
+    contexte:'M. Renard exerce une vente en ligne depuis 18 mois sans s\'immatriculer. Sa femme travaille dans l\'entreprise sans rémunération depuis 6 ans. Il souhaite protéger sa résidence principale et ses biens personnels.',
+    questions:['<b>Q1</b> : Situation juridique de M. Renard non immatriculé ?','<b>Q2</b> : Quel est le statut de Mme Renard ? Y a-t-il un problème ?','<b>Q3</b> : Comment protéger sa résidence principale et ses biens personnels ?'],
+    correction:`Q1 — M. Renard non immatriculé :
+M. Renard exerce des actes de commerce (achat pour revendre) de manière habituelle et indépendante → il est COMMERÇANT au sens de l'art. L.121-1. Sans immatriculation, il est COMMERÇANT DE FAIT : il subit les obligations (comptabilité, responsabilité) sans les avantages (bail commercial, bénéfice plein du statut EI). Il doit régulariser immédiatement au RNE.
+
+Q2 — Statut de Mme Renard :
+Mme Renard remplit les conditions du CONJOINT COLLABORATEUR (travail régulier, sans rémunération, sans qualité d'associé). Cependant, depuis 2022 ce statut est limité à 5 ANS. Mme Renard travaille depuis 6 ans → elle dépasse la durée maximale. M. Renard doit faire choisir à Mme Renard entre le statut de salarié ou d'associée.
+
+Q3 — Protection du patrimoine :
+• Résidence principale : insaisissable de plein droit (loi Macron du 7 août 2015). Aucune démarche requise.
+• Autres biens personnels : statut EI (loi 14 fév. 2022, en vigueur 15 mai 2022) → séparation automatique entre patrimoine personnel et professionnel. L'ensemble du patrimoine personnel est insaisissable de plein droit par les créanciers professionnels.`
+  }
+},
+
+// Chapitres 2.3 à 4.2 — inclus en version abrégée pour la stabilité du fichier
+{
+  id:'2.3', partie:'P2 — Les personnes et les biens', title:'Les autres professionnels des affaires',
+  cours:`<h3>I. L'artisan (Code de l'artisanat — 1er juillet 2023)</h3>
+<p><b>3 conditions cumulatives</b> (art. L.111-1 Code de l'artisanat) :</p>
+<ul>
+<li>Moins de <b>11 salariés</b></li>
+<li>Activité artisanale <b>prépondérante</b></li>
+<li>Activité figurant sur la <b>liste du Code de l'artisanat</b> (art. R111-1)</li>
+</ul>
+<p>4 secteurs : alimentation, bâtiment, fabrication, service (coiffure, taxis, réparation…). Immatriculation au <b>RNE</b>. Activités = civiles. Par exception : compétence des <b>tribunaux de commerce</b>.</p>
+<h3>II. L'agriculteur (art. L.311-1 Code rural)</h3>
+<p>Maîtrise et exploitation d'un <b>cycle biologique végétal ou animal</b>. Inclut cultures marines, marais salants, méthanisation. Immatriculation au <b>RNE</b>. Activité civile. Compétence : <b>tribunaux civils</b>.</p>
+<h3>III. Le professionnel libéral (loi 22 mars 2012)</h3>
+<p>Exercice <b>indépendant</b>, activité de nature civile, principalement <b>intellectuelle, technique ou de soins</b>. Rémunéré en <b>honoraires</b> (≠ salaire). Absence de lien de subordination. Immatriculation au <b>RNE</b> depuis 1er janvier 2023.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Artisan</b> : &lt; 11 salariés + activité prépondérante + liste Code de l'artisanat → RNE</li>
+<li><b>Code de l'artisanat</b> : en vigueur 1er juillet 2023</li>
+<li><b>Agriculteur</b> : art. L.311-1 Code rural → RNE, activité civile, tribunaux civils</li>
+<li><b>Professionnel libéral</b> : indépendant, honoraires (pas salaire), sans lien de subordination</li>
+</ul></div>`,
+  vocab:[
+    {t:'Artisan',d:'Professionnel exerçant de manière indépendante. 3 conditions : &lt; 11 salariés + activité prépondérante + liste Code de l\'artisanat.'},
+    {t:'Code de l\'artisanat',d:'En vigueur depuis le <b>1er juillet 2023</b>.'},
+    {t:'Agriculteur (art. L.311-1 Code rural)',d:'Personne exerçant à titre habituel des activités de maîtrise d\'un cycle biologique végétal ou animal.'},
+    {t:'Professionnel libéral (loi 22 mars 2012)',d:'Indépendant, activité civile intellectuelle/technique/soins, contre honoraires. Sans lien de subordination.'},
+    {t:'Honoraires',d:'Rémunération du professionnel libéral. ≠ Salaire.'},
+    {t:'Profession libérale réglementée',d:'Soumise à un <b>ordre professionnel</b> (médecins, avocats…). Déontologie + secret professionnel.'},
+  ],
+  flashcards:[
+    {q:'3 conditions cumulatives pour être artisan ?',a:'1) Moins de <b>11 salariés</b><br>2) Activité artisanale <b>prépondérante</b><br>3) Activité sur la <b>liste du Code de l\'artisanat</b>'},
+    {q:'Depuis quand le Code de l\'artisanat est-il en vigueur ?',a:'<b>1er juillet 2023</b>.'},
+    {q:'Comment distinguer le professionnel libéral du salarié ?',a:'Perçoit des <b>honoraires</b> (pas un salaire) + absence de <b>lien de subordination</b>.'},
+  ],
+  qcm:[
+    {q:'Pour être artisan, l\'entreprise doit employer :',opts:['A. Moins de 5 salariés','B. Moins de 11 salariés','C. Moins de 20 salariés','D. Moins de 50 salariés'],correct:1,expl:'Art. L.111-1 Code de l\'artisanat : moins de 11 salariés.'},
+    {q:'La rémunération du professionnel libéral s\'appelle :',opts:['A. Salaire','B. Commission','C. Honoraires','D. Redevance'],correct:2,expl:'Le professionnel libéral perçoit des honoraires. Absence de lien de subordination.'},
+  ],
+  cas:{
+    contexte:'Mme Fontaine est coiffeuse à domicile depuis 3 ans, emploie 2 apprenties. M. Bricard est médecin généraliste exerçant en libéral.',
+    questions:['<b>Q1</b> : Mme Fontaine a-t-elle la qualité d\'artisan ?','<b>Q2</b> : M. Bricard est-il commerçant ? Quelles sont ses obligations spécifiques ?'],
+    correction:`Q1 — Qualité d'artisan de Mme Fontaine :
+3 conditions : 2 apprenties (< 11 salariés ✓), coiffure = activité prépondérante ✓, coiffure figure dans la liste du Code de l'artisanat (secteur service) ✓. ARTISAN confirmé. Activité civile mais compétence des tribunaux de commerce par exception.
+
+Q2 — Statut de M. Bricard :
+M. Bricard n'est PAS commerçant. Il est PROFESSIONNEL LIBÉRAL RÉGLEMENTÉ : exercice indépendant, activité de soins, diplôme de médecine, Ordre des médecins, secret médical, code de déontologie, immatriculation RNE depuis 1er janvier 2023.`
+  }
+},
+
+{
+  id:'2.4', partie:'P2 — Les personnes et les biens', title:'Théorie du patrimoine',
+  cours:`<h3>I. Définition et composition du patrimoine</h3>
+<p>Le patrimoine est <em>« l'ensemble des biens et des obligations d'une même personne, de l'actif et du passif, envisagé comme formant une universalité de droit »</em> (Vocabulaire Juridique).</p>
+<p><b>Actif</b> : biens et droits appréciables en argent. <b>Passif</b> : dettes et obligations appréciables en argent.</p>
+<h4>Droits patrimoniaux vs extra-patrimoniaux</h4>
+<p><b>Droits patrimoniaux</b> : évaluables en argent. Caractéristiques : <b>cessibles</b>, <b>transmissibles</b>, <b>saisissables</b>, <b>prescriptibles</b>.</p>
+<p><b>Droits extra-patrimoniaux</b> : non évaluables en argent (droits familiaux, droits de la personnalité).</p>
+<h4>Droits réels vs droits personnels</h4>
+<p><b>Droits réels</b> : portent sur un bien. <b>Droits personnels</b> (créance) : droit d'un créancier d'exiger d'un débiteur une prestation.</p>
+<h4>Meubles vs immeubles</h4>
+<table>
+<tr><th>Catégorie</th><th>Sous-catégories</th></tr>
+<tr><td><b>Meubles</b></td><td>Par nature (se déplacent), par détermination de la loi (obligations, actions de sociétés)</td></tr>
+<tr><td><b>Immeubles</b></td><td>Par nature (fonds, bâtiments), par <b>destination</b> (meubles affectés au fonds), par l'objet</td></tr>
+</table>
+<h3>II. Les théories du patrimoine</h3>
+<h4>A. Théorie classique (Aubry et Rau)</h4>
+<p><b>Unicité</b> et <b>indivisibilité</b> : chaque PJ n'a qu'un seul patrimoine. <b>Art. 2284 Code civil</b> : droit de gage général — l'actif répond du passif.</p>
+<h4>B. Patrimoine d'affectation</h4>
+<p>Manifestations en droit français : statut EI, <b>fiducie</b> (loi 19 février 2007, art. 2011 Code civil), sociétés unipersonnelles.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Actif</b> = biens et droits ; <b>Passif</b> = dettes</li>
+<li><b>Droits patrimoniaux</b> : cessibles, transmissibles, saisissables, prescriptibles</li>
+<li><b>Immeuble par destination</b> : meuble affecté au service/exploitation d\'un fonds</li>
+<li><b>Théorie classique</b> (Aubry et Rau) : unicité + indivisibilité</li>
+<li><b>Art. 2284</b> : droit de gage général</li>
+<li><b>Fiducie</b> : art. 2011 Code civil ; loi 19 février 2007</li>
+</ul></div>`,
+  vocab:[
+    {t:'Patrimoine',d:'Ensemble des biens et obligations d\'une même personne (actif + passif), formant une universalité de droit.'},
+    {t:'Droits patrimoniaux',d:'Évaluables en argent. Cessibles, transmissibles, saisissables, prescriptibles.'},
+    {t:'Droits extra-patrimoniaux',d:'Non évaluables en argent : droits familiaux, droits de la personnalité.'},
+    {t:'Droit réel',d:'Porte sur une chose. Principaux : droit de propriété et démembrements.'},
+    {t:'Droit personnel (créance)',d:'Droit d\'un créancier d\'exiger d\'un débiteur une prestation.'},
+    {t:'Immeuble par destination',d:'Meuble devenu immeuble car affecté au <b>service ou à l\'exploitation d\'un fonds</b>.'},
+    {t:'Droit de gage général (art. 2284)',d:'Toute personne répond de l\'ensemble de son passif avec l\'ensemble de son actif.'},
+    {t:'Théorie classique (Aubry et Rau)',d:'Unicité et indivisibilité du patrimoine. Chaque PJ n\'a qu\'un seul patrimoine.'},
+    {t:'Fiducie (art. 2011)',d:'Loi du <b>19 février 2007</b>. Transfert de biens à un fiduciaire qui les tient séparés de son patrimoine propre.'},
+  ],
+  flashcards:[
+    {q:'4 caractéristiques des droits patrimoniaux ?',a:'<b>Cessibles</b>, <b>transmissibles</b>, <b>saisissables</b>, <b>prescriptibles</b>.'},
+    {q:'Différence droit réel / droit personnel ?',a:'<b>Droit réel</b> : porte sur une chose.<br><b>Droit personnel</b> : créancier exige une prestation d\'un débiteur.'},
+    {q:'Qu\'est-ce qu\'un immeuble par destination ?',a:'Meuble devenu immeuble car affecté au <b>service/exploitation d\'un fonds</b>.'},
+    {q:'Théorie classique du patrimoine : auteurs et principes ?',a:'<b>Aubry et Rau</b>. Principes : <b>unicité</b> (1 PJ = 1 patrimoine) et <b>indivisibilité</b>.'},
+    {q:'Qu\'est-ce que la fiducie ?',a:'Art. 2011, loi 19 fév. 2007. Transfert de biens à un <b>fiduciaire</b> qui les tient séparés de son patrimoine.'},
+  ],
+  qcm:[
+    {q:'Selon la théorie classique (Aubry et Rau), chaque PJ a :',opts:['A. Autant de patrimoines que de dettes','B. Un seul patrimoine','C. Plusieurs patrimoines','D. Aucun patrimoine'],correct:1,expl:'Principe d\'unicité : chaque PJ n\'a qu\'un seul patrimoine.'},
+    {q:'L\'article 2284 du Code civil prévoit :',opts:['A. La séparation des patrimoines','B. Le droit de gage général','C. La fiducie','D. Le patrimoine d\'affectation'],correct:1,expl:'Droit de gage général : l\'actif répond du passif.'},
+    {q:'Un immeuble par destination est :',opts:['A. Un immeuble vendu à terme','B. Un meuble devenu immeuble car affecté au service d\'un fonds','C. Un bien construit sur terrain loué','D. Un bien incorporel'],correct:1,expl:'Immeuble par destination : meuble affecté au service/exploitation d\'un fonds.'},
+  ],
+  cas:{
+    contexte:'M. Lefort est créancier de M. Brun (agriculteur EI). M. Brun possède : appartement (résidence principale), voiture, économies bancaires, troupeau de chèvres et tracteur (affecté à l\'exploitation).',
+    questions:['<b>Q1</b> : Qualifier chaque bien de M. Brun.','<b>Q2</b> : M. Lefort peut-il saisir tous les biens ? Impact du statut EI ?'],
+    correction:`Q1 — Qualification des biens :
+• Appartement : IMMEUBLE par nature, corporel.
+• Voiture : MEUBLE par nature, corporel.
+• Économies bancaires : MEUBLES par détermination de la loi, incorporel.
+• Troupeau : meubles par nature, corporels.
+• Tracteur affecté à l'exploitation : IMMEUBLE PAR DESTINATION (affecté au service du fonds agricole).
+
+Q2 — Saisissabilité + impact EI :
+Art. 2284 : droit de gage général → l'actif répond du passif. MAIS statut EI (loi 15 mai 2022) : séparation automatique patrimoine personnel / professionnel.
+• Patrimoine personnel (voiture, économies, appartement) : insaisissable par les créanciers professionnels.
+• Patrimoine professionnel (troupeau, tracteur) : saisissable par les créanciers professionnels.
+M. Lefort ne peut saisir que les biens professionnels.`
+  }
+},
+
+{
+  id:'2.5', partie:'P2 — Les personnes et les biens', title:'La propriété',
+  cours:`<h3>I. Le droit de propriété</h3>
+<p><b>Art. 544 du Code civil</b> (inchangé depuis 1804) : <em>« la propriété est le droit de jouir et disposer des choses de la manière la plus absolue, pourvu qu'on n'en fasse pas un usage prohibé par les lois ou par les règlements »</em>.</p>
+<h4>Les 3 attributs</h4>
+<table>
+<tr><th>Attribut</th><th>Définition</th></tr>
+<tr><td><b>Usus</b></td><td>Droit d'<b>usage</b> : utiliser ou non la chose</td></tr>
+<tr><td><b>Fructus</b></td><td>Droit de <b>jouissance</b> : percevoir les fruits sans altérer la substance</td></tr>
+<tr><td><b>Abusus</b></td><td>Droit de <b>disposition</b> : vendre, donner en garantie, détruire</td></tr>
+</table>
+<h4>Les 3 caractères</h4>
+<ul>
+<li><b>Absolu</b> : tous les actes souhaités dans les limites légales</li>
+<li><b>Perpétuel</b> : transmis aux héritiers, imprescriptible</li>
+<li><b>Exclusif</b> : monopole du propriétaire</li>
+</ul>
+<h3>II. L'usufruit et la nue-propriété</h3>
+<p><b>Art. 578</b> : <em>« l'usufruit est le droit de jouir des choses dont un autre a la propriété, comme le propriétaire lui-même, mais à la charge d'en conserver la substance »</em>.</p>
+<p><b>Usufruitier</b> = usus + fructus. <b>Nu-propriétaire</b> = abusus.</p>
+<p>Obligations du nu-propriétaire : supporter les <b>grosses réparations (art. 606)</b> : gros murs et voûtes, poutres et couvertures entières, digues, murs de soutènement. <b>Liste exhaustive</b>.</p>
+<h3>III. Limites du droit de propriété</h3>
+<h4>Abus du droit de propriété</h4>
+<p>2 conditions cumulatives : <b>intention de nuire</b> + <b>usage d'un droit sans utilité</b>. Sanction : responsabilité extracontractuelle.</p>
+<h4>Troubles anormaux du voisinage</h4>
+<p>Sanction <b>sans démonstration de faute</b>. Trouble doit être <b>anormal</b> : fréquence + gravité. <b>Exception de pré-occupation</b>.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Art. 544</b> : définition légale du droit de propriété (1804)</li>
+<li><b>Usus</b> + <b>Fructus</b> + <b>Abusus</b></li>
+<li><b>Art. 578</b> : définition de l\'usufruit</li>
+<li><b>Grosses réparations (art. 606)</b> : à la charge du nu-propriétaire — liste exhaustive</li>
+<li><b>Abus de droit</b> : intention de nuire + sans utilité</li>
+<li><b>Troubles anormaux de voisinage</b> : sans faute, caractère anormal</li>
+</ul></div>`,
+  vocab:[
+    {t:'Droit de propriété (art. 544)',d:'<em>« Droit de jouir et disposer des choses de la manière la plus absolue »</em>. Inchangé depuis 1804.'},
+    {t:'Usus',d:'<b>Droit d\'usage</b> : utiliser ou ne pas utiliser la chose.'},
+    {t:'Fructus',d:'<b>Droit de jouissance</b> : percevoir les fruits sans altérer la substance.'},
+    {t:'Abusus',d:'<b>Droit de disposition</b> : vendre, donner en garantie, détruire.'},
+    {t:'Usufruit (art. 578)',d:'Droit de jouir des choses d\'autrui, comme le propriétaire, à la charge d\'en conserver la substance.'},
+    {t:'Grosses réparations (art. 606)',d:'À la charge du nu-propriétaire : gros murs/voûtes, poutres et couvertures entières, digues, murs de soutènement. Liste <b>exhaustive</b>.'},
+    {t:'Troubles anormaux du voisinage',d:'Sanction sans démonstration de faute. Caractère anormal (fréquence + gravité).'},
+  ],
+  flashcards:[
+    {q:'Définition légale du droit de propriété (art. 544) ?',a:'<em>« La propriété est le droit de jouir et disposer des choses de la manière la plus absolue »</em>.'},
+    {q:'Quels sont les 3 attributs du droit de propriété ?',a:'1) <b>Usus</b> : usage<br>2) <b>Fructus</b> : jouissance<br>3) <b>Abusus</b> : disposition'},
+    {q:'Qui a l\'usus + fructus ? Qui a l\'abusus ?',a:'<b>Usufruitier</b> : usus + fructus.<br><b>Nu-propriétaire</b> : abusus.'},
+    {q:'Qu\'est-ce que les grosses réparations (art. 606) ?',a:'À la charge du nu-propriétaire : gros murs et voûtes, poutres et couvertures entières, digues, murs de soutènement. Liste <b>exhaustive</b>.'},
+    {q:'2 conditions pour caractériser l\'abus du droit de propriété ?',a:'1) <b>Intention de nuire</b><br>2) <b>Usage d\'un droit sans utilité</b>'},
+  ],
+  qcm:[
+    {q:'Le droit de propriété comprend 3 attributs :',opts:['A. Usus, abusus, animus','B. Usus, fructus, abusus','C. Fructus, animus, possessio','D. Usus, jus, abusus'],correct:1,expl:'Usus (usage), fructus (jouissance/fruits), abusus (disposition).'},
+    {q:'Les grosses réparations sont à la charge :',opts:['A. De l\'usufruitier','B. Du nu-propriétaire','C. Des deux à parts égales','D. Du locataire'],correct:1,expl:'Art. 606 : grosses réparations à la charge du nu-propriétaire.'},
+    {q:'Les troubles anormaux du voisinage sont sanctionnés :',opts:['A. Sans démonstration de faute','B. Sur la preuve d\'une intention de nuire','C. Uniquement entre propriétaires immédiats','D. Sur la preuve d\'une faute'],correct:0,expl:'Pas de démonstration de faute requise.'},
+  ],
+  cas:{
+    contexte:'M. Renaud a accordé un usufruit sur son appartement à sa mère. Le toit nécessite d\'être entièrement refait (8 000 €). La mère utilise l\'appartement comme bureau alors que la destination est résidentielle.',
+    questions:['<b>Q1</b> : Qui doit payer les travaux de toiture ?','<b>Q2</b> : La mère peut-elle utiliser l\'appartement comme bureau ?'],
+    correction:`Q1 — Travaux de toiture :
+Couverture entière = grosse réparation (art. 606, liste exhaustive). À la charge du NU-PROPRIÉTAIRE (M. Renaud). La mère (usufruitière) supporte uniquement les réparations d'entretien ordinaire.
+
+Q2 — Utilisation comme bureau :
+L'usufruitier doit respecter la DESTINATION du bien (résidentielle). La mère ne peut pas l'utiliser comme bureau sans accord du nu-propriétaire. Si elle maintient cette utilisation : extinction de l'usufruit pour ABUS DE JOUISSANCE (art. 618).`
+  }
+},
+
+// ============================================================
+// PARTIE 3 — L'ENTREPRISE ET LES CONTRATS
+// ============================================================
+{
+  id:'3.1', partie:'P3 — L\'entreprise et les contrats', title:'La formation du contrat',
+  cours:`<h3>I. Notion de contrat</h3>
+<p><b>Art. 1101 du Code civil</b> (Ordonnance du <b>10 février 2016</b>) : <em>« le contrat est un accord de volontés entre deux ou plusieurs personnes destiné à créer, modifier, transmettre ou éteindre des obligations »</em>.</p>
+<h4>Classifications</h4>
+<table>
+<tr><th>Classification</th><th>Types</th></tr>
+<tr><td>Nombre de parties</td><td><b>Synallagmatique</b> (obligations réciproques) / <b>Unilatéral</b></td></tr>
+<tr><td>Contrepartie</td><td><b>À titre onéreux</b> / <b>À titre gratuit</b></td></tr>
+<tr><td>Exécution</td><td><b>Instantané</b> / <b>À exécution successive</b></td></tr>
+<tr><td>Négociation</td><td><b>De gré à gré</b> / <b>D'adhésion</b></td></tr>
+</table>
+<h3>II. Les conditions de validité du contrat (art. 1128)</h3>
+<ul>
+<li><b>Consentement</b> valable (non vicié)</li>
+<li><b>Capacité</b> de contracter</li>
+<li>Un <b>contenu licite et certain</b></li>
+</ul>
+<h4>L'offre</h4>
+<p>Doit être <b>ferme</b> et <b>précise</b>. Caducité au décès ou incapacité de l'offrant. Formation du contrat : <b>théorie de la réception</b>.</p>
+<h4>Les vices du consentement</h4>
+<table>
+<tr><th>Vice</th><th>Définition</th><th>Sanction</th></tr>
+<tr><td><b>Erreur</b></td><td>Fausse représentation. Doit être <b>excusable</b> + porter sur les <b>qualités essentielles</b>.</td><td>Nullité relative</td></tr>
+<tr><td><b>Dol</b></td><td>Manœuvres frauduleuses délibérées. Élément matériel + intentionnel.</td><td>Nullité relative + D&I</td></tr>
+<tr><td><b>Violence</b></td><td>Menace d'un dommage grave et imminent. Violence économique admise.</td><td>Nullité relative + D&I</td></tr>
+</table>
+<h3>III. La période précontractuelle</h3>
+<p>Rupture fautive des pourparlers → <b>responsabilité extracontractuelle</b>.</p>
+<table>
+<tr><th>Type</th><th>Définition</th></tr>
+<tr><td><b>Promesse unilatérale</b></td><td>Faculté de conclure accordée au bénéficiaire. Rétractation → D&I.</td></tr>
+<tr><td><b>Pacte de préférence</b></td><td>Priorité accordée si vente. Tiers complice peut être substitué.</td></tr>
+</table>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Art. 1101</b> : définition du contrat (réforme 10 fév. 2016)</li>
+<li><b>Art. 1128</b> : 3 conditions : consentement + capacité + contenu licite</li>
+<li><b>Erreur</b> : excusable + qualités essentielles → nullité relative</li>
+<li><b>Dol</b> : manœuvres frauduleuses → nullité relative + D&I</li>
+<li><b>Violence</b> : menace grave (économique admise) → nullité relative + D&I</li>
+<li><b>Rupture pourparlers</b> : responsabilité extracontractuelle si fautive</li>
+</ul></div>`,
+  vocab:[
+    {t:'Contrat (art. 1101)',d:'<em>« Accord de volontés entre deux ou plusieurs personnes destiné à créer, modifier, transmettre ou éteindre des obligations »</em>. Ordonnance 10 fév. 2016.'},
+    {t:'Offre (pollicitation)',d:'Manifestation ferme et précise de volonté de conclure un contrat.'},
+    {t:'Théorie de la réception',d:'Le contrat est formé au moment de la <b>réception de l\'acceptation par l\'offrant</b>.'},
+    {t:'Erreur (vice du consentement)',d:'Fausse représentation de la réalité. Excusable + qualités essentielles. → Nullité relative.'},
+    {t:'Dol',d:'Manœuvres frauduleuses délibérées. Éléments matériel + intentionnel. → Nullité relative + D&I.'},
+    {t:'Violence',d:'Menace d\'un dommage grave et imminent. Violence économique admise. → Nullité relative + D&I.'},
+    {t:'Réticence dolosive',d:'Dissimulation intentionnelle d\'une information déterminante.'},
+    {t:'Promesse unilatérale',d:'Faculté de conclure accordée au bénéficiaire. Rétractation → D&I (pas nullité).'},
+    {t:'Pacte de préférence',d:'Priorité accordée si vente. Tiers complice peut être substitué.'},
+  ],
+  flashcards:[
+    {q:'Définition du contrat (art. 1101) ?',a:'<em>« Accord de volontés entre deux ou plusieurs personnes destiné à créer, modifier, transmettre ou éteindre des obligations »</em>.'},
+    {q:'3 conditions de validité du contrat (art. 1128) ?',a:'1) <b>Consentement</b> valable<br>2) <b>Capacité</b><br>3) Contenu <b>licite et certain</b>'},
+    {q:'Qu\'est-ce que le dol ?',a:'Manœuvres frauduleuses délibérées. Élément <b>matériel</b> + <b>intentionnel</b>. → Nullité relative + D&I.'},
+    {q:'Sanction de la rupture fautive des pourparlers ?',a:'<b>Responsabilité extracontractuelle</b>.'},
+  ],
+  qcm:[
+    {q:'Le contrat est défini par :',opts:['A. L\'art. 1101 du Code civil','B. L\'art. 1240 du Code civil','C. L\'art. 1383 du Code civil','D. L\'art. 1104 du Code civil'],correct:0,expl:'Art. 1101 Code civil (réforme 10 fév. 2016).'},
+    {q:'Le dol est caractérisé par :',opts:['A. Une erreur involontaire','B. Des manœuvres frauduleuses délibérées','C. Une menace économique','D. Un silence'],correct:1,expl:'Dol : manœuvres frauduleuses délibérées pour tromper le cocontractant.'},
+    {q:'La rupture fautive des pourparlers engage :',opts:['A. La responsabilité contractuelle','B. La responsabilité extracontractuelle','C. Aucune responsabilité','D. La responsabilité pénale'],correct:1,expl:'Pas encore de contrat → responsabilité extracontractuelle.'},
+  ],
+  cas:{
+    contexte:'M. Aubert achète en ligne une montre à 800 € pensant qu\'elle est en or massif (en réalité plaquée or). La fiche produit indiquait seulement « couleur or ». Le vendeur professeur de joaillerie connaissait la composition exacte.',
+    questions:['<b>Q1</b> : M. Aubert peut-il invoquer un vice du consentement ?','<b>Q2</b> : Quelle est la sanction ?'],
+    correction:`Q1 — Vice du consentement :
+DOL par RÉTICENCE DOLOSIVE : le vendeur, professionnel de la joaillerie, connaissait la composition exacte et ne l'a pas mentionnée. Élément matériel (silence sur info déterminante) + intentionnel (connaissance). Le dol est caractérisé.
+ERREUR également possible : M. Aubert se trompe sur la qualité essentielle (or massif vs plaqué). Erreur excusable pour un non-professionnel.
+
+Q2 — Sanction :
+NULLITÉ RELATIVE + D&I. M. Aubert peut demander l'annulation de la vente et la restitution du prix, plus réparation du préjudice subi.`
+  }
+},
+
+{
+  id:'3.2', partie:'P3 — L\'entreprise et les contrats', title:'Les effets et l\'inexécution du contrat',
+  cours:`<h3>I. Les effets du contrat</h3>
+<h4>A. Force obligatoire (art. 1103)</h4>
+<p><em>« Les contrats légalement formés tiennent lieu de loi à ceux qui les ont faits »</em>. Principe : <b>pacta sunt servanda</b>.</p>
+<h4>B. Relativité des contrats (art. 1199)</h4>
+<p>Le contrat ne crée d'obligations qu'entre les parties. Exception : <b>stipulation pour autrui</b> (art. 1205) — ex : assurance-vie.</p>
+<h4>C. L'imprévision (art. 1195 — réforme 2016)</h4>
+<p>Changement imprévisible rendant l'exécution excessivement onéreuse → renégociation. En cas d'échec : le juge adapte ou met fin au contrat.</p>
+<h3>II. L'inexécution du contrat</h3>
+<h4>A. Exception d'inexécution (art. 1219)</h4>
+<p>Refus légitime d'exécuter si l'autre n'exécute pas sa propre obligation.</p>
+<h4>B. La résolution</h4>
+<p>3 modes : <b>clause résolutoire</b> / <b>résolution unilatérale</b> (risques du créancier) / <b>résolution judiciaire</b>.</p>
+<h4>C. La responsabilité contractuelle (art. 1231)</h4>
+<p>Conditions : <b>inexécution</b> + <b>préjudice</b> + <b>lien de causalité</b>. Mise en demeure préalable.</p>
+<h4>Obligation de moyens vs de résultat</h4>
+<p><b>Moyens</b> (médecin) : preuve de la faute sur le créancier. <b>Résultat</b> (transporteur) : simple absence de résultat suffit.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Art. 1103</b> : pacta sunt servanda</li>
+<li><b>Art. 1199</b> : relativité des contrats</li>
+<li><b>Stipulation pour autrui (art. 1205)</b> : exception</li>
+<li><b>Imprévision (art. 1195)</b> : renégociation → juge</li>
+<li><b>Resp. contractuelle</b> : inexécution + préjudice + lien de causalité</li>
+<li><b>Clause pénale</b> : modifiable par le juge si manifestement excessive/dérisoire</li>
+</ul></div>`,
+  vocab:[
+    {t:'Force obligatoire (art. 1103)',d:'<em>« Les contrats légalement formés tiennent lieu de loi à ceux qui les ont faits »</em>. Pacta sunt servanda.'},
+    {t:'Relativité des contrats (art. 1199)',d:'Le contrat ne crée d\'obligations qu\'entre les parties.'},
+    {t:'Stipulation pour autrui (art. 1205)',d:'Le stipulant demande au promettant une prestation en faveur d\'un tiers. Ex : assurance-vie.'},
+    {t:'Imprévision (art. 1195)',d:'Changement imprévisible rendant l\'exécution excessivement onéreuse → renégociation → révision ou résolution judiciaire.'},
+    {t:'Responsabilité contractuelle (art. 1231)',d:'Inexécution + préjudice + lien de causalité. Mise en demeure préalable.'},
+    {t:'Obligation de moyens',d:'Le débiteur doit mettre en œuvre tous les moyens (médecin). Preuve de la faute sur le créancier.'},
+    {t:'Obligation de résultat',d:'Le débiteur doit atteindre un résultat (transporteur). Simple absence de résultat suffit.'},
+    {t:'Clause pénale',d:'Fixe à l\'avance le montant des D&I. Le juge peut la réviser si manifestement excessive ou dérisoire.'},
+  ],
+  flashcards:[
+    {q:'Que prévoit l\'art. 1103 ?',a:'<em>« Les contrats légalement formés tiennent lieu de loi à ceux qui les ont faits »</em>. Pacta sunt servanda.'},
+    {q:'Qu\'est-ce que l\'imprévision (art. 1195) ?',a:'Changement <b>imprévisible</b> rendant l\'exécution excessivement onéreuse → renégociation → juge.'},
+    {q:'Conditions de la responsabilité contractuelle ?',a:'<b>Inexécution</b> + <b>préjudice</b> + <b>lien de causalité</b>.'},
+    {q:'Différence obligation de moyens / résultat ?',a:'<b>Moyens</b> (médecin) : preuve de la faute sur le créancier.<br><b>Résultat</b> (transporteur) : absence de résultat suffit.'},
+  ],
+  qcm:[
+    {q:'L\'imprévision a été introduite par :',opts:['A. La loi Macron de 2015','B. L\'ordonnance du 10 février 2016','C. La loi du 14 février 2022','D. Le Code Napoléon'],correct:1,expl:'Art. 1195 issu de la réforme du droit des contrats (ordonnance 10 fév. 2016).'},
+    {q:'La clause pénale peut être révisée par le juge si elle est :',opts:['A. Supérieure à 10 000 €','B. Entre commerçants','C. Manifestement excessive ou dérisoire','D. Non écrite'],correct:2,expl:'Pouvoir modérateur du juge (art. 1231-5).'},
+  ],
+  cas:{
+    contexte:'La société Alpha commande 500 t de matières premières à Bêta. Bêta ne livre que 200 t. Alpha subit 50 000 € de perte. Le contrat prévoit une clause pénale de 200 000 €.',
+    questions:['<b>Q1</b> : Alpha peut-elle mettre fin au contrat et comment ?','<b>Q2</b> : La clause pénale de 200 000 € peut-elle être appliquée telle quelle ?'],
+    correction:`Q1 — Mise fin au contrat :
+Inexécution partielle grave (300 t non livrées = 60%). Alpha peut :
+• RÉSOLUTION UNILATÉRALE (art. 1226) : inexécution suffisamment grave, notification écrite.
+• RÉSOLUTION JUDICIAIRE : demande au juge de prononcer la résolution + D&I.
+
+Q2 — Clause pénale de 200 000 € :
+La clause est valable mais le juge dispose d'un POUVOIR MODÉRATEUR (art. 1231-5) : il peut réduire si manifestement excessive par rapport au préjudice réel (50 000 €). 200 000 € = 4× le préjudice → réduction probable.`
+  }
+},
+
+{
+  id:'3.3', partie:'P3 — L\'entreprise et les contrats', title:'Le fonds de commerce',
+  cours:`<h3>I. Notion de fonds de commerce</h3>
+<p>Le fonds de commerce est un <b>bien meuble incorporel</b>, universalité de fait regroupant l'ensemble des biens mobiliers affectés à l'exploitation d'une activité commerciale ou artisanale.</p>
+<h4>Éléments composant le fonds de commerce</h4>
+<table>
+<tr><th>Catégorie</th><th>Éléments</th></tr>
+<tr><td><b>Éléments incorporels essentiels</b></td><td><b>Clientèle et achalandage</b> (élément essentiel), nom commercial, enseigne, droit au bail, brevets, marques, dessins, modèles</td></tr>
+<tr><td><b>Éléments corporels</b></td><td>Matériel, outillage, mobilier commercial, marchandises</td></tr>
+</table>
+<div class="warn-box">⚠️ Le fonds de commerce n'inclut PAS les créances/dettes, ni les immeubles, ni les contrats en cours.</div>
+<h3>II. La vente du fonds de commerce</h3>
+<p>Contrat <b>solennel</b>. Mentions obligatoires : nom précédent vendeur, CA HT des 3 derniers exercices, résultat d'exploitation, état des privilèges/nantissements, informations bail.</p>
+<p><b>Publicité</b> : JAL dans les <b>15 jours</b> + BODACC dans les <b>3 jours</b>. Oppositions créanciers : <b>10 jours</b>.</p>
+<h3>III. Le nantissement du fonds</h3>
+<p>Hypothèque sur fonds de commerce. Inscription au <b>RNE</b>. Droit de préférence du créancier nanti.</p>
+<h3>IV. Le bail commercial</h3>
+<p>Durée minimale : <b>9 ans</b>. Droit au renouvellement. Refus → <b>indemnité d'éviction</b> (sauf faute grave).</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Fonds</b> = meuble incorporel. Élément essentiel : <b>clientèle</b></li>
+<li><b>Vente</b> : contrat solennel, JAL (15j) + BODACC (3j), oppositions 10j</li>
+<li><b>Bail commercial</b> : 9 ans minimum, droit au renouvellement</li>
+<li><b>Indemnité d\'éviction</b> : si refus de renouvellement sans faute grave</li>
+</ul></div>`,
+  vocab:[
+    {t:'Fonds de commerce',d:'Bien meuble incorporel. Universalité de fait. Élément essentiel : <b>clientèle</b>.'},
+    {t:'Clientèle',d:'Élément essentiel du fonds. Doit être <b>réelle, certaine et commerciale</b>.'},
+    {t:'Droit au bail',d:'Droit pour le locataire de rester dans les lieux et d\'obtenir le renouvellement. Élément incorporel du fonds.'},
+    {t:'Nantissement du fonds',d:'Mise en garantie du fonds sans dépossession. Inscription RNE. Droit de préférence.'},
+    {t:'Bail commercial',d:'Durée minimale <b>9 ans</b>. Droit au renouvellement.'},
+    {t:'Indemnité d\'éviction',d:'Versée par le bailleur si refus de renouvellement sans faute grave du preneur.'},
+  ],
+  flashcards:[
+    {q:'Élément essentiel du fonds de commerce ?',a:'La <b>clientèle</b> (réelle, certaine, commerciale).'},
+    {q:'Publicité obligatoire pour la vente d\'un fonds ?',a:'JAL dans les <b>15 jours</b> + BODACC dans les <b>3 jours</b>. Oppositions créanciers : <b>10 jours</b>.'},
+    {q:'Durée minimale d\'un bail commercial ?',a:'<b>9 ans</b>. Droit au renouvellement.'},
+  ],
+  qcm:[
+    {q:'L\'élément essentiel du fonds de commerce est :',opts:['A. Le matériel','B. La clientèle','C. Le nom commercial','D. Les marchandises'],correct:1,expl:'Sans clientèle, pas de fonds de commerce.'},
+    {q:'Le bail commercial a une durée minimale de :',opts:['A. 3 ans','B. 6 ans','C. 9 ans','D. 12 ans'],correct:2,expl:'9 ans minimum.'},
+  ],
+  cas:{
+    contexte:'M. Tarin vend son fonds de commerce à M. Costa pour 120 000 €. M. Tarin oublie de mentionner le bilan des 3 derniers exercices dans l\'acte.',
+    questions:['<b>Q1</b> : Conséquences de l\'oubli du bilan des 3 derniers exercices ?','<b>Q2</b> : Dans quel délai les créanciers peuvent-ils faire opposition ?'],
+    correction:`Q1 — Oubli du bilan :
+Mention obligatoire (contrat solennel). Omission → NULLITÉ RELATIVE (protège M. Costa). Il peut invoquer cette nullité pour annuler la vente et obtenir le remboursement.
+
+Q2 — Délai d'opposition :
+Publication JAL dans les 15 jours + BODACC dans les 3 jours de la réception par le greffe. Délai d'opposition des créanciers : 10 JOURS à compter de la publication BODACC. L'opposition bloque le paiement du prix.`
+  }
+},
+
+// ============================================================
+// PARTIE 4 — LES RESPONSABILITÉS
+// ============================================================
+{
+  id:'4.1', partie:'P4 — Les responsabilités', title:'La responsabilité extracontractuelle',
+  cours:`<h3>I. Notion et fondements</h3>
+<p>La responsabilité extracontractuelle naît <b>hors contrat</b>. Fondements : <b>art. 1240</b> (faute), <b>art. 1242</b> (fait d'autrui et des choses), <b>art. 1243</b> (animaux), <b>art. 1244</b> (bâtiments).</p>
+<h3>II. La responsabilité du fait personnel (art. 1240)</h3>
+<p>Conditions : <b>faute</b> + <b>préjudice</b> + <b>lien de causalité</b>.</p>
+<p>Le <b>préjudice</b> doit être : <b>certain</b>, <b>direct</b>, <b>personnel</b>, <b>licite</b>. 3 types : <b>matériel</b>, <b>corporel</b>, <b>moral</b>.</p>
+<h3>III. La responsabilité du fait d'autrui (art. 1242)</h3>
+<ul>
+<li><b>Parents</b> : responsables des dommages causés par leurs enfants mineurs habitant avec eux (de plein droit)</li>
+<li><b>Commettants/préposés</b> : l'employeur est responsable de son salarié dans l'exercice de ses fonctions (de plein droit)</li>
+<li><b>Instituteurs/artisans</b> : responsables des élèves/apprentis sous leur surveillance</li>
+</ul>
+<h3>IV. La responsabilité du fait des choses (art. 1242 al. 1)</h3>
+<p>Responsabilité du <b>gardien</b> (pouvoir d'<b>usage, direction et contrôle</b>). Présomption de responsabilité.</p>
+<h3>V. Les causes d'exonération</h3>
+<table>
+<tr><th>Cause</th><th>Conditions</th><th>Effet</th></tr>
+<tr><td><b>Force majeure</b></td><td>Imprévisible + irrésistible + extérieure</td><td>Exonération totale</td></tr>
+<tr><td><b>Fait de la victime</b></td><td>Comportement fautif de la victime</td><td>Totale ou partielle</td></tr>
+<tr><td><b>Fait d'un tiers</b></td><td>Comportement fautif d'un tiers</td><td>Totale ou partielle</td></tr>
+</table>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Art. 1240</b> : faute + préjudice + lien de causalité</li>
+<li><b>Préjudice</b> : certain + direct + personnel + licite</li>
+<li><b>Art. 1242</b> : parents/mineurs, commettant/préposé (de plein droit)</li>
+<li><b>Gardien</b> : pouvoir d\'usage, direction et contrôle</li>
+<li><b>Force majeure</b> : imprévisible + irrésistible + extérieure</li>
+</ul></div>`,
+  vocab:[
+    {t:'Art. 1240 Code civil',d:'<em>« Tout fait quelconque de l\'homme qui cause à autrui un dommage oblige celui par la faute duquel il est arrivé à le réparer »</em>.'},
+    {t:'Préjudice',d:'Certain + direct + personnel + licite. Types : matériel, corporel, moral.'},
+    {t:'Force majeure',d:'Imprévisible + irrésistible + extérieur. Cause d\'exonération totale.'},
+    {t:'Responsabilité des commettants (art. 1242)',d:'L\'employeur est responsable de son salarié dans l\'exercice de ses fonctions. Responsabilité de plein droit.'},
+    {t:'Gardien d\'une chose',d:'Pouvoir d\'<b>usage, direction et contrôle</b> sur la chose.'},
+  ],
+  flashcards:[
+    {q:'3 conditions de la responsabilité du fait personnel ?',a:'1) Une <b>faute</b><br>2) Un <b>préjudice</b><br>3) Un <b>lien de causalité</b>'},
+    {q:'4 caractères du préjudice ?',a:'<b>Certain</b> + <b>direct</b> + <b>personnel</b> + <b>licite</b>'},
+    {q:'3 conditions de la garde d\'une chose ?',a:'Pouvoir d\'<b>usage</b> + de <b>direction</b> + de <b>contrôle</b>'},
+    {q:'Force majeure : 3 conditions ?',a:'<b>Imprévisible</b> + <b>irrésistible</b> + <b>extérieur</b>'},
+  ],
+  qcm:[
+    {q:'La responsabilité du fait personnel repose sur :',opts:['A. Art. 1240','B. Art. 1242','C. Art. 1243','D. Art. 1244'],correct:0,expl:'Art. 1240 : responsabilité du fait personnel.'},
+    {q:'La force majeure exonère totalement si elle est :',opts:['A. Grave et imminente','B. Imprévisible, irrésistible et extérieure','C. Économique uniquement','D. Postérieure au dommage'],correct:1,expl:'3 conditions cumulatives.'},
+    {q:'Le gardien d\'une chose est celui qui a :',opts:['A. La propriété','B. Le pouvoir d\'usage, direction et contrôle','C. La possession matérielle uniquement','D. Un contrat d\'assurance'],correct:1,expl:'Garde = usage + direction + contrôle.'},
+  ],
+  cas:{
+    contexte:'M. Duval (salarié livreur) provoque un accident avec le camion de son employeur pendant ses heures de travail, causant 30 000 € à M. Petit. Un chien de Mme Garnier blesse un enfant dans son jardin.',
+    questions:['<b>Q1</b> : Qui est responsable des dommages de M. Petit ?','<b>Q2</b> : Mme Garnier est-elle responsable ?'],
+    correction:`Q1 — Responsabilité envers M. Petit :
+RESPONSABILITÉ DES COMMETTANTS (art. 1242 al. 5). Lien de subordination (M. Duval = salarié = préposé). Dommage pendant les heures de travail. L'employeur est responsable de plein droit. M. Duval est exonéré personnellement (arrêt COSTEDOAT) car acte dans l'exercice normal des fonctions.
+
+Q2 — Responsabilité de Mme Garnier :
+RESPONSABILITÉ DU FAIT DES ANIMAUX (art. 1243). Mme Garnier est propriétaire et avait la garde du chien. Responsabilité de plein droit. Exonération uniquement par force majeure, fait de la victime ou fait d'un tiers.`
+  }
+},
+
+{
+  id:'4.2', partie:'P4 — Les responsabilités', title:'Les responsabilités spéciales',
+  cours:`<h3>I. Produits défectueux (loi 19 mai 1998, art. 1245 C. civ.)</h3>
+<p>Transposition directive européenne <b>25 juillet 1985</b>. S'applique aux produits mis en circulation après le <b>30 mai 1998</b>.</p>
+<h4>Conditions</h4>
+<ul>
+<li><b>Producteur</b> : fabricant, importateur, ou distributeur (si producteur non identifiable sous 3 mois)</li>
+<li><b>Défaut de sécurité</b> : le produit n'offre pas la sécurité à laquelle on peut légitimement s'attendre</li>
+<li><b>Dommage</b> : mort/blessure + dommage à un bien (> 500 €)</li>
+</ul>
+<h4>Exonérations</h4>
+<ul>
+<li><b>Risque de développement</b> : état des connaissances ne permettait pas de déceler le défaut</li>
+<li>Défaut inexistant lors de la mise en circulation</li>
+</ul>
+<p><b>Prescription</b> : 3 ans (connaissance). <b>Forclusion</b> : 10 ans (mise en circulation).</p>
+<h3>II. Responsabilité pénale des personnes morales</h3>
+<p>PM (sauf État) responsables des infractions commises pour leur compte par leurs <b>organes ou représentants</b>. Amende <b>× 5</b> par rapport aux PP. Autres sanctions : dissolution, interdiction d'activité, fermeture, exclusion des marchés publics.</p>
+<h3>III. Responsabilité des dirigeants sociaux</h3>
+<p><b>Abus de biens sociaux (ABS)</b> : usage des biens/crédit de la société dans un intérêt personnel. Sanction : <b>5 ans + 375 000 €</b>.</p>
+<h3>IV. Responsabilité administrative</h3>
+<ul>
+<li><b>Faute de service</b> : le service public fonctionne mal → collectivité responsable → Tribunal administratif</li>
+<li><b>Faute personnelle</b> : acte détachable du service, intérêt personnel → fonctionnaire responsable → Tribunal judiciaire</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Produits défectueux</b> : directive 25 juil. 1985 ; loi 19 mai 1998</li>
+<li><b>Risque de développement</b> : cause d\'exonération</li>
+<li><b>Prescription</b> : 3 ans ; <b>forclusion</b> : 10 ans</li>
+<li><b>Responsabilité PM</b> : amende × 5, dissolution…</li>
+<li><b>ABS</b> : 5 ans + 375 000 €</li>
+<li><b>Faute de service</b> (collectivité) vs <b>faute personnelle</b> (fonctionnaire)</li>
+</ul></div>`,
+  vocab:[
+    {t:'Produit défectueux',d:'Produit n\'offrant pas la sécurité à laquelle on peut légitimement s\'attendre.'},
+    {t:'Risque de développement',d:'Cause d\'exonération : état des connaissances scientifiques ne permettait pas de déceler le défaut.'},
+    {t:'Responsabilité pénale PM',d:'PM (sauf État) : infractions commises pour leur compte par organes ou représentants. Amende × 5.'},
+    {t:'Abus de biens sociaux (ABS)',d:'Usage des biens de la société dans un intérêt personnel. Sanction : <b>5 ans + 375 000 €</b>.'},
+    {t:'Faute de service',d:'Le service public fonctionne mal → collectivité responsable → Tribunal administratif.'},
+    {t:'Faute personnelle',d:'Acte détachable du service, intérêt personnel → fonctionnaire responsable → Tribunal judiciaire.'},
+  ],
+  flashcards:[
+    {q:'Directive sur les produits défectueux ?',a:'<b>25 juillet 1985</b>. Loi française : <b>19 mai 1998</b>.'},
+    {q:'Délais produits défectueux ?',a:'Prescription : <b>3 ans</b> (connaissance). Forclusion : <b>10 ans</b> (mise en circulation).'},
+    {q:'Sanction de l\'ABS ?',a:'<b>5 ans + 375 000 €</b>.'},
+    {q:'Faute de service vs faute personnelle ?',a:'<b>Service</b> : collectivité, TA.<br><b>Personnelle</b> : fonctionnaire, TJ.'},
+  ],
+  qcm:[
+    {q:'La loi sur les produits défectueux date du :',opts:['A. 25 juillet 1985','B. 30 mai 1998','C. 19 mai 1998','D. 10 février 2016'],correct:2,expl:'Loi du 19 mai 1998 (directive 25 juillet 1985).'},
+    {q:'L\'ABS est puni de :',opts:['A. 3 ans + 45 000 €','B. 5 ans + 375 000 €','C. 10 ans + 1 500 000 €','D. 1 an + 15 000 €'],correct:1,expl:'5 ans + 375 000 €.'},
+    {q:'La faute de service est jugée par :',opts:['A. Le tribunal judiciaire','B. Le tribunal de commerce','C. La Cour de cassation','D. Le tribunal administratif'],correct:3,expl:'Faute de service → tribunal administratif.'},
+  ],
+  cas:{
+    contexte:'La société Pharma commercialise depuis 5 ans un médicament aux effets secondaires graves non décelables lors de la mise sur le marché. Le PDG a utilisé un compte société pour financer ses vacances personnelles (50 000 €).',
+    questions:['<b>Q1</b> : Pharma peut-elle être exonérée pour le médicament défectueux ?','<b>Q2</b> : Le PDG a-t-il commis une infraction ?'],
+    correction:`Q1 — Exonération de Pharma :
+RISQUE DE DÉVELOPPEMENT (art. 1245-10) : au moment de la mise en circulation, l'état des connaissances ne permettait pas de déceler cet effet secondaire. Si Pharma peut le prouver, elle sera exonérée. Délai : prescription 3 ans (connaissance), forclusion 10 ans (mise en circulation) → 5 ans < 10 ans, la forclusion n'est pas atteinte.
+
+Q2 — Infraction du PDG :
+ABUS DE BIENS SOCIAUX : usage des biens de la société (50 000 €) dans l'intérêt personnel du PDG. Sanction : 5 ans d'emprisonnement + 375 000 € d'amende. Responsabilité personnelle du PDG uniquement (bénéfice de l'ABS pour lui-même).`
+  }
+},
+
+];
+
+// ============================================================
+// APPLICATION LOGIC
+// ============================================================
+let currentCh = null;
+let currentMode = 'cours';
+let flashIdx = 0;
+let flashFlipped = false;
+let qcmAnswered = {};
+
+function buildNav() {
+  const tree = document.getElementById('nav-tree');
+  const parties = {};
+  CHAPTERS.forEach(ch => {
+    if (!parties[ch.partie]) parties[ch.partie] = [];
+    parties[ch.partie].push(ch);
+  });
+  Object.entries(parties).forEach(([p, chs]) => {
+    const g = document.createElement('div');
+    g.className = 'partie-group';
+    g.innerHTML = `<div class="partie-label">${p}</div>`;
+    chs.forEach(ch => {
+      const b = document.createElement('button');
+      b.className = 'ch-btn';
+      b.id = 'nav-' + ch.id;
+      b.innerHTML = `<span class="ch-id">${ch.id}</span>${ch.title}`;
+      b.onclick = () => loadChapter(ch.id);
+      g.appendChild(b);
+    });
+    tree.appendChild(g);
+  });
+}
+
+function loadChapter(id) {
+  currentCh = CHAPTERS.find(c => c.id === id);
+  flashIdx = 0; flashFlipped = false; qcmAnswered = {};
+  document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+  const nb = document.getElementById('nav-' + id);
+  if (nb) { nb.classList.add('active'); nb.scrollIntoView({block:'nearest'}); }
+  document.getElementById('chapter-title-bar').textContent = currentCh.title;
+  renderMode();
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+function setMode(m) {
+  currentMode = m;
+  const labels = {cours:'📖 Cours', vocab:'📚 Vocabulaire', flash:'🃏 Flashcards', qcm:'✅ QCM', cas:'✍️ Cas pratique'};
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === labels[m]);
+  });
+  document.querySelectorAll('.mob-mode-btn').forEach(b => {
+    const txt = b.querySelector('.mob-icon')?.nextSibling?.textContent?.trim() || '';
+    const map = {Cours:'cours', Vocab:'vocab', Flash:'flash', QCM:'qcm', Cas:'cas'};
+    b.classList.toggle('active', map[txt] === m);
+  });
+  flashIdx = 0; flashFlipped = false; qcmAnswered = {};
+  renderMode();
+}
+
+function renderMode() {
+  const c = document.getElementById('content');
+  if (!currentCh) { renderWelcome(); return; }
+  c.className = '';
+  c.innerHTML = '';
+  void c.offsetWidth;
+  c.classList.add('fade-up');
+  const header = `<div class="section-header">
+    <div class="partie-tag">${currentCh.partie}</div>
+    <div class="ch-id-tag">${currentCh.id}</div>
+    <h2>${currentCh.title}</h2>
+  </div>`;
+  if (currentMode === 'cours') c.innerHTML = header + `<div class="cours-body">${currentCh.cours}</div>`;
+  else if (currentMode === 'vocab') renderVocab(c, header);
+  else if (currentMode === 'flash') renderFlash(c, header);
+  else if (currentMode === 'qcm') renderQCM(c, header);
+  else if (currentMode === 'cas') renderCas(c, header);
+}
+
+function renderWelcome() {
+  const c = document.getElementById('content');
+  const total = CHAPTERS.length;
+  const totalQcm = CHAPTERS.reduce((a,ch)=>a+(ch.qcm||[]).length,0);
+  const totalFlash = CHAPTERS.reduce((a,ch)=>a+(ch.flashcards||[]).length,0);
+  const totalVocab = CHAPTERS.reduce((a,ch)=>a+(ch.vocab||[]).length,0);
+  c.innerHTML = `<div class="welcome-screen fade-up">
+    <h2>DCG1 Droit<br>Tout le programme</h2>
+    <p>Cours complets, vocabulaire juridique, flashcards, QCM et cas pratiques — tout le programme DCG1 pour réussir l'examen national.</p>
+    <div class="welcome-grid">
+      <div class="welcome-card"><div class="wc-num">${total}</div><div class="wc-label">Chapitres</div></div>
+      <div class="welcome-card"><div class="wc-num">${totalVocab}</div><div class="wc-label">Termes juridiques</div></div>
+      <div class="welcome-card"><div class="wc-num">${totalFlash}</div><div class="wc-label">Flashcards</div></div>
+      <div class="welcome-card"><div class="wc-num">${totalQcm}</div><div class="wc-label">Questions QCM</div></div>
+    </div>
+  </div>`;
+}
+
+function renderVocab(c, header) {
+  const terms = currentCh.vocab || [];
+  c.innerHTML = header +
+    `<div class="vocab-search"><input type="text" placeholder="Rechercher un terme..." id="vocab-input" oninput="filterVocab()" /></div>
+     <div class="vocab-count" id="vocab-count">${terms.length} terme${terms.length>1?'s':''}</div>
+     <div class="vocab-grid" id="vocab-grid"></div>`;
+  renderVocabCards(terms);
+}
+function renderVocabCards(terms) {
+  const grid = document.getElementById('vocab-grid');
+  if (!grid) return;
+  grid.innerHTML = terms.map((t,i) =>
+    `<div class="vocab-card" id="vc-${i}" onclick="toggleVocab(${i})">
+      <div class="vt">${t.t}</div>
+      <div class="vd">${t.d}</div>
+    </div>`).join('');
+}
+function filterVocab() {
+  const q = document.getElementById('vocab-input').value.toLowerCase();
+  const terms = (currentCh.vocab||[]).filter(t => t.t.toLowerCase().includes(q) || t.d.toLowerCase().includes(q));
+  document.getElementById('vocab-count').textContent = terms.length + ' terme' + (terms.length>1?'s':'');
+  renderVocabCards(terms);
+}
+function toggleVocab(i) {
+  const card = document.getElementById('vc-'+i);
+  if (card) card.classList.toggle('open');
+}
+
+function renderFlash(c, header) {
+  const cards = currentCh.flashcards || [];
+  if (!cards.length) { c.innerHTML = header + '<p style="color:var(--text-dim)">Pas de flashcards disponibles.</p>'; return; }
+  const pct = Math.round((flashIdx / cards.length) * 100);
+  const card = cards[flashIdx];
+  c.innerHTML = header +
+    `<div class="flash-counter">${flashIdx+1} / ${cards.length}</div>
+     <div class="flash-progress"><div class="flash-progress-bar" style="width:${pct}%"></div></div>
+     <p class="flash-hint">Cliquez sur la carte pour révéler la réponse</p>
+     <div class="flashcard-wrapper">
+       <div class="flashcard${flashFlipped?' flipped':''}" id="fc" onclick="flipCard()">
+         <div class="card-face front"><div class="card-label">Question</div><div class="card-text">${card.q}</div></div>
+         <div class="card-face back"><div class="card-label">Réponse</div><div class="card-text back-text">${card.a}</div></div>
+       </div>
+     </div>
+     <div class="flash-nav">
+       <button onclick="flashNav(-1)">← Précédente</button>
+       <button onclick="flashNav(1)">Suivante →</button>
+     </div>`;
+}
+function flipCard() {
+  flashFlipped = !flashFlipped;
+  const fc = document.getElementById('fc');
+  if (fc) fc.classList.toggle('flipped');
+}
+function flashNav(dir) {
+  const cards = currentCh.flashcards || [];
+  flashIdx = (flashIdx + dir + cards.length) % cards.length;
+  flashFlipped = false;
+  renderMode();
+}
+
+function renderQCM(c, header) {
+  const qs = currentCh.qcm || [];
+  if (!qs.length) { c.innerHTML = header + '<p style="color:var(--text-dim)">Pas de QCM disponible.</p>'; return; }
+  const answered = Object.keys(qcmAnswered).length;
+  const correct = Object.values(qcmAnswered).filter(v=>v.correct).length;
+  const scoreHtml = answered > 0 ? `<span class="qcm-score-badge">${correct}/${answered} correctes</span>` : '';
+  let html = header + `<div class="qcm-header"><span style="color:var(--text-dim);font-size:13px">${qs.length} questions</span>${scoreHtml}</div>`;
+  qs.forEach((q, qi) => {
+    const isAns = qcmAnswered[qi] !== undefined;
+    html += `<div class="qcm-q${isAns?' answered':''}" id="qblock-${qi}">
+      <div class="qcm-num">Q${qi+1}</div>
+      <div class="qcm-q-text">${q.q}</div>
+      <div class="opt-list">
+        ${q.opts.map((o,oi)=>{
+          let cls = '';
+          if (isAns) {
+            if (oi === q.correct) cls = 'correct';
+            else if (qcmAnswered[qi]?.chosen === oi) cls = 'wrong';
+          }
+          return `<button class="opt-btn ${cls}" ${isAns?'disabled':''} onclick="answerQCM(${qi},${oi})">${o}</button>`;
+        }).join('')}
+      </div>
+      <div class="expl-box${isAns?' show':''}">${q.expl}</div>
+    </div>`;
+  });
+  html += `<button class="qcm-reset" onclick="resetQCM()">🔄 Recommencer</button>`;
+  c.innerHTML = html;
+}
+function answerQCM(qi, chosen) {
+  const q = currentCh.qcm[qi];
+  qcmAnswered[qi] = { chosen, correct: chosen === q.correct };
+  renderMode();
+  setTimeout(() => {
+    const el = document.getElementById('qblock-'+qi);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }, 100);
+}
+function resetQCM() { qcmAnswered = {}; renderMode(); }
+
+function renderCas(c, header) {
+  const cas = currentCh.cas;
+  if (!cas) { c.innerHTML = header + '<p style="color:var(--text-dim)">Pas de cas pratique disponible.</p>'; return; }
+  const qs = cas.questions || [];
+  c.innerHTML = header +
+    `<div class="metho-box">
+      <h4>🔑 Méthode du cas pratique (4 étapes)</h4>
+      <div class="metho-steps">
+        <div class="metho-step"><div class="step-num">01</div><div class="step-title">Faits qualifiés</div><div class="step-desc">Extraire et qualifier juridiquement les faits</div></div>
+        <div class="metho-step"><div class="step-num">02</div><div class="step-title">Problème de droit</div><div class="step-desc">Phrase interrogative générale</div></div>
+        <div class="metho-step"><div class="step-num">03</div><div class="step-title">Règle de droit</div><div class="step-desc">Définitions + principe + exceptions + sanctions</div></div>
+        <div class="metho-step"><div class="step-num">04</div><div class="step-title">Application aux faits</div><div class="step-desc">Commence par « En l'espèce… »</div></div>
+      </div>
+    </div>
+    <div class="cas-context"><h4>📋 Contexte</h4><p>${cas.contexte}</p></div>
+    ${qs.map(q=>`<div class="cas-q-block"><h4>${q}</h4><textarea placeholder="Rédigez votre réponse en utilisant les 4 étapes de la méthode..."></textarea></div>`).join('')}
+    <button class="corr-toggle-btn" onclick="toggleCorr(this)">👁 Afficher le corrigé</button>
+    <div class="corr-body" id="corr-body">${cas.correction}</div>`;
+}
+function toggleCorr(btn) {
+  const body = document.getElementById('corr-body');
+  const show = body.classList.toggle('show');
+  btn.textContent = show ? '🙈 Masquer le corrigé' : '👁 Afficher le corrigé';
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// Init
+buildNav();
+renderWelcome();
+setMode('cours');
+</script>
+</body>
+</html>
