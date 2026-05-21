@@ -2817,14 +2817,110 @@ function closeSidebar() {
 
 (function injectQCMStyles() {
   const s = document.createElement('style');
-  s.textContent = `
-    .qcm-opt.correct { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
-    .qcm-opt.wrong   { background: #fee2e2 !important; border-color: #ef4444 !important; color: #7f1d1d !important; }
-    .cas-correction { margin-top:1rem; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; }
-    .vocab-def { display:none; padding:.5rem .75rem; background:rgba(255,255,255,0.05); border-radius:6px; margin-top:.3rem; font-size:.9em; }
-    .welcome-screen { text-align:center; padding:3rem 1rem; }
-    .welcome-icon { font-size:3rem; margin-bottom:1rem; }
-  `;
+  s.textContent = /* Styles pour les titres des grandes sections de la Sidebar */
+  .nav-part-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+    padding: 20px 16px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    margin-bottom: 5px;
+  }
+
+  /* Styles pour les liens/boutons de chapitres dans la Sidebar */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13.5px;
+    padding: 10px 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all .15s ease;
+    border-left: 3px solid transparent;
+    line-height: 1.4;
+  }
+
+  .nav-item:hover {
+    background: var(--bg3);
+    color: var(--text);
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--accent2);
+    border-left-color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Amélioration de l'interface des QCM */
+  .qcm-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .qcm-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .qcm-q {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .qcm-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .qcm-opt {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text-dim);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    transition: all .2s ease;
+    width: 100%;
+  }
+  .qcm-opt:not(:disabled):hover {
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .qcm-opt.correct { 
+    background: rgba(74, 222, 128, 0.15) !important; 
+    border-color: var(--green) !important; 
+    color: #4ade80 !important; 
+    font-weight: 600;
+  }
+  .qcm-opt.wrong { 
+    background: rgba(248, 113, 113, 0.15) !important; 
+    border-color: var(--red) !important; 
+    color: #f87171 !important; 
+  }
+
+  /* Conteneurs spécifiques et fiches */
+  .cas-correction { margin-top:1rem; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; }
+  .vocab-def { display:none; padding:.5rem .75rem; background:rgba(255,255,255,0.05); border-radius:6px; margin-top:.3rem; font-size:.9em; }
+  .welcome-screen { text-align:center; padding:5rem 1rem; max-width: 600px; margin: 0 auto; }
+  .welcome-icon { font-size:4rem; margin-bottom:1.5rem; }
+  .welcome-screen h2 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 12px; color: var(--text); }
+  .welcome-screen p { color: var(--text-dim); line-height: 1.6; };
   document.head.appendChild(s);
 })();
 
