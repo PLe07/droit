@@ -3,13 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DCG1 — Droit | Révisions complètes</title>
+<title>DCG Hub | Droit & Comptabilité</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   DESIGN SYSTEM
+   DESIGN SYSTEM & THEMES
    ============================================================ */
 :root {
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,.45);
+  --sidebar-w: 285px;
+}
+
+body.theme-droit {
   --bg:        #0f0f14;
   --bg2:       #161620;
   --bg3:       #1e1e2e;
@@ -24,13 +30,28 @@
   --text:      #e8e8f0;
   --text-dim:  #8888aa;
   --text-mute: #555570;
-  --radius:    10px;
-  --shadow:    0 4px 24px rgba(0,0,0,.45);
-  --sidebar-w: 280px;
+  --box-accent:#a78bfa;
+}
+
+body.theme-compta {
+  --bg:        #0d1117;
+  --bg2:       #141b22;
+  --bg3:       #1c2530;
+  --border:    #253040;
+  --border2:   #334455;
+  --accent:    #22c55e;
+  --accent2:   #4ade80;
+  --gold:      #f0c040;
+  --blue:      #60a5fa;
+  --red:       #f87171;
+  --orange:    #fb923c;
+  --text:      #e2e8f0;
+  --text-dim:  #8899aa;
+  --text-mute: #445566;
+  --box-accent:#60a5fa;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 html { font-size: 16px; }
 
 body {
@@ -40,617 +61,239 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ============================================================
-   TOPBAR
+   TOPBAR & SUBJECT SELECTOR
    ============================================================ */
 #topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   height: 56px;
-  background: rgba(15,15,20,.92);
+  background: var(--bg);
+  opacity: 0.96;
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 14px;
   padding: 0 18px;
+  transition: border-color 0.3s, background 0.3s;
 }
 
 #hamburger {
   background: none; border: none; cursor: pointer;
   color: var(--text-dim); font-size: 22px;
-  display: none;
-  padding: 4px;
+  display: none; padding: 4px;
 }
 
-.brand {
+.subject-selector {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--accent2);
   font-family: 'Playfair Display', serif;
-  font-size: 19px;
-  color: var(--text);
-  letter-spacing: -.01em;
-}
-.brand span { color: var(--accent2); }
-
-.mode-bar {
-  display: flex; gap: 4px;
-  margin-left: auto;
-}
-.mode-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 13px;
-  padding: 5px 11px;
-  border-radius: 20px;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all .2s;
-  white-space: nowrap;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.subject-selector:focus { border-color: var(--accent); }
+
+.mode-bar { display: flex; gap: 4px; margin-left: auto; }
+.mode-btn {
+  background: none; border: 1px solid transparent; color: var(--text-dim);
+  font-family: 'Source Sans 3', sans-serif; font-size: 13px;
+  padding: 5px 11px; border-radius: 20px; cursor: pointer; transition: all .2s; white-space: nowrap;
 }
 .mode-btn:hover { color: var(--text); background: var(--bg3); }
 .mode-btn.active {
   color: var(--accent2);
-  background: rgba(108,99,255,.15);
-  border-color: rgba(108,99,255,.4);
+  background: rgba(255,255,255,0.08);
+  border-color: var(--accent);
 }
 
 #chapter-title-bar {
   font-size: 13px; color: var(--text-dim);
-  max-width: 220px; overflow: hidden;
-  text-overflow: ellipsis; white-space: nowrap;
+  max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
 /* ============================================================
    LAYOUT
    ============================================================ */
-#overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 199;
-  background: rgba(0,0,0,.6);
-}
+#overlay { display: none; position: fixed; inset: 0; z-index: 199; background: rgba(0,0,0,.6); }
 #overlay.show { display: block; }
 
 #sidebar {
-  position: fixed; top: 56px; left: 0; bottom: 0;
-  width: var(--sidebar-w);
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  overflow-y: auto; overflow-x: hidden;
-  z-index: 200;
-  transition: transform .28s cubic-bezier(.4,0,.2,1);
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
+  position: fixed; top: 56px; left: 0; bottom: 0; width: var(--sidebar-w);
+  background: var(--bg2); border-right: 1px solid var(--border);
+  overflow-y: auto; overflow-x: hidden; z-index: 200;
+  transition: transform .28s cubic-bezier(.4,0,.2,1), background 0.3s, border-color 0.3s;
+  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
 }
-
 #sidebar::-webkit-scrollbar { width: 4px; }
-#sidebar::-webkit-scrollbar-track { background: transparent; }
 #sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 
 #main {
-  margin-top: 56px;
-  margin-left: var(--sidebar-w);
-  padding: 32px 40px 80px;
-  max-width: 900px;
-  min-height: calc(100vh - 56px);
+  margin-top: 56px; margin-left: var(--sidebar-w); padding: 32px 40px 80px;
+  max-width: 920px; min-height: calc(100vh - 56px);
 }
 
 /* ============================================================
    SIDEBAR NAV
    ============================================================ */
 #nav-tree { padding: 12px 0 24px; }
-
 .partie-group { margin-bottom: 6px; }
-
-.partie-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-  padding: 16px 16px 6px;
-}
-
+.partie-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-mute); padding: 16px 16px 6px; }
 .ch-btn {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%;
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 13.5px;
-  padding: 8px 16px;
-  text-align: left;
-  cursor: pointer;
-  transition: all .15s;
-  border-left: 3px solid transparent;
-  line-height: 1.35;
+  display: flex; align-items: center; gap: 10px; width: 100%; background: none; border: none;
+  color: var(--text-dim); font-family: 'Source Sans 3', sans-serif; font-size: 13.5px;
+  padding: 8px 16px; text-align: left; cursor: pointer; transition: all .15s;
+  border-left: 3px solid transparent; line-height: 1.35;
 }
 .ch-btn:hover { background: var(--bg3); color: var(--text); }
-.ch-btn.active {
-  background: rgba(108,99,255,.12);
-  color: var(--accent2);
-  border-left-color: var(--accent);
-}
-
-.ch-id {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  background: var(--bg3);
-  color: var(--text-mute);
-  padding: 2px 5px;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-.ch-btn.active .ch-id { background: rgba(108,99,255,.2); color: var(--accent2); }
+.ch-btn.active { background: rgba(255,255,255,0.05); color: var(--accent2); border-left-color: var(--accent); }
+.ch-id { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg3); color: var(--text-mute); padding: 2px 5px; border-radius: 4px; flex-shrink: 0; }
+.ch-btn.active .ch-id { background: rgba(255,255,255,0.1); color: var(--accent2); }
 
 /* ============================================================
    ANIMATIONS
    ============================================================ */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fadeUp .35s ease both; }
 
 /* ============================================================
    SECTION HEADER
    ============================================================ */
-.section-header {
-  display: flex; align-items: center; gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-}
-.section-header h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 26px;
-  color: var(--text);
-  line-height: 1.2;
-  width: 100%;
-}
-.partie-tag {
-  font-size: 11px; font-weight: 600;
-  background: rgba(108,99,255,.15);
-  color: var(--accent2);
-  padding: 3px 9px; border-radius: 20px;
-  letter-spacing: .03em;
-}
-.ch-id-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  background: var(--bg3);
-  color: var(--text-dim);
-  padding: 3px 8px; border-radius: 5px;
-}
+.section-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.section-header h2 { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--text); line-height: 1.2; width: 100%; }
+.partie-tag { font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.08); color: var(--accent2); padding: 3px 9px; border-radius: 20px; letter-spacing: .03em; }
+.ch-id-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--bg3); color: var(--text-dim); padding: 3px 8px; border-radius: 5px; }
 
 /* ============================================================
-   COURS BODY
+   COURS BODY & COMPONENTS
    ============================================================ */
 .cours-body { line-height: 1.7; }
-
-.cours-body h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 19px;
-  color: var(--accent2);
-  margin: 28px 0 12px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
-}
-.cours-body h4 {
-  font-size: 15px; font-weight: 700;
-  color: var(--text);
-  margin: 18px 0 8px;
-}
+.cours-body h3 { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--accent2); margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.cours-body h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 18px 0 8px; }
 .cours-body p { margin-bottom: 12px; color: var(--text); }
 .cours-body b { color: #fff; }
 .cours-body em { color: var(--accent2); font-style: italic; }
 .cours-body ul { padding-left: 20px; margin-bottom: 14px; }
 .cours-body li { margin-bottom: 5px; color: var(--text); }
 
-.cours-body table {
-  width: 100%; border-collapse: collapse;
-  margin: 16px 0 20px;
-  font-size: 14px;
-}
-.cours-body th {
-  background: var(--bg3);
-  color: var(--accent2);
-  font-size: 12px; font-weight: 600; letter-spacing: .04em;
-  text-transform: uppercase;
-  padding: 9px 12px;
-  text-align: left;
-  border: 1px solid var(--border);
-}
-.cours-body td {
-  padding: 9px 12px;
-  border: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: top;
-}
+/* Tables Classiques */
+.cours-body table { width: 100%; border-collapse: collapse; margin: 16px 0 20px; font-size: 14px; }
+.cours-body th { background: var(--bg3); color: var(--accent2); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 9px 12px; text-align: left; border: 1px solid var(--border); }
+.cours-body td { padding: 9px 12px; border: 1px solid var(--border); color: var(--text); vertical-align: top; }
 .cours-body tr:nth-child(even) td { background: rgba(255,255,255,.02); }
 
-.quote {
-  border-left: 3px solid var(--accent);
-  background: rgba(108,99,255,.08);
-  padding: 12px 16px;
-  border-radius: 0 8px 8px 0;
-  margin: 14px 0;
-  font-style: italic;
-  color: var(--text);
-  font-size: 15px;
-}
-.warn-box {
-  background: rgba(251,146,60,.08);
-  border: 1px solid rgba(251,146,60,.3);
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: var(--orange);
-  font-size: 14px;
-  margin: 12px 0;
-}
-.danger-box {
-  background: rgba(248,113,113,.08);
-  border: 1px solid rgba(248,113,113,.3);
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: var(--red);
-  font-size: 14px;
-  margin: 12px 0;
-}
-.retain-box {
-  background: rgba(74,222,128,.05);
-  border: 1px solid rgba(74,222,128,.25);
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin: 22px 0;
-}
-.retain-box h3 {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--green);
-  margin: 0 0 10px;
-  padding: 0; border: none;
-}
+/* Tables Compta Spécifiques */
+.compta-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.compta-table th { background: var(--bg3); color: var(--box-accent); padding: 8px 14px; border: 1px solid var(--border); text-align: center; }
+.compta-table td { padding: 7px 14px; border: 1px solid var(--border); text-align: right; color: var(--text); }
+.compta-table td:first-child { text-align: left; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text-dim); }
+.compta-table td.debit { color: var(--red); }
+.compta-table td.credit { color: var(--accent2); }
+
+/* Boxes */
+.quote { border-left: 3px solid var(--accent); background: rgba(255,255,255,0.04); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; font-style: italic; color: var(--text); font-size: 15px; }
+.warn-box { background: rgba(251,146,60,.08); border: 1px solid rgba(251,146,60,.3); border-radius: 8px; padding: 10px 14px; color: var(--orange); font-size: 14px; margin: 12px 0; }
+.danger-box { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.3); border-radius: 8px; padding: 10px 14px; color: var(--red); font-size: 14px; margin: 12px 0; }
+.retain-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 10px; padding: 16px 20px; margin: 22px 0; }
+.retain-box h3 { font-family: 'Source Sans 3', sans-serif; font-size: 14px; font-weight: 700; color: var(--box-accent); margin: 0 0 10px; padding: 0; border: none; }
 .retain-box ul { padding-left: 18px; margin: 0; }
 .retain-box li { font-size: 14px; margin-bottom: 4px; }
+.formula-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 8px; padding: 14px 18px; margin: 14px 0; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--box-accent); line-height: 1.8; }
 
 /* ============================================================
-   VOCAB
+   VOCABULAIRE
    ============================================================ */
 .vocab-search { margin-bottom: 12px; }
-.vocab-search input {
-  width: 100%; max-width: 400px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  padding: 9px 14px;
-  outline: none;
-  transition: border-color .2s;
-}
+.vocab-search input { width: 100%; max-width: 400px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: 'Source Sans 3', sans-serif; font-size: 14px; padding: 9px 14px; outline: none; transition: border-color .2s; }
 .vocab-search input:focus { border-color: var(--accent); }
 .vocab-search input::placeholder { color: var(--text-mute); }
-
-.vocab-count {
-  font-size: 12px; color: var(--text-mute);
-  margin-bottom: 16px;
-}
-
-.vocab-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-}
-.vocab-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  cursor: pointer;
-  transition: all .2s;
-  overflow: hidden;
-}
-.vocab-card:hover { border-color: var(--border2); background: #22223a; }
-.vocab-card .vt {
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--accent2);
-  margin-bottom: 6px;
-  display: flex; align-items: center; gap: 6px;
-}
-.vocab-card .vt::after {
-  content: '▸';
-  font-size: 11px; color: var(--text-mute);
-  margin-left: auto;
-  transition: transform .2s;
-}
+.vocab-count { font-size: 12px; color: var(--text-mute); margin-bottom: 16px; }
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.vocab-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: all .2s; overflow: hidden; }
+.vocab-card:hover { border-color: var(--border2); background: rgba(255,255,255,0.05); }
+.vocab-card .vt { font-weight: 700; font-size: 15px; color: var(--accent2); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.vocab-card .vt::after { content: '▸'; font-size: 11px; color: var(--text-mute); margin-left: auto; transition: transform .2s; }
 .vocab-card.open .vt::after { transform: rotate(90deg); }
-.vocab-card .vd {
-  font-size: 14px;
-  color: var(--text-dim);
-  line-height: 1.5;
-  display: none;
-}
+.vocab-card .vd { font-size: 14px; color: var(--text-dim); line-height: 1.5; display: none; }
 .vocab-card.open .vd { display: block; }
 
 /* ============================================================
    FLASHCARDS
    ============================================================ */
-.flash-counter {
-  text-align: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  color: var(--text-dim);
-  margin-bottom: 10px;
-}
-.flash-progress {
-  background: var(--bg3);
-  border-radius: 4px; height: 4px;
-  margin-bottom: 8px; overflow: hidden;
-}
-.flash-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 4px;
-  transition: width .3s ease;
-}
-.flash-hint {
-  text-align: center; font-size: 12px;
-  color: var(--text-mute);
-  margin-bottom: 20px;
-}
-.flashcard-wrapper {
-  perspective: 1200px;
-  margin: 0 auto 22px;
-  max-width: 640px;
-  height: 220px;
-}
-.flashcard {
-  width: 100%; height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform .5s cubic-bezier(.4,0,.2,1);
-  cursor: pointer;
-}
+.flash-counter { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+.flash-progress { background: var(--bg3); border-radius: 4px; height: 4px; margin-bottom: 8px; overflow: hidden; }
+.flash-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width .3s ease; }
+.flash-hint { text-align: center; font-size: 12px; color: var(--text-mute); margin-bottom: 20px; }
+.flashcard-wrapper { perspective: 1200px; margin: 0 auto 22px; max-width: 640px; height: 220px; }
+.flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .5s cubic-bezier(.4,0,.2,1); cursor: pointer; }
 .flashcard.flipped { transform: rotateY(180deg); }
-.card-face {
-  position: absolute; inset: 0;
-  backface-visibility: hidden;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 28px 32px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  text-align: center;
-}
-.card-face.front {
-  background: linear-gradient(135deg, var(--bg2), var(--bg3));
-}
-.card-face.back {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  transform: rotateY(180deg);
-  border-color: rgba(108,99,255,.4);
-}
-.card-label {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-mute);
-  margin-bottom: 14px;
-}
-.card-text {
-  font-size: 16px; line-height: 1.6;
-  color: var(--text);
-}
-.back-text { color: var(--text); }
-
-.flash-nav {
-  display: flex; justify-content: center; gap: 12px;
-}
-.flash-nav button {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  padding: 9px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all .2s;
-}
+.card-face { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px 32px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
+.card-face.front { background: linear-gradient(135deg, var(--bg2), var(--bg3)); }
+.card-face.back { background: var(--bg); transform: rotateY(180deg); border-color: rgba(255,255,255,0.3); }
+.card-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-mute); margin-bottom: 14px; }
+.card-text { font-size: 16px; line-height: 1.6; color: var(--text); }
+.flash-nav { display: flex; justify-content: center; gap: 12px; }
+.flash-nav button { background: var(--bg3); border: 1px solid var(--border2); color: var(--text-dim); font-family: 'Source Sans 3', sans-serif; font-size: 14px; padding: 9px 20px; border-radius: 8px; cursor: pointer; transition: all .2s; }
 .flash-nav button:hover { background: var(--bg2); color: var(--text); border-color: var(--accent); }
 
 /* ============================================================
    QCM
    ============================================================ */
-.qcm-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 20px;
-}
-.qcm-score-badge {
-  background: rgba(74,222,128,.15);
-  color: var(--green);
-  border: 1px solid rgba(74,222,128,.3);
-  border-radius: 20px;
-  font-size: 13px; font-weight: 600;
-  padding: 3px 12px;
-}
-.qcm-q {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  margin-bottom: 14px;
-  transition: border-color .2s;
-}
+.qcm-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.qcm-score-badge { background: rgba(255,255,255,0.05); color: var(--accent2); border: 1px solid var(--accent); border-radius: 20px; font-size: 13px; font-weight: 600; padding: 3px 12px; }
+.qcm-q { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px; transition: border-color .2s; }
 .qcm-q.answered { border-color: var(--border2); }
-.qcm-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px; color: var(--accent2);
-  margin-bottom: 6px;
-}
+.qcm-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent2); margin-bottom: 6px; }
 .qcm-q-text { font-size: 15px; margin-bottom: 14px; font-weight: 600; color: var(--text); }
 .opt-list { display: flex; flex-direction: column; gap: 7px; }
-.opt-btn {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  padding: 9px 14px;
-  border-radius: 8px;
-  text-align: left;
-  cursor: pointer;
-  transition: all .2s;
-}
+.opt-btn { background: var(--bg2); border: 1px solid var(--border); color: var(--text-dim); font-family: 'Source Sans 3', sans-serif; font-size: 14px; padding: 9px 14px; border-radius: 8px; text-align: left; cursor: pointer; transition: all .2s; }
 .opt-btn:not(:disabled):hover { background: var(--bg3); color: var(--text); border-color: var(--accent); }
-.opt-btn.correct { background: rgba(74,222,128,.12); border-color: rgba(74,222,128,.5); color: var(--green); }
-.opt-btn.wrong   { background: rgba(248,113,113,.1);  border-color: rgba(248,113,113,.4); color: var(--red);   }
+.opt-btn.correct { background: rgba(74,222,128,.12); border-color: rgba(74,222,128,.5); color: #4ade80; }
+.opt-btn.wrong { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.4); color: var(--red); }
 .opt-btn:disabled { cursor: default; }
-
-.expl-box {
-  display: none; margin-top: 12px;
-  background: rgba(108,99,255,.08);
-  border-left: 3px solid var(--accent);
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
-  font-size: 14px; color: var(--text-dim);
-}
+.expl-box { display: none; margin-top: 12px; background: rgba(255,255,255,0.04); border-left: 3px solid var(--accent); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 14px; color: var(--text-dim); }
 .expl-box.show { display: block; }
-
-.qcm-reset {
-  background: none;
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  padding: 9px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: all .2s;
-}
+.qcm-reset { background: none; border: 1px solid var(--border2); color: var(--text-dim); font-family: 'Source Sans 3', sans-serif; font-size: 14px; padding: 9px 18px; border-radius: 8px; cursor: pointer; margin-top: 8px; transition: all .2s; }
 .qcm-reset:hover { color: var(--text); border-color: var(--text-dim); }
 
 /* ============================================================
-   CAS PRATIQUE
+   CAS PRATIQUE & EXERCICES
    ============================================================ */
-.metho-box {
-  background: rgba(167,139,250,.06);
-  border: 1px solid rgba(167,139,250,.25);
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 22px;
-}
-.metho-box h4 { font-size: 14px; color: var(--accent2); margin-bottom: 14px; }
+.metho-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 12px; padding: 18px 20px; margin-bottom: 22px; }
+.metho-box h4 { font-size: 14px; color: var(--box-accent); margin-bottom: 14px; }
 .metho-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-.metho-step {
-  background: var(--bg2);
-  border-radius: 8px;
-  padding: 12px 14px;
-}
-.step-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 22px; font-weight: 600;
-  color: rgba(108,99,255,.4);
-  line-height: 1;
-  margin-bottom: 4px;
-}
+.metho-step { background: var(--bg2); border-radius: 8px; padding: 12px 14px; }
+.step-num { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; color: rgba(255,255,255,0.2); line-height: 1; margin-bottom: 4px; }
 .step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .step-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
-
-.cas-context {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 18px;
-  margin-bottom: 20px;
-}
+.cas-context { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; }
 .cas-context h4 { font-size: 14px; color: var(--gold); margin-bottom: 8px; }
 .cas-context p { font-size: 15px; color: var(--text); line-height: 1.65; }
-
 .cas-q-block { margin-bottom: 18px; }
 .cas-q-block h4 { font-size: 15px; color: var(--text); margin-bottom: 8px; }
-.cas-q-block textarea {
-  width: 100%; min-height: 120px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  padding: 12px 14px;
-  resize: vertical; outline: none;
-  transition: border-color .2s;
-  line-height: 1.6;
-}
+.cas-q-block textarea { width: 100%; min-height: 120px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Source Sans 3', sans-serif; font-size: 14px; padding: 12px 14px; resize: vertical; outline: none; transition: border-color .2s; line-height: 1.6; }
 .cas-q-block textarea:focus { border-color: var(--accent); }
-
-.corr-toggle-btn {
-  background: none;
-  border: 1px solid var(--border2);
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 14px;
-  padding: 9px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 14px;
-  transition: all .2s;
-}
+.corr-toggle-btn { background: none; border: 1px solid var(--border2); color: var(--text-dim); font-family: 'Source Sans 3', sans-serif; font-size: 14px; padding: 9px 18px; border-radius: 8px; cursor: pointer; margin-bottom: 14px; transition: all .2s; }
 .corr-toggle-btn:hover { color: var(--text); border-color: var(--gold); }
-
-.corr-body {
-  display: none;
-  background: rgba(240,192,64,.04);
-  border: 1px solid rgba(240,192,64,.25);
-  border-radius: 10px;
-  padding: 20px 22px;
-  white-space: pre-wrap;
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--text);
-  font-family: 'Source Sans 3', sans-serif;
-}
+.corr-body { display: none; background: rgba(240,192,64,.04); border: 1px solid rgba(240,192,64,.25); border-radius: 10px; padding: 20px 22px; white-space: pre-wrap; font-size: 14px; line-height: 1.75; color: var(--text); font-family: 'Source Sans 3', sans-serif; }
 .corr-body.show { display: block; }
 
 /* ============================================================
    WELCOME SCREEN
    ============================================================ */
-.welcome-screen {
-  max-width: 600px;
-  padding: 20px 0;
-}
-.welcome-screen h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 36px; line-height: 1.15;
-  color: var(--text);
-  margin-bottom: 16px;
-}
-.welcome-screen p {
-  font-size: 16px; color: var(--text-dim);
-  line-height: 1.65; margin-bottom: 32px;
-}
-.welcome-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-.welcome-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 22px;
-  transition: border-color .2s;
-}
+.welcome-screen { max-width: 600px; padding: 20px 0; }
+.welcome-screen h2 { font-family: 'Playfair Display', serif; font-size: 36px; line-height: 1.15; color: var(--text); margin-bottom: 16px; }
+.welcome-screen p { font-size: 16px; color: var(--text-dim); line-height: 1.65; margin-bottom: 32px; }
+.welcome-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.welcome-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; transition: border-color .2s; }
 .welcome-card:hover { border-color: var(--border2); }
-.wc-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 38px; color: var(--accent2);
-  line-height: 1; margin-bottom: 4px;
-}
+.wc-num { font-family: 'Playfair Display', serif; font-size: 38px; color: var(--accent2); line-height: 1; margin-bottom: 4px; }
 .wc-label { font-size: 13px; color: var(--text-dim); }
 
 /* ============================================================
@@ -658,9 +301,7 @@ body {
    ============================================================ */
 @media (max-width: 768px) {
   #hamburger { display: block; }
-  #sidebar {
-    transform: translateX(-100%);
-  }
+  #sidebar { transform: translateX(-100%); }
   #sidebar.open { transform: translateX(0); }
   #main { margin-left: 0; padding: 20px 18px 60px; }
   .mode-bar { display: none; }
@@ -670,106 +311,53 @@ body {
   .metho-steps { grid-template-columns: 1fr 1fr; }
   .flashcard-wrapper { height: 190px; }
 }
-
 @media (max-width: 420px) {
   .welcome-grid { grid-template-columns: 1fr; }
 }
 
 /* ============================================================
-   MOBILE MODE BUTTONS (bottom bar on mobile)
+   MOBILE MODE BUTTONS
    ============================================================ */
-#mobile-modes {
-  display: none;
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
-  background: rgba(15,15,20,.96);
-  backdrop-filter: blur(14px);
-  border-top: 1px solid var(--border);
-  padding: 8px 10px 10px;
-  gap: 4px;
-  justify-content: space-around;
-}
-@media (max-width: 768px) {
-  #mobile-modes { display: flex; }
-}
-.mob-mode-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--text-dim);
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 11px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 2px;
-  transition: all .2s;
-}
+#mobile-modes { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 90; background: var(--bg); opacity: 0.96; backdrop-filter: blur(14px); border-top: 1px solid var(--border); padding: 8px 10px 10px; gap: 4px; justify-content: space-around; }
+@media (max-width: 768px) { #mobile-modes { display: flex; } }
+.mob-mode-btn { background: none; border: 1px solid transparent; color: var(--text-dim); font-family: 'Source Sans 3', sans-serif; font-size: 11px; padding: 6px 8px; border-radius: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: all .2s; }
 .mob-mode-btn:hover { color: var(--text); }
-.mob-mode-btn.active {
-  color: var(--accent2);
-  background: rgba(108,99,255,.15);
-  border-color: rgba(108,99,255,.35);
-}
+.mob-mode-btn.active { color: var(--accent2); background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); }
 .mob-icon { font-size: 16px; }
 </style>
 </head>
-<body>
+<body class="theme-droit">
 
-<!-- TOPBAR -->
 <header id="topbar">
   <button id="hamburger" onclick="toggleSidebar()">☰</button>
-  <div class="brand">DCG1 <span>Droit</span></div>
+  <select class="subject-selector" id="subject-selector" onchange="changeSubject(this.value)">
+    <option value="droit">⚖️ DCG Droit</option>
+    <option value="compta">📊 DCG Compta</option>
+  </select>
   <span id="chapter-title-bar">Sélectionnez un chapitre</span>
   <div class="mode-bar">
     <button class="mode-btn" onclick="setMode('cours')">📖 Cours</button>
     <button class="mode-btn" onclick="setMode('vocab')">📚 Vocabulaire</button>
     <button class="mode-btn" onclick="setMode('flash')">🃏 Flashcards</button>
     <button class="mode-btn" onclick="setMode('qcm')">✅ QCM</button>
-    <button class="mode-btn" onclick="setMode('cas')">✍️ Cas pratique</button>
+    <button class="mode-btn" onclick="setMode('cas')">✍️ Pratique</button>
   </div>
 </header>
 
-<!-- OVERLAY (mobile) -->
 <div id="overlay" onclick="closeSidebar()"></div>
+<nav id="sidebar"><div id="nav-tree"></div></nav>
+<main id="main"><div id="content"></div></main>
 
-<!-- SIDEBAR -->
-<nav id="sidebar">
-  <div id="nav-tree"></div>
-</nav>
-
-<!-- MAIN -->
-<main id="main">
-  <div id="content"></div>
-</main>
-
-<!-- MOBILE BOTTOM BAR -->
 <div id="mobile-modes">
-  <button class="mob-mode-btn" onclick="setMode('cours')">
-    <span class="mob-icon">📖</span>Cours
-  </button>
-  <button class="mob-mode-btn" onclick="setMode('vocab')">
-    <span class="mob-icon">📚</span>Vocab
-  </button>
-  <button class="mob-mode-btn" onclick="setMode('flash')">
-    <span class="mob-icon">🃏</span>Flash
-  </button>
-  <button class="mob-mode-btn" onclick="setMode('qcm')">
-    <span class="mob-icon">✅</span>QCM
-  </button>
-  <button class="mob-mode-btn" onclick="setMode('cas')">
-    <span class="mob-icon">✍️</span>Cas
-  </button>
+  <button class="mob-mode-btn" onclick="setMode('cours')"><span class="mob-icon">📖</span>Cours</button>
+  <button class="mob-mode-btn" onclick="setMode('vocab')"><span class="mob-icon">📚</span>Vocab</button>
+  <button class="mob-mode-btn" onclick="setMode('flash')"><span class="mob-icon">🃏</span>Flash</button>
+  <button class="mob-mode-btn" onclick="setMode('qcm')"><span class="mob-icon">✅</span>QCM</button>
+  <button class="mob-mode-btn" onclick="setMode('cas')"><span class="mob-icon">✍️</span>Pratique</button>
 </div>
 
 <script>
-// ============================================================
-// DONNÉES — DCG1 DROIT — PROGRAMME NATIONAL COMPLET
-// ============================================================
-const CHAPTERS = [
-
-// ============================================================
-// PARTIE 1 — INTRODUCTION GÉNÉRALE AU DROIT
-// ============================================================
+const DROIT_CHAPTERS = [
 {
   id:'1.1', partie:'P1 — Introduction générale au droit', title:'Introduction au droit',
   cours:`<h3>I. Les finalités du droit</h3>
@@ -844,7 +432,6 @@ Q3 — Silence de M. Dupont malgré le code de déontologie :
 • Sanction juridique : limitée. Il n'existe pas d'obligation légale générale de dénonciation des délits entre collègues. M. Dupont encourt principalement une sanction éthique/disciplinaire.`
   }
 },
-
 {
   id:'1.2', partie:'P1 — Introduction générale au droit', title:'Les sources du droit',
   cours:`<h3>I. Les sources internationales</h3>
@@ -941,7 +528,6 @@ Q3 — Contrôle de conventionnalité :
 OUI. Le contrôle de conventionnalité est exercé DIRECTEMENT par les juridictions ordinaires. Si la loi est contraire à un traité ratifié, le juge peut l'écarter. Cette voie est même plus directe que la QPC.`
   }
 },
-
 {
   id:'1.3', partie:'P1 — Introduction générale au droit', title:'La preuve des droits',
   cours:`<h3>I. L'objet et la charge de la preuve</h3>
@@ -967,7 +553,7 @@ OUI. Le contrôle de conventionnalité est exercé DIRECTEMENT par les juridicti
 <h4>L'acte authentique</h4>
 <p>Reçu par un <b>officier public</b> (notaire, officier d'état civil). L'<b>original</b> = la <b>minute</b> (conservée par l'officier). Les <b>copies</b> = les <b>expéditions</b>. Pour contester : <b>inscription en faux</b>.</p>
 <h4>L'acte sous signature privée (SSP)</h4>
-<p>Rédigé directement entre les parties. Doit être <b>signé</b>. Formalités :</p>
+<p>Rédigé directement entre parties. Doit être <b>signé</b>. Formalités :</p>
 <ul>
 <li><b>Contrat synallagmatique</b> : <b>formalité du double</b></li>
 <li><b>Acte unilatéral mentionnant une somme</b> : somme écrite <b>en toutes lettres</b></li>
@@ -1048,7 +634,6 @@ Q3 — Preuve de la vente à 700 € :
 700 € ≤ 1 500 € → preuve LIBRE. M. Lefebvre peut prouver par tout moyen : témoignages, relevés bancaires, SMS, photos, présomptions de fait. L'absence de facture n'est pas un obstacle.`
   }
 },
-
 {
   id:'1.4', partie:'P1 — Introduction générale au droit', title:'L\'organisation judiciaire',
   cours:`<h3>I. Les juridictions européennes</h3>
@@ -1143,7 +728,6 @@ Q3 — Possibilité d'appel :
 Le litige porte sur 1 200 €, somme ≤ 5 000 €. Jugement rendu en DERNIER RESSORT. M. Durand NE PEUT PAS faire appel. Sa seule voie de recours est le pourvoi en cassation (questions de droit uniquement, complexe et coûteux).`
   }
 },
-
 {
   id:'1.5', partie:'P1 — Introduction générale au droit', title:'Les MARD',
   cours:`<h3>Modes Alternatifs de Règlement des Différends</h3>
@@ -1225,10 +809,6 @@ Q3 — Force exécutoire de l'accord de médiation :
 L'accord de médiation n'est pas automatiquement exécutoire. Il doit être HOMOLOGUÉ par le juge pour acquérir force exécutoire. Avant l'homologation, il a seulement force contractuelle.`
   }
 },
-
-// ============================================================
-// PARTIE 2 — LES PERSONNES ET LES BIENS
-// ============================================================
 {
   id:'2.1', partie:'P2 — Les personnes et les biens', title:'Les personnes',
   cours:`<h3>I. La notion de personne juridique</h3>
@@ -1267,7 +847,7 @@ L'accord de médiation n'est pas automatiquement exécutoire. Il doit être HOMO
   vocab:[
     {t:'Personnalité juridique',d:'Aptitude à être titulaire actif ou passif de droits subjectifs.'},
     {t:'Personne physique',d:'Tout être humain. Personnalité acquise à la naissance (né vivant), perdue au décès.'},
-    {t:'Personne morale',d:'Entité abstraite. Personnalité distincte des membres. Immatriculation RNE → dissolution.'},
+    {t:'Personne morales',d:'Entité abstraite. Personnalité distincte des membres. Immatriculation RNE → dissolution.'},
     {t:'Infans conceptus',d:'Adage : l\'enfant conçu peut hériter s\'il naît viable.'},
     {t:'RNE — Registre National des Entreprises',d:'Registre depuis le <b>1er janvier 2023</b>. Remplace le RCS.'},
     {t:'Principe de spécialité (PM)',d:'Une PM ne peut agir que dans le domaine de son <b>objet social</b>.'},
@@ -1303,8 +883,7 @@ Q2 — Achat du scooter par M. Lucas :
 M. Lucas, 16 ans, est mineur non émancipé. Il bénéficie d'une incapacité générale d'exercice. L'achat d'un scooter à 2 000 € est un ACTE DE DISPOSITION (engage le patrimoine). Réalisé seul sans autorisation parentale → NULLITÉ RELATIVE que M. Lucas (ou ses parents) peut invoquer. Le vendeur ne peut exiger le paiement si la nullité est invoquée.`
   }
 },
-
-{
+   {
   id:'2.2', partie:'P2 — Les personnes et les biens', title:'Les commerçants personnes physiques',
   cours:`<h3>I. La liberté du commerce et de l'industrie</h3>
 <p>Affirmée par les <b>décrets d'Allarde des 2 et 17 mars 1791</b>. Valeur constitutionnelle (décision CC du <b>16 janvier 1982</b>).</p>
@@ -1369,8 +948,6 @@ Q3 — Protection du patrimoine :
 • Autres biens personnels : statut EI (loi 14 fév. 2022, en vigueur 15 mai 2022) → séparation automatique entre patrimoine personnel et professionnel. L'ensemble du patrimoine personnel est insaisissable de plein droit par les créanciers professionnels.`
   }
 },
-
-// Chapitres 2.3 à 4.2 — inclus en version abrégée pour la stabilité du fichier
 {
   id:'2.3', partie:'P2 — Les personnes et les biens', title:'Les autres professionnels des affaires',
   cours:`<h3>I. L'artisan (Code de l'artisanat — 1er juillet 2023)</h3>
@@ -1418,7 +995,6 @@ Q2 — Statut de M. Bricard :
 M. Bricard n'est PAS commerçant. Il est PROFESSIONNEL LIBÉRAL RÉGLEMENTÉ : exercice indépendant, activité de soins, diplôme de médecine, Ordre des médecins, secret médical, code de déontologie, immatriculation RNE depuis 1er janvier 2023.`
   }
 },
-
 {
   id:'2.4', partie:'P2 — Les personnes et les biens', title:'Théorie du patrimoine',
   cours:`<h3>I. Définition et composition du patrimoine</h3>
@@ -1488,7 +1064,6 @@ Art. 2284 : droit de gage général → l'actif répond du passif. MAIS statut E
 M. Lefort ne peut saisir que les biens professionnels.`
   }
 },
-
 {
   id:'2.5', partie:'P2 — Les personnes et les biens', title:'La propriété',
   cours:`<h3>I. Le droit de propriété</h3>
@@ -1554,10 +1129,6 @@ Q2 — Utilisation comme bureau :
 L'usufruitier doit respecter la DESTINATION du bien (résidentielle). La mère ne peut pas l'utiliser comme bureau sans accord du nu-propriétaire. Si elle maintient cette utilisation : extinction de l'usufruit pour ABUS DE JOUISSANCE (art. 618).`
   }
 },
-
-// ============================================================
-// PARTIE 3 — L'ENTREPRISE ET LES CONTRATS
-// ============================================================
 {
   id:'3.1', partie:'P3 — L\'entreprise et les contrats', title:'La formation du contrat',
   cours:`<h3>I. Notion de contrat</h3>
@@ -1633,7 +1204,6 @@ Q2 — Sanction :
 NULLITÉ RELATIVE + D&I. M. Aubert peut demander l'annulation de la vente et la restitution du prix, plus réparation du préjudice subi.`
   }
 },
-
 {
   id:'3.2', partie:'P3 — L\'entreprise et les contrats', title:'Les effets et l\'inexécution du contrat',
   cours:`<h3>I. Les effets du contrat</h3>
@@ -1692,7 +1262,6 @@ Q2 — Clause pénale de 200 000 € :
 La clause est valable mais le juge dispose d'un POUVOIR MODÉRATEUR (art. 1231-5) : il peut réduire si manifestement excessive par rapport au préjudice réel (50 000 €). 200 000 € = 4× le préjudice → réduction probable.`
   }
 },
-
 {
   id:'3.3', partie:'P3 — L\'entreprise et les contrats', title:'Le fonds de commerce',
   cours:`<h3>I. Notion de fonds de commerce</h3>
@@ -1744,10 +1313,6 @@ Q2 — Délai d'opposition :
 Publication JAL dans les 15 jours + BODACC dans les 3 jours de la réception par le greffe. Délai d'opposition des créanciers : 10 JOURS à compter de la publication BODACC. L'opposition bloque le paiement du prix.`
   }
 },
-
-// ============================================================
-// PARTIE 4 — LES RESPONSABILITÉS
-// ============================================================
 {
   id:'4.1', partie:'P4 — Les responsabilités', title:'La responsabilité extracontractuelle',
   cours:`<h3>I. Notion et fondements</h3>
@@ -1805,7 +1370,6 @@ Q2 — Responsabilité de Mme Garnier :
 RESPONSABILITÉ DU FAIT DES ANIMAUX (art. 1243). Mme Garnier est propriétaire et avait la garde du chien. Responsabilité de plein droit. Exonération uniquement par force majeure, fait de la victime ou fait d'un tiers.`
   }
 },
-
 {
   id:'4.2', partie:'P4 — Les responsabilités', title:'Les responsabilités spéciales',
   cours:`<h3>I. Produits défectueux (loi 19 mai 1998, art. 1245 C. civ.)</h3>
@@ -1867,26 +1431,1417 @@ RISQUE DE DÉVELOPPEMENT (art. 1245-10) : au moment de la mise en circulation, l
 Q2 — Infraction du PDG :
 ABUS DE BIENS SOCIAUX : usage des biens de la société (50 000 €) dans l'intérêt personnel du PDG. Sanction : 5 ans d'emprisonnement + 375 000 € d'amende. Responsabilité personnelle du PDG uniquement (bénéfice de l'ABS pour lui-même).`
   }
+}
+];
+   // ============================================================
+// DATA : DCG COMPTABILITÉ
+// ============================================================
+const COMPTA_CHAPTERS = [
+
+// ============================================================
+// PARTIE I — INTRODUCTION
+// ============================================================
+{
+  id:'1.1', partie:'P1 — Introduction', title:'Définition et rôle de la comptabilité',
+  cours:`<h3>I. Définition de la comptabilité</h3>
+<div class="quote"><b>PCG, article 120.1 :</b> <em>« La comptabilité est un système d'organisation de l'information financière permettant de saisir, classer, enregistrer des données de base chiffrées et présenter des états reflétant une image fidèle du patrimoine, de la situation financière et du résultat de l'entité à la date de clôture. »</em></div>
+<p>La comptabilité, c'est donc trois choses :</p>
+<ul>
+<li><b>Un système d'organisation</b> de l'information financière</li>
+<li><b>Un traitement</b> de l'information</li>
+<li><b>Une représentation</b> de la réalité</li>
+</ul>
+<p>Toute cette procédure est effectuée en respectant des procédures et des règles très précises. Néanmoins, l'interprétation garde une place importante : il y a une part de subjectivité. L'<b>audit</b> (interne et/ou externe) garantit le maximum d'objectivité et de fidélité des comptes.</p>
+<h4>Les types de comptabilité</h4>
+<ul>
+<li><b>Comptabilité financière</b> : présente le patrimoine, la situation financière et le résultat</li>
+<li><b>Comptabilité de gestion</b> (analytique) : centrée sur le calcul et l'analyse des coûts</li>
+<li><b>Comptabilité budgétaire</b> : établissement et suivi d'un budget (recettes/dépenses)</li>
+<li><b>Comptabilité publique</b> : règles spécifiques aux entités publiques, tendant à se rapprocher de la comptabilité privée</li>
+</ul>
+<h3>II. Les 4 fonctions et rôles de la comptabilité</h3>
+<table>
+<tr><th>Rôle</th><th>Explication</th></tr>
+<tr><td><b>Moyen de preuve</b></td><td>En cas de litige (Code de commerce, art. L123-23). La comptabilité est admise comme preuve en justice.</td></tr>
+<tr><td><b>Instrument de contrôle</b></td><td>Contrôle des propriétaires sur les gestionnaires, du CE, du Trésor public (base du résultat fiscal).</td></tr>
+<tr><td><b>Aide à la décision</b></td><td>En interne (prix, investissements) et en externe (banquiers, investisseurs, fournisseurs, clients).</td></tr>
+<tr><td><b>Rôle social</b></td><td>Base des statistiques nationales, dialogue social, partage de la valeur ajoutée.</td></tr>
+</table>
+<h3>III. Les relations comptabilité / économie</h3>
+<table>
+<tr><th>Marché économique</th><th>Opérations comptables</th></tr>
+<tr><td>Marché des biens et services</td><td>Achats, ventes, production, commercialisation</td></tr>
+<tr><td>Marché du travail</td><td>Rémunération, paie, indemnités</td></tr>
+<tr><td>Marché des capitaux</td><td>Augmentation de capital, emprunts</td></tr>
+<tr><td>Marché financier</td><td>Gestion de portefeuille de titres</td></tr>
+</table>
+<h3>IV. Les sources du droit comptable</h3>
+<ul>
+<li><b>Code de commerce</b> : art. L123-12 à L123-28 (règles applicables à tous les commerçants)</li>
+<li><b>ANC</b> (Autorité des Normes Comptables) : remplace depuis 2009 le CRC + CNC</li>
+<li><b>PCG</b> (Plan Comptable Général) : ensemble des règles et principes comptables français</li>
+<li><b>Jurisprudence et doctrine</b> : avis, recommandations de l'ANC, OEC, CNCC, AMF</li>
+<li><b>Sources européennes</b> : directives et règlements UE</li>
+<li><b>Sources internationales</b> : normes IAS/IFRS de l'IASB</li>
+</ul>
+<h3>V. Les principes comptables fondamentaux</h3>
+<table>
+<tr><th>Principe</th><th>Définition</th></tr>
+<tr><td><b>Image fidèle</b></td><td>Les comptes doivent refléter la réalité du patrimoine et du résultat</td></tr>
+<tr><td><b>Permanence des méthodes</b></td><td>Les méthodes ne changent pas d'un exercice à l'autre (sauf justification en annexe)</td></tr>
+<tr><td><b>Continuité d'exploitation</b></td><td>L'entreprise est présumée continuer son activité</td></tr>
+<tr><td><b>Prudence</b></td><td>Risques et pertes pris en compte dès leur connaissance</td></tr>
+<tr><td><b>Indépendance des exercices</b></td><td>Charges et produits rattachés à l'exercice auquel ils appartiennent</td></tr>
+<tr><td><b>Coût historique</b></td><td>Actifs évalués au coût d'acquisition ou de production initial</td></tr>
+<tr><td><b>Non compensation</b></td><td>Pas de compensation actif/passif ou charges/produits</td></tr>
+<tr><td><b>Intangibilité du bilan d'ouverture</b></td><td>Bilan d'ouverture = bilan de clôture de l'exercice précédent</td></tr>
+</table>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Définition PCG 120.1</b> : système d'organisation → traitement → représentation (image fidèle)</li>
+<li><b>4 rôles</b> : preuve, contrôle, aide à la décision, social</li>
+<li><b>ANC</b> remplace depuis 2009 le CRC + CNC</li>
+<li><b>PCG</b> = ensemble des règles et principes (pas juste la liste des comptes !)</li>
+<li><b>IAS/IFRS</b> = normes internationales de l'IASB</li>
+<li><b>Image fidèle</b> ≠ traduction de <em>fair value</em> anglo-saxonne</li>
+</ul></div>`,
+  vocab:[
+    {t:'Comptabilité (PCG 120.1)',d:'Système d\'organisation de l\'information financière permettant de saisir, classer, enregistrer des données et présenter des états reflétant une <b>image fidèle</b> du patrimoine, de la situation financière et du résultat.'},
+    {t:'PCG — Plan Comptable Général',d:'Ensemble des règles et principes réglementant la comptabilité en France. Établi par l\'ANC. ≠ simple liste de comptes.'},
+    {t:'ANC — Autorité des Normes Comptables',d:'Organisme français qui édicte les normes comptables depuis 2009. Remplace le CRC et le CNC.'},
+    {t:'IAS/IFRS',d:'International Accounting Standards / International Financial Reporting Standards. Normes comptables internationales éditées par l\'IASB.'},
+    {t:'Image fidèle',d:'Principe comptable fondamental. Les états financiers doivent refléter la réalité. Pas la traduction de la <em>fair value</em>.'},
+    {t:'Permanence des méthodes',d:'Les méthodes comptables ne changent pas d\'un exercice à l\'autre sauf justification décrite en annexe.'},
+    {t:'Coût historique',d:'Les biens acquis sont évalués à leur coût d\'acquisition ou de production initial. ≠ juste valeur.'},
+    {t:'Continuité d\'exploitation',d:'L\'entreprise est présumée poursuivre son activité dans un avenir prévisible.'},
+    {t:'Prudence',d:'Risques et pertes pris en compte dès qu\'ils sont probables. Gains comptabilisés uniquement quand réalisés.'},
+    {t:'Indépendance des exercices',d:'Les charges et produits sont rattachés à l\'exercice auquel ils se rapportent.'},
+    {t:'Non-compensation',d:'Aucune compensation n\'est opérée entre postes d\'actif/passif ou charges/produits.'},
+    {t:'Commissaire aux comptes',d:'Auditeur externe indépendant qui <b>certifie</b> les comptes. Ne réalise pas la comptabilité.'},
+    {t:'Méthode de référence',d:'Méthode préférée par les textes comptables. L\'entreprise peut en adopter une autre (méthode alternative) si elle conduit à une meilleure information.'},
+  ],
+  flashcards:[
+    {q:'Définition de la comptabilité selon le PCG (art. 120.1) ?',a:'<em>« Système d\'organisation de l\'information financière permettant de saisir, classer, enregistrer des données et présenter des états reflétant une <b>image fidèle</b> du patrimoine, de la situation financière et du résultat »</em>.'},
+    {q:'Quels sont les 4 rôles de la comptabilité ?',a:'1) <b>Moyen de preuve</b> (en cas de litige)<br>2) <b>Instrument de contrôle</b><br>3) <b>Aide à la décision</b> (interne + externe)<br>4) <b>Rôle social</b> (statistiques, dialogue social)'},
+    {q:'Quel organisme gère la normalisation comptable française aujourd\'hui ?',a:'L\'<b>ANC</b> (Autorité des Normes Comptables), depuis 2009. Remplace le CRC + CNC.'},
+    {q:'Le PCG est-il simplement la liste des comptes ?',a:'Non. Le PCG est <b>l\'ensemble des règles et principes réglementant la comptabilité en France</b>. Il contient aussi les règles d\'évaluation et de présentation.'},
+    {q:'Que signifie le principe de permanence des méthodes ?',a:'L\'entreprise <b>ne peut pas changer de méthodes</b> comptables sans justification. Tout changement doit être décrit et justifié en annexe et signalé par le CAC.'},
+    {q:'Quelle est la différence entre IAS/IFRS et PCG ?',a:'<b>PCG</b> = normes françaises (ANC). <b>IAS/IFRS</b> = normes internationales (IASB). En France, les comptes consolidés des groupes cotés utilisent les IFRS ; les comptes individuels suivent le PCG.'},
+    {q:'Qu\'est-ce que le principe de prudence ?',a:'Prendre en compte les <b>risques et pertes</b> dès qu\'ils sont probables ou certains, même s\'ils ne sont connus qu\'après la clôture. Ne pas anticiper les gains non réalisés.'},
+    {q:'Que fait réellement un commissaire aux comptes ?',a:'Il <b>certifie</b> les comptes de l\'entreprise (audit externe). Il ne réalise pas la comptabilité lui-même.'},
+  ],
+  qcm:[
+    {q:'Selon le PCG, la comptabilité est :',opts:['A. Uniquement la liste des comptes d\'une entreprise','B. Un système d\'organisation de l\'information financière reflétant une image fidèle','C. Un outil de calcul de l\'impôt sur les sociétés','D. Un simple tableau de résultats'],correct:1,expl:'Définition du PCG art. 120.1 : système d\'organisation visant l\'image fidèle.'},
+    {q:'En France, la normalisation comptable dépend aujourd\'hui de :',opts:['A. L\'OEC et la CNCC','B. L\'AMF','C. L\'ANC (ex CRC + CNC)','D. L\'IASB'],correct:2,expl:'L\'ANC remplace depuis 2009 le CRC et le CNC.'},
+    {q:'Le principe de permanence des méthodes signifie que :',opts:['A. Il est interdit aux entreprises de changer de méthodes','B. Une entreprise peut changer à volonté','C. Tout changement doit être justifié et son impact présenté en annexe','D. Les méthodes sont fixées par l\'administration fiscale'],correct:2,expl:'Art. L123-17 Code de commerce : changement possible mais justification obligatoire en annexe.'},
+    {q:'Le commissaire aux comptes :',opts:['A. Réalise la comptabilité de l\'entreprise','B. Certifie les comptes','C. Est un auditeur interne','D. Établit le PCG'],correct:1,expl:'Le CAC est un auditeur externe indépendant qui certifie les comptes annuels.'},
+    {q:'L\'évaluation à la "juste valeur" (fair value) :',opts:['A. Est identique à l\'évaluation au coût historique','B. Est le principe obligatoire en France','C. Est recommandée dans certains cas dans les normes IFRS','D. Est une traduction exacte du principe français d\'image fidèle'],correct:2,expl:'La fair value est un principe des normes IFRS, pas le principe général du PCG français.'},
+  ],
+  cas:{
+    contexte:'M. JYCROIS a créé son entreprise il y a 10 ans. Son fonds de commerce a beaucoup de valeur. Il souhaite faire apparaître cette augmentation dans son bilan. Par ailleurs, il a payé une prime d\'assurance annuelle qui couvre à la fois l\'exercice qui se termine et celui qui commence.',
+    questions:['<b>Q1</b> : M. JYCROIS peut-il augmenter la valeur du fonds de commerce dans son bilan ? Quel principe comptable est en jeu ?','<b>Q2</b> : Comment traiter la prime d\'assurance qui couvre deux exercices ? Quel principe s\'applique ?'],
+    correction:`Q1 — Réévaluation du fonds de commerce :
+NON. Le principe du COÛT HISTORIQUE (art. L123-18 Code de commerce) impose d'évaluer les actifs à leur coût d'acquisition initial. M. JYCROIS ne peut pas réévaluer son fonds de commerce à sa valeur de marché actuelle, même si elle a augmenté. Une réévaluation libre n'est admise que dans des conditions très strictes prévues par la loi (réévaluation légale). Inscrire une valeur supérieure au coût historique serait contraire au principe de prudence et ferait apparaître un bénéfice non réalisé.
+
+Q2 — Prime d\'assurance sur deux exercices :
+Le principe d\'INDÉPENDANCE DES EXERCICES (séparation) impose de rattacher les charges à l\'exercice auquel elles se rapportent. La partie de la prime qui concerne l\'exercice suivant doit être comptabilisée en CHARGE CONSTATÉE D\'AVANCE (compte 486), et non en charge de l\'exercice en cours. Ainsi :
+• La portion concernant l\'exercice N → charge de l\'exercice N (compte 616 Primes d\'assurance)
+• La portion concernant l\'exercice N+1 → charge constatée d\'avance (actif du bilan)
+Cette régularisation est obligatoire pour donner une image fidèle du résultat.`
+  }
 },
 
-];
+// ============================================================
+// PARTIE II — MÉTHODE COMPTABLE
+// ============================================================
+{
+  id:'2.1', partie:'P2 — Méthode comptable', title:'Flux, stocks et documents de synthèse',
+  cours:`<h3>I. Les flux et les stocks</h3>
+<h4>Types de flux</h4>
+<ul>
+<li><b>Flux physiques/réels</b> : échange physique de biens ou de services (livraison de marchandises)</li>
+<li><b>Flux monétaires</b> : contrepartie financière d\'échanges physiques (paiement)</li>
+<li><b>Flux financiers</b> : entrée/sortie d\'argent sans contrepartie physique (emprunt)</li>
+<li><b>Flux internes</b> : sans le concours d\'un tiers (prêt entre deux établissements d\'un même groupe)</li>
+<li><b>Flux externes</b> : avec le concours d\'un tiers (paiement fournisseur, salariés…)</li>
+</ul>
+<div class="formula-box">En comptabilité :
+→ FLUX = mouvement sur le compte (débit ou crédit)
+→ STOCK = montant (solde) du compte à un instant donné</div>
+<h3>II. Le bilan</h3>
+<p>Le terme vient de l\'italien <em>bilanciare</em> : « peser, mettre en équilibre ». Le bilan est une <b>photographie à un instant donné</b> de la situation patrimoniale de l\'entreprise : équilibre entre les actifs (emplois) et les passifs (ressources).</p>
+<table>
+<tr><th>ACTIF (emplois) — liquidité croissante</th><th>PASSIF (ressources) — exigibilité croissante</th></tr>
+<tr><td><b>Actif immobilisé :</b><br>• Immo incorporelles (classe 2)<br>• Immo corporelles (classe 2)<br>• Immo financières (classe 2)</td><td><b>Capitaux propres :</b><br>• Capital (101)<br>• Réserves<br>• Résultat de l\'exercice</td></tr>
+<tr><td><b>Actif circulant :</b><br>• Stocks et en-cours (classe 3)<br>• Créances clients (classe 4)<br>• VMP (classe 5)<br>• Disponibilités (classe 5)</td><td><b>Dettes :</b><br>• Dettes financières (164…)<br>• Dettes d\'exploitation (401, 421…)<br>• Dettes diverses (classe 4)</td></tr>
+</table>
+<h3>III. Le compte de résultat</h3>
+<p>Confronte les <b>charges</b> (classe 6) et les <b>produits</b> (classe 7) de l\'exercice. La différence donne le <b>résultat</b> :</p>
+<div class="formula-box">Résultat = Produits (classe 7) − Charges (classe 6)
+• Bénéfice → compte 120 (actif du bilan, ressource)
+• Perte → compte 129 (actif du bilan, emploi négatif)</div>
+<h3>IV. L\'annexe</h3>
+<p>L\'annexe <b>complète et commente</b> l\'information donnée par le bilan et le compte de résultat. Elle est <b>obligatoire</b>.</p>
+<h3>V. Le processus comptable</h3>
+<div class="formula-box">Pièces justificatives
+  → Journal (enregistrement chronologique)
+  → Grand livre (par compte)
+  → Balance
+  → États financiers (bilan, compte de résultat, annexe)</div>
+<h3>VI. Les classes de comptes du PCG</h3>
+<table>
+<tr><th>Classe</th><th>Contenu</th><th>Bilan ou Résultat</th></tr>
+<tr><td>1</td><td>Capitaux (capital, réserves, emprunts…)</td><td>Bilan — Passif</td></tr>
+<tr><td>2</td><td>Immobilisations</td><td>Bilan — Actif</td></tr>
+<tr><td>3</td><td>Stocks et en-cours</td><td>Bilan — Actif</td></tr>
+<tr><td>4</td><td>Comptes de tiers (clients, fournisseurs, État…)</td><td>Bilan (Actif ou Passif)</td></tr>
+<tr><td>5</td><td>Comptes financiers (banque, caisse, VMP…)</td><td>Bilan — Actif</td></tr>
+<tr><td>6</td><td>Charges</td><td>Compte de résultat</td></tr>
+<tr><td>7</td><td>Produits</td><td>Compte de résultat</td></tr>
+</table>
+<p>→ <b>4 classes de comptes de bilan</b> (1 à 5) et <b>2 classes de comptes de gestion</b> (6 et 7) dans la liste des comptes du PCG.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Bilan</b> = photographie à date ; Actif = emplois ; Passif = ressources</li>
+<li><b>Compte de résultat</b> : Produits (cl. 7) − Charges (cl. 6) = Résultat</li>
+<li><b>Annexe</b> = obligatoire, complète et commente bilan + compte de résultat</li>
+<li><b>4 classes</b> de comptes de bilan (1 à 5) + <b>2 classes</b> de gestion (6 et 7)</li>
+<li><b>Flux</b> = mouvement ; <b>Stock</b> = solde du compte</li>
+</ul></div>`,
+  vocab:[
+    {t:'Bilan',d:'Photographie à un instant donné de la situation patrimoniale. <b>ACTIF = emplois</b> (liquidité croissante). <b>PASSIF = ressources</b> (exigibilité croissante). Actif = Passif.'},
+    {t:'Compte de résultat',d:'Document qui recense toutes les <b>charges (classe 6)</b> et tous les <b>produits (classe 7)</b> de l\'exercice. Résultat = Produits − Charges.'},
+    {t:'Annexe',d:'Document comptable obligatoire qui <b>complète et commente</b> le bilan et le compte de résultat.'},
+    {t:'Flux',d:'Mouvement sur un compte (débit ou crédit). ≠ Stock.'},
+    {t:'Stock (comptable)',d:'Montant (solde) d\'un compte à un instant donné. ≠ Flux.'},
+    {t:'Balance',d:'Document non obligatoire qui récapitule les mouvements et soldes de tous les comptes du grand livre. Permet un contrôle arithmétique.'},
+    {t:'Grand livre',d:'Recueil de tous les comptes de l\'entreprise avec leurs mouvements. Alimenté à partir du journal.'},
+    {t:'Journal',d:'Livre comptable obligatoire où toutes les opérations sont enregistrées en <b>ordre chronologique</b>.'},
+    {t:'Actif immobilisé',d:'Biens durables détenus plus d\'un exercice : immo incorporelles, corporelles et financières. Classes 2.'},
+    {t:'Actif circulant',d:'Biens qui naissent et disparaissent dans le cycle d\'exploitation : stocks (cl. 3), créances (cl. 4), disponibilités (cl. 5).'},
+  ],
+  flashcards:[
+    {q:'Quelle est la différence entre flux et stock en comptabilité ?',a:'<b>Flux</b> = mouvement enregistré sur le compte (débit ou crédit).<br><b>Stock</b> = solde (montant) du compte à un instant donné.'},
+    {q:'Qu\'est-ce que le bilan ?',a:'Photographie à un instant donné de la situation patrimoniale. <b>ACTIF (emplois) = PASSIF (ressources)</b>. Liquidité croissante à l\'actif, exigibilité croissante au passif.'},
+    {q:'Comment calcule-t-on le résultat ?',a:'<b>Résultat = Produits (classe 7) − Charges (classe 6)</b>.<br>Bénéfice → compte 120 ; Perte → compte 129.'},
+    {q:'Combien y a-t-il de classes de comptes de bilan et de gestion dans le PCG ?',a:'<b>4 classes de bilan</b> (classes 1, 2, 3, 4, 5 → 5 classes numériquement mais la classification PCG parle de comptes de bilan classes 1-5)<br><b>2 classes de gestion</b> : classe 6 (charges) et classe 7 (produits).'},
+    {q:'Quelle est la place du résultat dans les comptes annuels ?',a:'Le résultat figure à la fois dans le <b>compte de résultat</b> (différence charges/produits) et dans le <b>bilan</b> au passif (capitaux propres) — compte 120 si bénéfice, 129 si perte.'},
+    {q:'Quel est le processus comptable de la pièce justificative aux états financiers ?',a:'Pièce justificative → <b>Journal</b> (chronologique) → <b>Grand livre</b> (par compte) → <b>Balance</b> → <b>États financiers</b> (bilan, CR, annexe)'},
+  ],
+  qcm:[
+    {q:'Le bilan est :',opts:['A. Un document résumant les flux de l\'exercice','B. Une photographie à un instant donné de la situation patrimoniale','C. Un document uniquement réservé aux grandes entreprises','D. Identique au compte de résultat'],correct:1,expl:'Le bilan est une photographie à une date donnée. Il distingue actif (emplois) et passif (ressources).'},
+    {q:'Combien de classes de comptes de gestion le PCG contient-il ?',opts:['A. 1','B. 2','C. 4','D. 7'],correct:1,expl:'2 classes de comptes de gestion : classe 6 (charges) et classe 7 (produits).'},
+    {q:'Le résultat d\'exercice figure :',opts:['A. Uniquement dans le compte de résultat','B. Uniquement dans le bilan','C. Dans le compte de résultat ET dans le bilan','D. Uniquement dans l\'annexe'],correct:2,expl:'Le résultat apparaît dans le CR (différence charges/produits) et au passif du bilan (capitaux propres).'},
+    {q:'La balance est :',opts:['A. Un document obligatoire','B. Un document facultatif permettant un contrôle arithmétique','C. Un autre nom pour le bilan','D. Un relevé bancaire'],correct:1,expl:'La balance est non obligatoire. Elle récapitule mouvements et soldes de tous les comptes du grand livre.'},
+  ],
+  cas:{
+    contexte:'À partir de la balance simplifiée de l\'entreprise BALU au 31 décembre N, vous devez établir les états financiers. Données clés : Capital 1 000 000 €, Fournisseurs 250 000 €, Clients 200 000 €, Banque 100 000 €, Caisse 22 500 €, Fonds commercial 500 000 €, Immo corporelles 427 500 €.',
+    questions:['<b>Q1</b> : Construisez le bilan au 1er janvier N (bilan d\'ouverture). Le bilan est-il équilibré ?','<b>Q2</b> : Dans quel document retrouverait-on les ventes et les achats de l\'année N ? Comment calcule-t-on le résultat ?'],
+    correction:`Q1 — Bilan d'ouverture :
+ACTIF :
+• Fonds commercial (immo incorporelle) : 500 000
+• Autres immo corporelles : 427 500
+• Clients (créances) : 200 000
+• Banque (disponibilités) : 100 000
+• Caisse (disponibilités) : 22 500
+TOTAL ACTIF = 1 250 000
 
+PASSIF :
+• Capital : 1 000 000
+• Fournisseurs (dettes) : 250 000
+TOTAL PASSIF = 1 250 000
+
+OUI, le bilan est équilibré : Actif = Passif = 1 250 000 €.
+(Principe fondamental de la comptabilité en partie double : tout emploi a une ressource de même montant.)
+
+Q2 — Compte de résultat et calcul du résultat :
+Les ventes (produits, classe 7) et les achats (charges, classe 6) de l'année N figureront dans le COMPTE DE RÉSULTAT.
+Résultat = Produits (classe 7) − Charges (classe 6)
+Si les produits > charges → Bénéfice (compte 120, porté au passif du bilan)
+Si les charges > produits → Perte (compte 129, déduit du passif du bilan)`
+  }
+},
+{
+  id:'2.2', partie:'P2 — Méthode comptable', title:'La partie double et les comptes en T',
+  cours:`<h3>I. Le principe de la partie double</h3>
+<p>Formalisé par <b>Luca Pacioli</b> en 1494. Principe fondamental : <em>« toute opération affecte au moins deux comptes, pour un même montant total en débit et en crédit »</em>.</p>
+<div class="formula-box">TOTAL DES DÉBITS = TOTAL DES CRÉDITS (dans chaque écriture)</div>
+<h3>II. Fonctionnement des comptes</h3>
+<p>Un compte est un <b>tableau en T</b> où sont enregistrés les flux relatifs à un type d\'opération :</p>
+<table>
+<tr><th>Type de compte</th><th>Augmente par</th><th>Diminue par</th><th>Solde normal</th></tr>
+<tr><td><b>Actif</b> (cl. 1–5 côté gauche)</td><td>Débit</td><td>Crédit</td><td>Débiteur</td></tr>
+<tr><td><b>Passif</b> (cl. 1–5 côté droit)</td><td>Crédit</td><td>Débit</td><td>Créditeur</td></tr>
+<tr><td><b>Charges</b> (cl. 6)</td><td>Débit</td><td>Crédit</td><td>Débiteur</td></tr>
+<tr><td><b>Produits</b> (cl. 7)</td><td>Crédit</td><td>Débit</td><td>Créditeur</td></tr>
+</table>
+<div class="warn-box">⚠️ Méthode : avant toute écriture, se poser 3 questions :<br>1) Quels sont les comptes concernés ?<br>2) Sont-ce des comptes d\'actif/passif/charges/produits ?<br>3) Augmentent-ils ou diminuent-ils ?</div>
+<h3>III. Le livre-journal</h3>
+<p>Les écritures comptables sont enregistrées dans le livre-journal en <b>ordre chronologique</b>. Format obligatoire :</p>
+<div class="formula-box">Date / N° pièce
+  N° et intitulé du compte débité        Montant
+    N° et intitulé du compte crédité             Montant
+  Libellé de l'opération
+  ──────────────────────────────</div>
+<h4>Exemple : Acquisition d\'un terrain payé par chèque 45 000 €</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N° compte</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">45 000</td><td>211</td><td>Terrains</td><td></td></tr>
+<tr><td></td><td>512</td><td>Banque</td><td class="credit">45 000</td></tr>
+</table>
+<p><em>Analyse : Le terrain (actif) augmente → débit. La banque (actif) diminue → crédit.</em></p>
+<h3>IV. Calcul du solde d\'un compte</h3>
+<div class="formula-box">Solde débiteur  : si Total Débits > Total Crédits → inscrit du côté crédit pour équilibrer
+Solde créditeur : si Total Crédits > Total Débits → inscrit du côté débit pour équilibrer</div>
+<h3>V. De la balance aux états financiers</h3>
+<p>En fin d\'exercice : <b>Balance avant inventaire → Inventaire physique → Écritures d\'inventaire → Balance après inventaire → Comptes annuels → Clôture des comptes</b>.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Actif/charges</b> : augmente au débit, diminue au crédit</li>
+<li><b>Passif/produits</b> : augmente au crédit, diminue au débit</li>
+<li><b>Journal</b> : ordre chronologique ; <b>Grand livre</b> : par compte</li>
+<li><b>Balance</b> : Total débits = Total crédits (contrôle arithmétique)</li>
+<li>Une écriture : au moins un compte de bilan OU un compte bilan + un compte de gestion</li>
+</ul></div>`,
+  vocab:[
+    {t:'Partie double',d:'Principe comptable fondamental (Luca Pacioli, 1494) : toute opération est enregistrée avec <b>un montant identique en débit et en crédit</b>.'},
+    {t:'Compte en T',d:'Représentation d\'un compte : Débit à gauche, Crédit à droite. Solde = différence entre total débit et total crédit.'},
+    {t:'Débit',d:'Côté gauche du compte. Augmentation d\'un actif ou d\'une charge ; diminution d\'un passif ou d\'un produit.'},
+    {t:'Crédit',d:'Côté droit du compte. Augmentation d\'un passif ou d\'un produit ; diminution d\'un actif ou d\'une charge.'},
+    {t:'Solde débiteur',d:'Solde d\'un compte quand le total des débits > total des crédits. Normal pour les comptes d\'actif et de charges.'},
+    {t:'Solde créditeur',d:'Solde d\'un compte quand le total des crédits > total des débits. Normal pour les comptes de passif et de produits.'},
+    {t:'Livre-journal',d:'Livre comptable obligatoire où toutes les opérations sont enregistrées dans l\'ordre chronologique avec leur montant débit/crédit.'},
+    {t:'Grand livre',d:'Recueil de tous les comptes de l\'entreprise (comptes en T). Alimenté depuis le journal.'},
+  ],
+  flashcards:[
+    {q:'Principe de la partie double en comptabilité ?',a:'Toute opération affecte au minimum deux comptes. <b>Total débits = total crédits</b> dans chaque écriture.'},
+    {q:'Comment augmente-t-on un compte d\'actif ? Un compte de passif ?',a:'<b>Actif</b> : augmente au <b>débit</b>.<br><b>Passif</b> : augmente au <b>crédit</b>.'},
+    {q:'Comment augmente-t-on un compte de charges ? Un compte de produits ?',a:'<b>Charges</b> : augmente au <b>débit</b>.<br><b>Produits</b> : augmente au <b>crédit</b>.'},
+    {q:'Quelle est la question clé à se poser avant de passer une écriture ?',a:'1) Quels comptes sont concernés ?<br>2) Actif, passif, charge ou produit ?<br>3) Augmentent-ils ou diminuent-ils ?<br>→ Déduire débit ou crédit.'},
+    {q:'Écriture : l\'entreprise vend des marchandises 1 000 € à crédit (sans TVA). Quelle écriture ?',a:'D 411 Clients 1 000 / C 707 Ventes marchandises 1 000<br><em>Client (actif) augmente → débit ; Produit (ventes) augmente → crédit.</em>'},
+    {q:'Écriture : l\'entreprise paie son fournisseur 500 € par chèque. Quelle écriture ?',a:'D 401 Fournisseurs 500 / C 512 Banque 500<br><em>Dette fournisseur (passif) diminue → débit ; Banque (actif) diminue → crédit.</em>'},
+  ],
+  qcm:[
+    {q:'Un compte de charges augmente par le :',opts:['A. Crédit','B. Débit','C. Solde','D. Pointage'],correct:1,expl:'Les comptes de charges augmentent au débit, comme les comptes d\'actif (ils sont à gauche dans le compte de résultat).'},
+    {q:'Dans une écriture comptable en partie double :',opts:['A. Total débits = Total crédits','B. Total débits > Total crédits','C. Total crédits > Total débits','D. Les débits et crédits sont indépendants'],correct:0,expl:'Principe fondamental de la partie double : total débits = total crédits dans chaque écriture.'},
+    {q:'Le compte 512 Banque est un compte :',opts:['A. De passif','B. De charge','C. D\'actif','D. De produit'],correct:2,expl:'La banque est un actif (disponibilités). Elle augmente au débit (encaissement) et diminue au crédit (décaissement).'},
+    {q:'Lors d\'un achat de marchandises à crédit (sans TVA), on débite :',opts:['A. Le compte 401 Fournisseurs','B. Le compte 607 Achats de marchandises','C. Le compte 707 Ventes de marchandises','D. Le compte 411 Clients'],correct:1,expl:'Achat → charge → débit du 607. En contrepartie, crédit du 401 (dette fournisseur, passif qui augmente).'},
+  ],
+  cas:{
+    contexte:'L\'entreprise APPETITOS dispose d\'un capital de 1 250 € (1 000 € numéraire + 250 € crêpière apportée par le cousin). Elle achète ensuite un logiciel de comptabilité pour 600 € payé comptant.',
+    questions:['<b>Q1</b> : Passez l\'écriture de création de la société APPETITOS.','<b>Q2</b> : Passez l\'écriture d\'achat du logiciel de comptabilité (600 €, payé comptant). Quel est le nouveau solde du compte banque ?'],
+    correction:`Q1 — Création de la société :
+05/07/N
+D 512 Banque                1 000   (apports numéraires des deux associés : 2 × 500)
+D 2183 Matériel de bureau    250   (crêpière apportée en nature par le cousin)
+  C 101 Capital                       1 250
+Libellé : Constitution du capital APPETITOS
+
+Q2 — Achat du logiciel :
+D 205 Logiciels              600
+  C 512 Banque                         600
+Libellé : Achat logiciel de comptabilité
+
+Nouveau solde du compte 512 Banque :
+Solde initial après apports : 1 000 (débiteur)
+− Paiement logiciel : 600
+= Nouveau solde : 400 € (débiteur)
+
+Note : Le logiciel est une IMMOBILISATION INCORPORELLE (compte 205), pas une charge, car il sera utilisé durablement (plus d'un exercice).`
+  }
+},
+{
+  id:'2.3', partie:'P2 — Méthode comptable', title:'Actif, passif, charges, produits',
+  cours:`<h3>I. Définition d\'un actif</h3>
+<p>Un actif est un élément du patrimoine qui réunit <b>3 critères</b> :</p>
+<ul>
+<li><b>Identifiable</b> : peut être séparé de l\'entité (vendu, loué) ou résulte d\'un droit légal/contractuel</li>
+<li><b>Contrôlable</b> : l\'entreprise maîtrise les avantages économiques et supporte les risques</li>
+<li><b>Porteur d\'avantages économiques futurs</b> : potentiel de production, conversion en trésorerie ou réduction des sorties</li>
+</ul>
+<p>Pour être <b>comptabilisé</b> (PCG art. 212-1) : probabilité d\'avantages économiques futurs + évaluation fiable.</p>
+<h4>7 types d\'actifs</h4>
+<ul>
+<li><b>Immobilisations incorporelles</b> (brevets, fonds commercial, logiciels...)</li>
+<li><b>Immobilisations corporelles</b> (terrains, bâtiments, matériel...)</li>
+<li><b>Immobilisations financières</b> (titres de participation, prêts...)</li>
+<li><b>Stocks</b> (marchandises, matières premières, produits finis...)</li>
+<li><b>Créances</b> (clients, État, autres...)</li>
+<li><b>Disponibilités</b> (banque, caisse, VMP)</li>
+<li><b>Charges constatées d\'avance</b> (charges payées mais relatives à l\'exercice suivant)</li>
+</ul>
+<h3>II. Définition d\'un passif</h3>
+<p>Un passif est un élément ayant une <b>valeur économique négative</b> : obligation envers un tiers probable ou certaine qui provoquera une sortie de ressources sans contrepartie équivalente.</p>
+<div class="formula-box">Passif = Dettes + Provisions + Capitaux propres (capital + réserves + bénéfices)</div>
+<h3>III. Définition d\'une charge</h3>
+<p>Une charge est un <b>emploi définitif</b> correspondant à un appauvrissement de l\'entreprise.</p>
+<div class="warn-box">⚠️ Charges ≠ Dépenses : décalage possible avec le paiement effectif. Certaines charges sont calculées et jamais décaissées (dotations aux amortissements, dotations aux provisions).</div>
+<h4>Charges non décaissées (calculées)</h4>
+<ul>
+<li>Variations de stocks des biens achetés</li>
+<li>Dotations aux amortissements, aux provisions, aux dépréciations</li>
+<li>VNC (valeur nette comptable) des éléments cédés</li>
+</ul>
+<h4>Typologie</h4>
+<ul>
+<li>Charges d\'exploitation (cl. 60-65)</li>
+<li>Charges financières (cl. 66)</li>
+<li>Charges exceptionnelles (cl. 67)</li>
+<li>Participation des salariés + IS (cl. 69)</li>
+</ul>
+<h3>IV. Définition d\'un produit</h3>
+<p>Un produit est une <b>ressource interne</b> correspondant à un enrichissement de l\'entreprise.</p>
+<div class="warn-box">⚠️ Produits ≠ Recettes : une vente à crédit est un produit dès la livraison, même si le paiement n\'est pas encore reçu.</div>
+<h4>Produits calculés (non encaissés)</h4>
+<ul>
+<li>Variations de stocks de biens produits</li>
+<li>Reprises sur amortissements, provisions, dépréciations</li>
+<li>Transferts de charges</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Actif</b> = identifiable + contrôlable + avantages économiques futurs</li>
+<li><b>Passif</b> = dettes + provisions + capitaux propres</li>
+<li><b>Charges ≠ Dépenses</b> (décalage temporel possible)</li>
+<li><b>Produits ≠ Recettes</b> (décalage temporel possible)</li>
+<li>Ce qui ne répond pas à la définition d\'actif → charge (sauf éléments non significatifs)</li>
+<li><b>Charges constatées d\'avance</b> = actif (pas une charge de l\'exercice en cours)</li>
+</ul></div>`,
+  vocab:[
+    {t:'Actif',d:'Élément identifiable, contrôlable et porteur d\'avantages économiques futurs. Comptabilisé si probabilité suffisante et évaluation fiable.'},
+    {t:'Passif',d:'Obligation envers un tiers provoquant une sortie probable de ressources. = Dettes + Provisions + Capitaux propres.'},
+    {t:'Charge',d:'Emploi définitif appauvrissant l\'entreprise. ≠ Dépense (décalage possible). Compte classe 6.'},
+    {t:'Produit',d:'Ressource interne enrichissant l\'entreprise. ≠ Recette (décalage possible). Compte classe 7.'},
+    {t:'Charges constatées d\'avance (CCA)',d:'Actif (compte 486). Charges payées durant l\'exercice mais qui concernent l\'exercice suivant. Ex : loyer de janvier N+1 payé en décembre N.'},
+    {t:'Produits constatés d\'avance (PCA)',d:'Passif (compte 487). Produits encaissés durant l\'exercice mais qui concernent l\'exercice suivant.'},
+    {t:'Dotation aux amortissements',d:'Charge calculée non décaissée (compte 68). Constate la dépréciation d\'un actif immobilisé.'},
+    {t:'Provision',d:'Charge calculée non décaissée (compte 68). Constate un risque ou une perte probable mais non certain(e) dans son montant ou sa date.'},
+  ],
+  flashcards:[
+    {q:'Quels sont les 3 critères d\'un actif ?',a:'1) <b>Identifiable</b> (séparable ou droit légal)<br>2) <b>Contrôlable</b> (maîtrise des avantages et des risques)<br>3) <b>Porteur d\'avantages économiques futurs</b>'},
+    {q:'Différence entre charge et dépense ?',a:'<b>Charge</b> = appauvrissement de l\'entreprise comptabilisé sur l\'exercice auquel il appartient.<br><b>Dépense</b> = décaissement effectif (paiement). Les deux peuvent être décalés dans le temps.'},
+    {q:'Différence entre produit et recette ?',a:'<b>Produit</b> = enrichissement comptabilisé dès l\'opération (ex : vente à crédit).<br><b>Recette</b> = encaissement effectif. Les deux peuvent être décalés.'},
+    {q:'Qu\'est-ce qu\'une charge constatée d\'avance ?',a:'Charge payée durant l\'exercice N mais qui concerne l\'exercice N+1. Comptabilisée en <b>actif (compte 486)</b>. Ex : prime d\'assurance couvrant partiellement N+1.'},
+    {q:'Les éléments suivants sont-ils actif, passif, charge ou produit : électricité payée, brevet, dette bancaire, argent en banque, marchandises vendues ?',a:'• Électricité → <b>Charge</b> (606)<br>• Brevet → <b>Actif</b> immo incorporelle (205)<br>• Dette bancaire → <b>Passif</b> (164)<br>• Banque → <b>Actif</b> (512)<br>• Ventes → <b>Produit</b> (707)'},
+  ],
+  qcm:[
+    {q:'L\'électricité nécessaire à la production est :',opts:['A. Un actif','B. Un passif','C. Une charge','D. Un produit'],correct:2,expl:'L\'électricité est consommée et constitue un appauvrissement définitif → charge (compte 606).'},
+    {q:'Un brevet détenu par l\'entreprise est :',opts:['A. Un passif','B. Un actif immobilisé incorporel','C. Une charge','D. Un produit'],correct:1,expl:'Brevet = actif immobilisé incorporel (compte 205) : identifiable, contrôlable, porteur d\'avantages futurs.'},
+    {q:'Les dettes fournisseurs sont :',opts:['A. Un actif','B. Un produit','C. Un passif','D. Une charge'],correct:2,expl:'Les dettes (fournisseurs, compte 401) figurent au passif du bilan.'},
+    {q:'La dotation aux amortissements est :',opts:['A. Une charge décaissée','B. Une charge calculée non décaissée','C. Un produit','D. Un actif'],correct:1,expl:'La dotation aux amortissements est une charge calculée (compte 68) qui ne donne pas lieu à un décaissement.'},
+  ],
+  cas:{
+    contexte:'Pour chacun des éléments suivants, indiquez s\'il s\'agit d\'un actif, d\'un passif, d\'une charge ou d\'un produit, et précisez le compte PCG approximatif : 1) Créances clients 2) Dettes fournisseurs 3) Marchandises vendues 4) L\'immeuble des bureaux 5) La dotation aux amortissements de l\'immeuble 6) La trésorerie bancaire.',
+    questions:['<b>Q1</b> : Classifiez chacun des 6 éléments et justifiez.'],
+    correction:`1) Créances clients : ACTIF circulant (compte 411 Clients). Droit de recevoir un paiement → avantage économique futur.
+
+2) Dettes fournisseurs : PASSIF (compte 401 Fournisseurs). Obligation de payer → sortie future de ressources.
+
+3) Marchandises vendues : PRODUIT (compte 707 Ventes de marchandises). Enrichissement de l'entreprise dès la livraison.
+
+4) Immeuble des bureaux : ACTIF immobilisé corporel (compte 213 Constructions). Bien durable utilisé pour l'activité, porteur d'avantages futurs.
+
+5) Dotation aux amortissements de l'immeuble : CHARGE calculée, non décaissée (compte 6811 Dotations aux amortissements). Constate la dépréciation économique de l'immeuble sur l'exercice.
+
+6) Trésorerie bancaire : ACTIF financier (compte 512 Banque). Disponibilité immédiate, pouvoir d'achat direct.`
+  }
+},
+{
+  id:'3.1', partie:'P3 — Opérations courantes', title:'Enregistrement d\'une facture (de doit)',
+  cours:`<h3>I. La TVA — Mécanisme général</h3>
+<p>La TVA est la principale ressource fiscale de l\'État. Elle est supportée par le <b>consommateur final</b>. Les entreprises ne sont que des <b>collecteurs</b> pour le compte du Trésor public.</p>
+<div class="formula-box">TVA à payer = TVA collectée (sur ventes) − TVA déductible (sur achats)</div>
+<p>Principaux taux en France : <b>20 %</b> (taux normal), <b>10 %</b> (taux intermédiaire), <b>5,5 %</b> (taux réduit), <b>2,1 %</b> (taux super-réduit).</p>
+<h4>Passage HT ↔ TTC</h4>
+<div class="formula-box">TTC = HT × (1 + taux TVA)
+HT  = TTC / (1 + taux TVA)
+TVA = HT × taux  OU  TVA = TTC − HT</div>
+<h3>II. Les réductions commerciales (RRR)</h3>
+<ul>
+<li><b>Remise</b> : accordée habituellement selon l\'importance de la vente ou la qualité du client</li>
+<li><b>Rabais</b> : accordé exceptionnellement pour un défaut, un retard, une non-conformité</li>
+<li><b>Ristourne</b> : accordée périodiquement selon le CA réalisé sur une période</li>
+</ul>
+<div class="danger-box">⛔ Règle fondamentale : Les RRR sur facture de DOIT ne donnent lieu à AUCUN enregistrement spécifique. On enregistre directement le <b>net commercial</b>.</div>
+<h3>III. L\'escompte de règlement (réduction financière)</h3>
+<p>L\'escompte est lié aux <b>conditions de paiement</b> (paiement anticipé). Il est <b>toujours enregistré séparément</b>, contrairement aux RRR.</p>
+<h3>IV. Chaîne de calcul d\'une facture</h3>
+<div class="formula-box">Prix brut HT
+− Réductions commerciales (RRR) = Net commercial HT
+− Escompte (réduction financière) = Net financier HT
+× (1 + taux TVA)                = Montant TTC (net à payer)
+
+Note : la TVA est calculée sur le NET FINANCIER</div>
+<h3>V. Enregistrements comptables</h3>
+<h4>Chez le FOURNISSEUR (vendeur) — facture de vente</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">TTC</td><td>411</td><td>Clients</td><td></td></tr>
+<tr><td></td><td>707</td><td>Ventes de marchandises (net commercial)</td><td class="credit">Net com.</td></tr>
+<tr><td></td><td>44571</td><td>État, TVA collectée</td><td class="credit">TVA</td></tr>
+</table>
+<h4>Chez le CLIENT (acheteur) — facture d\'achat</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">Net com.</td><td>607</td><td>Achats de marchandises</td><td></td></tr>
+<tr><td class="debit">TVA</td><td>44566</td><td>État, TVA déductible</td><td></td></tr>
+<tr><td></td><td>401</td><td>Fournisseurs</td><td class="credit">TTC</td></tr>
+</table>
+<h4>Avec escompte (réduction financière)</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">TTC</td><td>411</td><td>Clients</td><td></td></tr>
+<tr><td class="debit">Escompte</td><td>665</td><td>Escomptes accordés (chez fournisseur)</td><td></td></tr>
+<tr><td></td><td>707</td><td>Ventes (net commercial)</td><td class="credit">Net com.</td></tr>
+<tr><td></td><td>44571</td><td>TVA collectée (sur net financier)</td><td class="credit">TVA</td></tr>
+</table>
+<p>Chez le client : <b>765 Escomptes obtenus</b> au crédit.</p>
+<h4>Comptes d\'achats à connaître</h4>
+<ul>
+<li><b>601</b> Achats stockés — matières premières</li>
+<li><b>606</b> Achats non stockés (fournitures, énergie)</li>
+<li><b>607</b> Achats de marchandises</li>
+<li><b>701</b> Ventes de produits finis</li>
+<li><b>706</b> Prestations de services</li>
+<li><b>707</b> Ventes de marchandises</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>RRR sur facture de doit</b> → pas d\'écriture séparée, enregistrement au net commercial</li>
+<li><b>Escompte</b> → toujours enregistré (665 accordés / 765 obtenus)</li>
+<li><b>TVA collectée</b> = 44571 (fournisseur) ; <b>TVA déductible</b> = 44566 (client)</li>
+<li>Ordre de calcul : Brut → −RRR = Net commercial → −Escompte = Net financier → ×(1+TVA) = TTC</li>
+<li><b>TVA calculée sur le net financier</b> (pas sur le net commercial)</li>
+</ul></div>`,
+  vocab:[
+    {t:'TVA — Taxe sur la Valeur Ajoutée',d:'Impôt indirect supporté par le consommateur final. Les entreprises collectent la TVA pour l\'État : TVA à payer = TVA collectée − TVA déductible.'},
+    {t:'TVA collectée (44571)',d:'TVA facturée sur les ventes. <b>Passif</b> (dette envers l\'État). Chez le vendeur.'},
+    {t:'TVA déductible (44566)',d:'TVA payée sur les achats. <b>Actif</b> (créance sur l\'État). Chez l\'acheteur.'},
+    {t:'Net commercial',d:'Prix brut HT après déduction des réductions commerciales (RRR). Base d\'enregistrement en 607/707.'},
+    {t:'Net financier',d:'Net commercial après déduction de l\'escompte. <b>Base de calcul de la TVA</b>.'},
+    {t:'Remise',d:'Réduction commerciale accordée habituellement, selon l\'importance de la vente ou la qualité du client.'},
+    {t:'Rabais',d:'Réduction commerciale accordée exceptionnellement pour un défaut, retard ou non-conformité.'},
+    {t:'Ristourne',d:'Réduction commerciale accordée périodiquement en fonction du CA réalisé sur une période.'},
+    {t:'Escompte (réduction financière)',d:'Réduction liée aux conditions de paiement (paiement anticipé). Toujours enregistrée séparément : 665 (accordé) / 765 (obtenu).'},
+  ],
+  flashcards:[
+    {q:'Ordre de calcul d\'une facture avec RRR et escompte ?',a:'Prix brut<br>− RRR = <b>Net commercial</b> (enregistré en 607/707)<br>− Escompte = <b>Net financier</b> (base TVA)<br>+ TVA = <b>TTC = Net à payer</b>'},
+    {q:'Les RRR sur facture de doit donnent-ils lieu à une écriture séparée ?',a:'<b>NON.</b> On enregistre directement au net commercial. Pas de compte spécifique pour les RRR sur facture normale.'},
+    {q:'Quel compte utilise le vendeur pour la TVA ? Et l\'acheteur ?',a:'Vendeur → <b>44571 TVA collectée</b> (crédit, passif).<br>Acheteur → <b>44566 TVA déductible</b> (débit, actif).'},
+    {q:'Sur quelle base calcule-t-on la TVA ?',a:'Sur le <b>net financier</b> (après déduction de l\'escompte), pas sur le net commercial.'},
+    {q:'Quelle est l\'écriture d\'un escompte chez le vendeur ?',a:'D 665 Escomptes accordés (montant de l\'escompte)<br>En plus de l\'écriture normale de vente. La TVA est calculée sur le net financier (= net commercial − escompte).'},
+    {q:'Passage TTC → HT au taux de 20 % ?',a:'<b>HT = TTC ÷ 1,20</b>. Exemple : 1 200 TTC / 1,20 = 1 000 HT. TVA = 200.'},
+  ],
+  qcm:[
+    {q:'Les réductions commerciales (RRR) sur une facture de doit :',opts:['A. Donnent lieu à un enregistrement séparé','B. Sont enregistrées dans le compte 709','C. Ne donnent lieu à aucun enregistrement séparé','D. Sont enregistrées dans le compte 665'],correct:2,expl:'Les RRR sur facture de doit ne donnent lieu à aucun enregistrement séparé. On enregistre directement le net commercial.'},
+    {q:'L\'escompte de règlement est :',opts:['A. Une réduction commerciale','B. Une réduction financière toujours enregistrée','C. Une réduction jamais enregistrée','D. Une ristourne'],correct:1,expl:'L\'escompte est une réduction financière liée aux conditions de paiement. Il est TOUJOURS enregistré (665 accordé, 765 obtenu).'},
+    {q:'Le compte 44571 est :',opts:['A. TVA déductible (actif)','B. TVA collectée (passif)','C. TVA à décaisser','D. TVA sur immobilisations'],correct:1,expl:'44571 = État, TVA collectée. Passif chez le vendeur. À distinguer du 44566 TVA déductible (actif chez l\'acheteur).'},
+    {q:'La TVA est calculée sur :',opts:['A. Le prix brut','B. Le net commercial','C. Le net financier','D. Le TTC'],correct:2,expl:'La TVA est calculée sur le NET FINANCIER (après escompte). Exemple : brut 100, escompte 2% → net fin 98 → TVA 20% = 19,60.'},
+  ],
+  cas:{
+    contexte:'La société DUPOND vend à la société TINTIN le 12/05/N : marchandises brut HT 150 750 €, rabais 5 % car abîmées, TVA à 10 %. Le même jour, vente à HADDOCK de produits fabriqués 39 457 € HT, paiement comptant avec escompte de 1 %.',
+    questions:['<b>Q1</b> : Calculez le montant TTC de la facture à TINTIN et passez l\'écriture chez DUPOND.','<b>Q2</b> : Calculez le montant TTC de la facture à HADDOCK (avec escompte 1 %) et passez l\'écriture chez DUPOND.'],
+    correction:`Q1 — Facture TINTIN (marchandises, rabais 5 %, TVA 10 %) :
+Prix brut HT        : 150 750,00
+− Rabais 5 %         :   7 537,50
+= Net commercial HT :  143 212,50
+(pas d'escompte)
+Net financier HT    :  143 212,50
++ TVA 10 %           :   14 321,25
+= TTC                :  157 533,75
+
+Écriture chez DUPOND (vendeur) :
+D 411 Clients TINTIN          157 533,75
+  C 707 Ventes marchandises              143 212,50
+  C 44571 TVA collectée                   14 321,25
+
+Q2 — Facture HADDOCK (produits finis, escompte 1 %, TVA 20 %) :
+Net commercial = Net financier (pas de RRR) → mais il y a un escompte.
+Net commercial HT   : 39 457,00
+− Escompte 1 %       :    394,57
+= Net financier HT  : 39 062,43
++ TVA 20 %           :  7 812,49
+= TTC                : 46 874,92
+
+Écriture chez DUPOND :
+D 411 Clients HADDOCK          46 874,92
+D 665 Escomptes accordés          394,57
+  C 701 Ventes produits finis              39 457,00
+  C 44571 TVA collectée (sur 39 062,43)     7 812,49`
+  }
+},
+{
+  id:'3.2', partie:'P3 — Opérations courantes', title:'Enregistrement d\'une facture d\'avoir',
+  cours:`<h3>I. Retour de marchandises</h3>
+<p>Quand un client retourne des marchandises non conformes, le fournisseur émet une <b>facture d\'avoir</b>. L\'avoir reprend les mêmes conditions commerciales que la facture de doit initiale.</p>
+<h4>Chez le FOURNISSEUR (avoir émis)</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">Net com.</td><td>707</td><td>Ventes de marchandises (diminution)</td><td></td></tr>
+<tr><td class="debit">TVA</td><td>44571</td><td>État, TVA collectée (annulation)</td><td></td></tr>
+<tr><td></td><td>411</td><td>Clients (diminution créance)</td><td class="credit">TTC</td></tr>
+</table>
+<h4>Chez le CLIENT (avoir reçu)</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">TTC</td><td>401</td><td>Fournisseurs (diminution dette)</td><td></td></tr>
+<tr><td></td><td>607</td><td>Achats de marchandises (diminution)</td><td class="credit">Net com.</td></tr>
+<tr><td></td><td>44566</td><td>État, TVA déductible (annulation)</td><td class="credit">TVA</td></tr>
+</table>
+<h3>II. RRR accordés après coup (facture d\'avoir)</h3>
+<div class="danger-box">⛔ Différence clé : quand les RRR sont accordés APRÈS la facture de doit, on utilise les comptes 709 (RRR accordés) et 609 (RRR obtenus).</div>
+<h4>Chez le FOURNISSEUR</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">RRR HT</td><td>709</td><td>RRR accordés sur ventes</td><td></td></tr>
+<tr><td class="debit">TVA</td><td>44571</td><td>TVA collectée (annulation)</td><td></td></tr>
+<tr><td></td><td>411</td><td>Clients</td><td class="credit">TTC avoir</td></tr>
+</table>
+<h4>Chez le CLIENT</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">TTC avoir</td><td>401</td><td>Fournisseurs</td><td></td></tr>
+<tr><td></td><td>609</td><td>RRR obtenus sur achats</td><td class="credit">RRR HT</td></tr>
+<tr><td></td><td>44566</td><td>TVA déductible (annulation)</td><td class="credit">TVA</td></tr>
+</table>
+<h3>III. Escompte accordé après coup (avoir financier)</h3>
+<h4>Chez le fournisseur</h4>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">Escompte HT</td><td>665</td><td>Escomptes accordés</td><td></td></tr>
+<tr><td class="debit">TVA</td><td>44571</td><td>TVA collectée</td><td></td></tr>
+<tr><td></td><td>411</td><td>Clients</td><td class="credit">TTC avoir</td></tr>
+</table>
+<h3>IV. Facture d\'avoir "net de taxe"</h3>
+<p>Mention possible sur l\'avoir : le fournisseur renonce à récupérer la TVA collectée sur la facture initiale. Dans ce cas, on enregistre uniquement le montant net sans TVA, sans impact TVA. Le Trésor public n\'est pas perdant car il y a compensation.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Retour marchandises</b> : annulation symétrique de la facture initiale</li>
+<li><b>RRR sur facture initiale</b> : enregistrement au net → pas de compte 709/609</li>
+<li><b>RRR sur avoir</b> : utiliser les comptes <b>709</b> (accordés) / <b>609</b> (obtenus)</li>
+<li><b>Escompte sur avoir</b> : utiliser <b>665</b> (accordé) / <b>765</b> (obtenu)</li>
+<li><b>Avoir "net de taxe"</b> : pas d\'impact sur la TVA</li>
+</ul></div>`,
+  vocab:[
+    {t:'Facture d\'avoir',d:'Document émis par le fournisseur pour annuler ou réduire une dette client : retour de marchandises, réduction commerciale post-facturation, escompte.'},
+    {t:'709 — RRR accordés sur ventes',d:'Compte utilisé chez le vendeur quand les réductions commerciales sont accordées APRÈS la facture de doit, via un avoir.'},
+    {t:'609 — RRR obtenus sur achats',d:'Compte utilisé chez l\'acheteur quand les réductions commerciales sont obtenues APRÈS la facture de doit, via un avoir.'},
+    {t:'665 — Escomptes accordés',d:'Charge financière chez le vendeur : réduction financière accordée pour paiement anticipé.'},
+    {t:'765 — Escomptes obtenus',d:'Produit financier chez l\'acheteur : réduction financière obtenue pour paiement anticipé.'},
+    {t:'Avoir "net de taxe"',d:'Facture d\'avoir sans mention de TVA. Le fournisseur renonce à récupérer la TVA collectée. Pas d\'impact TVA dans l\'écriture.'},
+  ],
+  flashcards:[
+    {q:'Quel est le compte utilisé chez le vendeur pour un RRR accordé sur facture d\'avoir ?',a:'<b>709 RRR accordés sur ventes</b> (au débit, c\'est une diminution du produit).<br>≠ On n\'utilise pas ce compte sur facture de doit.'},
+    {q:'Quel est le compte utilisé chez l\'acheteur pour un RRR obtenu sur facture d\'avoir ?',a:'<b>609 RRR obtenus sur achats</b> (au crédit, diminution du coût d\'achat).'},
+    {q:'Différence entre un avoir pour retour et un avoir pour RRR post-facturation ?',a:'<b>Retour</b> : utilise les comptes 607/707 (annulation directe de la vente/achat).<br><b>RRR après coup</b> : utilise les comptes 609/709 (comptes spécifiques de réductions).'},
+    {q:'Qu\'est-ce qu\'un avoir "net de taxe" ?',a:'La TVA n\'est pas mentionnée sur l\'avoir. Le fournisseur renonce à récupérer la TVA. L\'écriture comptable ne mentionne pas de TVA. Le Trésor public n\'est pas lésé.'},
+  ],
+  qcm:[
+    {q:'Un fournisseur accorde un rabais après facturation via un avoir. Il utilise le compte :',opts:['A. 707 Ventes de marchandises','B. 709 RRR accordés sur ventes','C. 665 Escomptes accordés','D. 607 Achats de marchandises'],correct:1,expl:'709 RRR accordés : utilisé uniquement pour les réductions commerciales accordées APRÈS la facture de doit.'},
+    {q:'Un client retourne des marchandises. Chez lui, l\'écriture inclut :',opts:['A. Débit 401 Fournisseurs / Crédit 609','B. Débit 401 / Crédit 607 et 44566','C. Débit 609 / Crédit 401','D. Débit 607 / Crédit 44566'],correct:1,expl:'Retour : annulation de l\'achat. Débit 401 (diminution dette), Crédit 607 (annulation charge) et 44566 (annulation TVA déductible).'},
+    {q:'La facture d\'avoir reprend les conditions commerciales de la facture de doit car :',opts:['A. C\'est une obligation légale','B. Le client ne doit pas faire de bénéfice en retournant une marchandise','C. C\'est plus simple administrativement','D. La TVA est identique'],correct:1,expl:'Si l\'avoir ne reprenait pas la remise initiale, le client obtiendrait un remboursement supérieur à ce qu\'il a payé.'},
+  ],
+  cas:{
+    contexte:'HENRI (fournisseur) et CHRISTOPHE (client) ont les opérations suivantes en octobre N : 11/10 facture avoir n°A13 — remises 2 % et 4 % sur achats de marchandises de 3 820 € HT. 12/10 facture n°159 — marchandises brut HT 1 450 €, remise 3 %, escompte 2 %, paiement comptant.',
+    questions:['<b>Q1</b> : Calculez et enregistrez l\'avoir A13 chez HENRI et chez CHRISTOPHE.','<b>Q2</b> : Calculez et enregistrez la facture 159 chez HENRI.'],
+    correction:`Q1 — Avoir A13 (remises 2 % et 4 %, RRR accordés après coup) :
+Base HT = 3 820,00
+− Remise 1 (2 %) =  76,40 → Net = 3 743,60
+− Remise 2 (4 %) = 149,74 → Net = 3 593,86
+TVA 20 % = 718,77
+TTC avoir = 4 312,63
+
+CHEZ HENRI (fournisseur — RRR accordés) :
+D 709 RRR accordés           3 593,86
+D 44571 TVA collectée          718,77
+  C 411 Clients Christophe            4 312,63
+
+CHEZ CHRISTOPHE (client — RRR obtenus) :
+D 401 Fourn. Henri          4 312,63
+  C 609 RRR obtenus               3 593,86
+  C 44566 TVA déductible             718,77
+
+Q2 — Facture 159 (remise 3 %, escompte 2 %) chez HENRI :
+Brut HT         : 1 450,00
+− Remise 3 %     :    43,50
+= Net commercial: 1 406,50
+− Escompte 2 %   :    28,13
+= Net financier : 1 378,37
++ TVA 20 %       :   275,67
+= TTC            : 1 654,04
+
+D 411 Clients         1 654,04
+D 665 Escomptes acc.     28,13
+  C 707 Ventes march.          1 406,50
+  C 44571 TVA collectée          275,67`
+  }
+},
+{
+  id:'3.3', partie:'P3 — Opérations courantes', title:'Frais accessoires et emballages',
+  cours:`<h3>I. Les frais accessoires d\'achat (FAA)</h3>
+<p>Les FAA sont des frais annexes engagés lors des achats : transport, commission, assurance, courtage…</p>
+<h4>3 solutions d\'enregistrement</h4>
+<table>
+<tr><th>Solution</th><th>Comptes</th><th>Avantage / Inconvénient</th></tr>
+<tr><td><b>1. Compte de charge par nature</b></td><td>6163 assurance, 6221 commission, 6241 transport…</td><td>Détail par nature mais coût d\'achat global non visible</td></tr>
+<tr><td><b>2. Compte d\'achat concerné</b></td><td>607 (pour FAA sur marchandises)</td><td>Coût d\'achat global visible mais détail perdu</td></tr>
+<tr><td><b>3. Compte 608 subdivisionnaire</b></td><td>608724 transport sur achats de marchandises</td><td>Coût global ET détail conservés</td></tr>
+</table>
+<h4>Logique du compte 608</h4>
+<div class="formula-box">608 | 3ème chiffre = nature de l'achat (7=marchandises, 1=matières premières…)
+    | 4ème-5ème chiffres = nature des frais (241=transport, 21=commission…)
+Ex : 608724 = FAA / transport / sur achats de marchandises</div>
+<h3>II. Les frais accessoires de vente (FAV)</h3>
+<p>Frais de transport engagés par le fournisseur lors de l\'expédition.</p>
+<table>
+<tr><th>Condition de vente</th><th>Qui supporte le transport</th><th>TVA sur transport</th></tr>
+<tr><td><b>Franco de port</b></td><td>Le fournisseur (inclus dans prix)</td><td>Incluse dans TVA des biens</td></tr>
+<tr><td><b>Départ — port forfait</b></td><td>Le client (facturé forfaitairement)</td><td>20 % (taux normal)</td></tr>
+<tr><td><b>Départ — port débours</b></td><td>Le client (refacturé à l\'euro près)</td><td>20 % (taux normal)</td></tr>
+<tr><td><b>Arrivée — port forfait</b></td><td>Le client (facturé)</td><td>Même taux que les biens</td></tr>
+</table>
+<h4>Comptabilisation "port débours" chez le vendeur</h4>
+<p>1) Réception facture du transporteur → débit 624, TVA 44566, crédit 401.<br>2) Facturation au client → inclure le 624 en contrepartie avec le crédit 44566.</p>
+<h3>III. La consignation des emballages</h3>
+<h4>Classification des emballages</h4>
+<table>
+<tr><th>Type</th><th>Comptabilisation</th></tr>
+<tr><td>Emballages perdus</td><td>60261 — Achats emballages perdus (stock de charges)</td></tr>
+<tr><td>Emballages récupérables non identifiables (ex : bouteilles)</td><td>60265 — Achats emballages récupérables non identifiables (stock)</td></tr>
+<tr><td>Emballages récupérables identifiables (ex : fûts, conteneurs)</td><td>2186 — Immobilisations (durables)</td></tr>
+</table>
+<h4>La consignation : principe</h4>
+<p>Le fournisseur <b>prête</b> l\'emballage, facture le prix des marchandises <b>+ le montant de consignation</b> (sans TVA sur la consignation), et rembourse lors du retour.</p>
+<table class="compta-table">
+<tr><th>Opération</th><th>Fournisseur</th><th>Client</th></tr>
+<tr><td>Consignation</td><td>D 411 / C 707 + 44571 + <b>4196</b></td><td>D 607 + 44566 + <b>4096</b> / C 401</td></tr>
+<tr><td>Retour au prix consignation</td><td>D <b>4196</b> / C 411</td><td>D 401 / C <b>4096</b></td></tr>
+<tr><td>Retour prix inférieur (mali)</td><td>D 4196 / C <b>7086</b> (boni) + 44571 + 411</td><td>D <b>6136</b> (mali) + 44566 + 401 / C 4096</td></tr>
+<tr><td>Non-retour (cession)</td><td>D 4196 / C <b>7088</b> + 44571</td><td>D <b>6026</b> + 44566 / C 4096</td></tr>
+</table>
+<ul>
+<li><b>4196</b> : Clients, dettes pour emballages consignés (passif fournisseur)</li>
+<li><b>4096</b> : Fournisseurs, créances pour emballages à rendre (actif client)</li>
+<li><b>7086</b> : Boni sur reprises d\'emballages consignés</li>
+<li><b>6136</b> : Malis sur emballages</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>3 solutions FAA</b> : charge par nature / compte achat / compte 608</li>
+<li><b>Consignation SANS TVA</b> ; déconsignation SANS TVA (sauf mali ou non-retour)</li>
+<li><b>4196</b> chez fournisseur (dette) ; <b>4096</b> chez client (créance)</li>
+<li><b>Non-retour = cession d\'approvisionnement</b> → TVA applicable (7088/6026)</li>
+<li><b>Port départ</b> → TVA 20 % ; <b>Port arrivée</b> → TVA au taux des biens</li>
+</ul></div>`,
+  vocab:[
+    {t:'FAA — Frais Accessoires d\'Achat',d:'Frais annexes liés à un achat : transport, commission, assurance… 3 solutions : compte de charge / compte d\'achat / compte 608.'},
+    {t:'Compte 608',d:'Frais accessoires incorporés aux achats. Le code indique la nature de l\'achat et le type de frais.'},
+    {t:'Consignation',d:'Prêt d\'emballage par le fournisseur en échange d\'une somme provisoire (sans TVA). Remboursée au retour.'},
+    {t:'4196 — Clients, dettes pour emballages consignés',d:'Compte de passif chez le fournisseur : il doit rembourser la consignation à son client.'},
+    {t:'4096 — Fournisseurs, créances pour emballages à rendre',d:'Compte d\'actif chez le client : il a une créance sur son fournisseur pour la consignation versée.'},
+    {t:'7086 — Boni sur reprises d\'emballages',d:'Produit chez le fournisseur quand l\'emballage est repris à un prix inférieur au prix de consignation.'},
+    {t:'6136 — Malis sur emballages',d:'Charge chez le client quand l\'emballage est repris à un prix inférieur au prix de consignation.'},
+    {t:'Cession d\'approvisionnement',d:'Vente de l\'emballage non identifiable non rendu. Soumise à TVA. Compte 7088 (vendeur) / 6026 (acheteur).'},
+  ],
+  flashcards:[
+    {q:'3 solutions pour enregistrer les frais accessoires d\'achat ?',a:'1) <b>Compte de charge par nature</b> (6241, 6221…)<br>2) <b>Compte d\'achat concerné</b> (607, 601…)<br>3) <b>Compte 608 subdivisionnaire</b> (608724, 608721…)'},
+    {q:'La consignation d\'emballage est-elle soumise à TVA ?',a:'<b>NON.</b> La consignation (prêt d\'emballage) ne donne pas lieu à TVA. Seulement en cas de non-retour (cession) ou de mali (reprise à prix inférieur).'},
+    {q:'Quelle est la différence entre 4196 et 4096 ?',a:'<b>4196</b> (chez le fournisseur) : dette envers le client pour l\'emballage consigné (passif).<br><b>4096</b> (chez le client) : créance sur le fournisseur pour l\'emballage à rendre (actif).'},
+    {q:'Qu\'est-ce qu\'un boni sur emballages (compte 7086) ?',a:'Produit comptabilisé chez le <b>fournisseur</b> quand l\'emballage est repris à un prix <b>inférieur</b> au prix de consignation. Le client enregistre un mali (6136).'},
+    {q:'TVA sur port en condition "départ" vs condition "arrivée" ?',a:'<b>Départ</b> : TVA sur transport = <b>20 %</b> (taux normal, quelle que soit la nature des biens).<br><b>Arrivée</b> : TVA = <b>même taux que les biens</b> transportés.'},
+  ],
+  qcm:[
+    {q:'Un achat de marchandises avec frais de transport (FAA). La 3ème solution d\'enregistrement utilise :',opts:['A. Le compte 6241','B. Le compte 607','C. Le compte 608724','D. Le compte 601'],correct:2,expl:'Solution 3 : compte 608 subdivisionnaire. 608724 = FAA / transport / sur marchandises.'},
+    {q:'La consignation d\'emballage est enregistrée :',opts:['A. Avec TVA, comme les marchandises','B. Sans TVA, dans un compte de passif 4196 (fournisseur)','C. En produit exceptionnel','D. Dans le compte 607'],correct:1,expl:'La consignation est sans TVA. Chez le fournisseur : crédit 4196 (dette envers le client).'},
+    {q:'Le non-retour d\'un emballage consigné non identifiable constitutes :',opts:['A. Un don sans impact comptable','B. Une cession d\'approvisionnement soumise à TVA','C. Un retour au prix de consignation','D. Un mali sur emballage'],correct:1,expl:'Non-retour = cession d\'approvisionnement → vente de bien → TVA applicable. Compte 7088 fournisseur / 6026 client.'},
+  ],
+  cas:{
+    contexte:'MÉNAGO livre à CARROUF : 10 motoculteurs 8 400 € HT, TVA 20 %, + consignation 10 caisses à 25 € l\'une. MÉNAGO reprend ensuite 4 caisses au prix de 18 € (prix de consignation = 25 €).',
+    questions:['<b>Q1</b> : Passez l\'écriture de la facture de livraison avec consignation chez MÉNAGO.','<b>Q2</b> : Passez l\'écriture de reprise des 4 caisses à 18 € (inférieur au prix de consignation).'],
+    correction:`Q1 — Facture livraison + consignation chez MÉNAGO :
+Net à payer = 8 400 HT + 1 680 TVA + 250 consignation = 10 330 €
+
+D 411 Clients CARROUF    10 330
+  C 707 Ventes march.            8 400
+  C 44571 TVA collectée          1 680
+  C 4196 Clients dettes emb.       250
+
+Q2 — Reprise de 4 caisses à 18 € (prix de consignation = 25 €) :
+Prix de consignation initial : 4 × 25 = 100 € (remboursement dû)
+Prix de reprise : 4 × 18 = 72 €
+Différence (boni) : 100 − 72 = 28 € TTC
+→ Boni HT = 28 / 1,20 = 23,33 €
+→ TVA = 4,67 €
+
+D 4196 Clients dettes emb.    100,00
+  C 7086 Boni emb. consignés         23,33
+  C 44571 TVA collectée               4,67
+  C 411 Clients                      72,00`
+  }
+},
+{
+  id:'3.4', partie:'P3 — Opérations courantes', title:'La paie',
+  cours:`<h3>I. Les éléments constitutifs de la paie</h3>
+<div class="formula-box">Salaire BRUT
+− Cotisations sociales SALARIALES
+= Salaire NET
+− Acomptes et saisies
+− Prélèvement à la source (IR)
+= Net à payer</div>
+<p>Les cotisations sociales patronales sont en sus et constituent le coût du travail pour l\'employeur.</p>
+<div class="formula-box">Coût du travail = Salaire brut + Cotisations patronales</div>
+<h3>II. Les organismes collecteurs</h3>
+<ul>
+<li><b>URSSAF</b> : cotisations de Sécurité sociale et d\'Allocations familiales</li>
+<li><b>AGIRC-ARRCO</b> : retraite complémentaire (cadres et non-cadres)</li>
+<li><b>Complémentaire santé / prévoyance</b></li>
+</ul>
+<p>Depuis le 1er juillet 2017, la <b>DSN</b> (Déclaration Sociale Nominative) remplace la plupart des déclarations périodiques. Transmission mensuelle dématérialisée.</p>
+<h3>III. Les comptes de paie à connaître</h3>
+<table>
+<tr><th>Compte</th><th>Nature</th><th>Utilisation</th></tr>
+<tr><td><b>6411</b></td><td>Charge</td><td>Salaires bruts (rémunérations, salaires et appointements)</td></tr>
+<tr><td><b>6414</b></td><td>Charge</td><td>Avantages en nature (logement, véhicule…)</td></tr>
+<tr><td><b>645</b></td><td>Charge</td><td>Cotisations sociales patronales</td></tr>
+<tr><td><b>421</b></td><td>Passif</td><td>Personnel, rémunérations dues (dette envers salariés)</td></tr>
+<tr><td><b>431</b></td><td>Passif</td><td>Sécurité sociale (URSSAF)</td></tr>
+<tr><td><b>437</b></td><td>Passif</td><td>Autres organismes sociaux (AGIRC-ARRCO…)</td></tr>
+<tr><td><b>425</b></td><td>Actif</td><td>Avances et acomptes sur salaires</td></tr>
+<tr><td><b>427</b></td><td>Passif</td><td>Oppositions (saisies sur salaires)</td></tr>
+<tr><td><b>4421</b></td><td>Passif</td><td>Prélèvement à la source (IR)</td></tr>
+</table>
+<h3>IV. Les 4 écritures de paie</h3>
+<h4>1) Versement de l\'acompte (en cours de mois)</h4>
+<table class="compta-table">
+<tr><td>D 425 Avances et acomptes sur salaires</td><td class="debit">Montant acompte</td><td></td></tr>
+<tr><td>C 512 Banque</td><td></td><td class="credit">Montant acompte</td></tr>
+</table>
+<h4>2) Constatation du salaire brut (en fin de mois)</h4>
+<table class="compta-table">
+<tr><td>D 6411 Salaires et traitements</td><td class="debit">Salaire brut</td><td></td></tr>
+<tr><td>C 421 Personnel — rémunérations dues</td><td></td><td class="credit">Salaire brut</td></tr>
+</table>
+<h4>3) Répartition de la rémunération due (retenues salariales)</h4>
+<table class="compta-table">
+<tr><td>D 421 Personnel — rémunérations dues</td><td class="debit">Sal. brut</td><td></td></tr>
+<tr><td>C 431 Sécurité sociale (charges salariales)</td><td></td><td class="credit">Cotis. URSSAF sal.</td></tr>
+<tr><td>C 437 Autres organismes sociaux (sal.)</td><td></td><td class="credit">Cotis. ARRCO sal.</td></tr>
+<tr><td>C 425 Avances et acomptes</td><td></td><td class="credit">Acompte</td></tr>
+<tr><td>C 427 Oppositions</td><td></td><td class="credit">Saisies</td></tr>
+<tr><td>C 4421 Prélèvement à la source</td><td></td><td class="credit">IR prélevé</td></tr>
+<tr><td>C 512 Banque (net à payer)</td><td></td><td class="credit">Net à payer</td></tr>
+</table>
+<h4>4) Constatation des charges patronales</h4>
+<table class="compta-table">
+<tr><td>D 645 Charges sociales patronales</td><td class="debit">Total patronal</td><td></td></tr>
+<tr><td>C 431 Sécurité sociale (part patron)</td><td></td><td class="credit">URSSAF pat.</td></tr>
+<tr><td>C 437 Autres org. sociaux (part patron)</td><td></td><td class="credit">ARRCO pat.</td></tr>
+</table>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>4 écritures</b> : acompte + salaire brut + retenues salariales + charges patronales</li>
+<li><b>6411</b> = salaire brut ; <b>645</b> = charges patronales</li>
+<li><b>421</b> = dette salaires ; <b>431</b> = URSSAF ; <b>437</b> = autres orga sociaux</li>
+<li><b>Prélèvement à la source</b> (4421) = collecteur pour l\'État, pas une charge entreprise</li>
+<li><b>DSN</b> depuis 1er juillet 2017 : déclaration mensuelle dématérialisée</li>
+</ul></div>`,
+  vocab:[
+    {t:'Salaire brut',d:'Rémunération totale avant déduction des cotisations salariales.'},
+    {t:'Salaire net',d:'Salaire brut − cotisations salariales.'},
+    {t:'Net à payer',d:'Salaire net − acomptes − saisies − prélèvement à la source.'},
+    {t:'Cotisations salariales',d:'Cotisations déduites du salaire brut du salarié, reversées par l\'employeur aux organismes sociaux.'},
+    {t:'Cotisations patronales',d:'Cotisations à la charge de l\'employeur, en plus du salaire brut. Constituent un surcoût pour l\'entreprise.'},
+    {t:'DSN — Déclaration Sociale Nominative',d:'Déclaration mensuelle unique et dématérialisée transmise à l\'URSSAF depuis le 1er juillet 2017. Remplace les déclarations périodiques multiples.'},
+    {t:'4421 — Prélèvement à la source',d:'Compte de tiers. L\'entreprise collecte l\'impôt sur le revenu des salariés pour le compte de l\'État. Ce n\'est pas une charge pour l\'entreprise.'},
+    {t:'425 — Avances et acomptes sur salaires',d:'Actif. Avance versée en cours de mois au salarié, déduite du net à payer lors du calcul de la paie.'},
+  ],
+  flashcards:[
+    {q:'Comment calcule-t-on le net à payer ?',a:'Salaire brut<br>− Cotisations salariales<br>= Salaire net<br>− Acomptes / saisies<br>− Prélèvement à la source (IR)<br>= <b>Net à payer</b>'},
+    {q:'Comment calcule-t-on le coût du travail pour l\'employeur ?',a:'<b>Coût du travail = Salaire brut + Cotisations patronales</b>'},
+    {q:'Quel compte enregistre le salaire brut ?',a:'<b>6411 Salaires et traitements</b> (charge, débit).'},
+    {q:'Quel compte enregistre les charges sociales patronales ?',a:'<b>645 Charges de sécurité sociale et de prévoyance</b> (charge, débit).'},
+    {q:'Pourquoi le prélèvement à la source n\'est pas une charge pour l\'entreprise ?',a:'L\'entreprise joue uniquement le rôle de <b>collecteur pour le compte de l\'État</b>. L\'impôt appartient au salarié. Il est enregistré en <b>4421</b> (compte de tiers, passif), pas en charges.'},
+    {q:'Qu\'est-ce que la DSN ?',a:'Déclaration Sociale Nominative. Depuis le <b>1er juillet 2017</b>, unique déclaration mensuelle dématérialisée transmise à l\'URSSAF, remplaçant la plupart des déclarations sociales périodiques.'},
+  ],
+  qcm:[
+    {q:'Le salaire net est égal à :',opts:['A. Salaire brut − cotisations patronales','B. Salaire brut − cotisations salariales','C. Net à payer + acomptes','D. Salaire brut + cotisations patronales'],correct:1,expl:'Salaire net = salaire brut − cotisations salariales. Ensuite on déduit acomptes, saisies et PAS pour obtenir le net à payer.'},
+    {q:'Le compte 431 enregistre :',opts:['A. Les salaires bruts','B. Les cotisations sociales dues à la Sécurité sociale (URSSAF)','C. Les acomptes versés aux salariés','D. L\'impôt sur les sociétés'],correct:1,expl:'431 = Sécurité sociale (URSSAF). Ce compte est crédité pour les cotisations salariales et patronales dues à l\'URSSAF.'},
+    {q:'Les cotisations patronales sont enregistrées au débit du compte :',opts:['A. 6411','B. 421','C. 645','D. 431'],correct:2,expl:'645 = Charges de sécurité sociale et de prévoyance. C\'est la charge patronale à l\'actif du compte de résultat.'},
+    {q:'La DSN est :',opts:['A. Un document bancaire mensuel','B. Une déclaration sociale nominative mensuelle dématérialisée','C. Un registre du personnel','D. Un bulletin de paie électronique'],correct:1,expl:'DSN = Déclaration Sociale Nominative, mensuelle et dématérialisée, depuis le 1er juillet 2017.'},
+  ],
+  cas:{
+    contexte:'Paie de septembre N, entreprise DCG. Salaires bruts : 90 000 € dont 15 000 € d\'avantages en nature (loyers). Cotisations salariales : URSSAF 15 000, AGIRC-ARRCO 4 900, complémentaire santé 700. Cotisations patronales : URSSAF 32 000, AGIRC-ARRCO 4 700, santé 700. Acomptes versés le 10/09 : 10 000 €. Oppositions : 600 €. Prélèvement à la source : 8 000 €. Paie le 30/09, règlement organismes sociaux le 12/10.',
+    questions:['<b>Q1</b> : Calculez le net à payer.','<b>Q2</b> : Passez les écritures de paie du 30/09 (constatation des salaires + répartition + charges patronales).'],
+    correction:`Q1 — Net à payer :
+Salaire brut               : 90 000
+− Cotisations salariales totales : 15 000 + 4 900 + 700 = 20 600
+= Salaire net              : 69 400
+− Acomptes                 : 10 000
+− Oppositions              :    600
+− Prélèvement à la source  :  8 000
+= Net à payer              : 50 800 €
+
+(Note : les avantages en nature = 15 000 ne sont pas payés en espèces mais ils font partie du salaire brut. Ils sont "payés" par les loyers que l'entreprise comptabilise directement.)
+
+Q2 — Écritures du 30/09/N :
+
+Constatation salaire brut :
+D 6411 Salaires et traitements  75 000  (brut hors avantages)
+D 6414 Avantages en nature      15 000
+  C 421 Personnel rémun. dues           90 000
+
+Répartition de la rémunération due :
+D 421 Personnel rémun. dues    90 000
+  C 431 Sécurité sociale                 15 000  (cotis. sal. URSSAF)
+  C 437 Autres org. sociaux               5 600  (ARRCO 4 900 + santé 700)
+  C 613/loyers                           15 000  (contrepartie avantages nature)
+  C 425 Avances et acomptes              10 000
+  C 427 Oppositions                         600
+  C 4421 Prélèvement à la source          8 000
+  C 512 Banque (net à payer)             35 800
+
+Charges patronales :
+D 645 Charges soc. et prévoyance  37 400
+  C 431 Sécurité sociale                 32 000
+  C 437 Autres org. sociaux               5 400  (ARRCO 4 700 + santé 700)`
+  }
+},
+{
+  id:'4.1', partie:'P4 — Opérations liées aux règlements', title:'La TVA — Fait générateur et déclarations',
+  cours:`<h3>I. Fait générateur et exigibilité de la TVA</h3>
+<p><b>Fait générateur</b> = fait qui donne naissance à la TVA.<br><b>Exigibilité</b> = événement qui permet au Trésor d\'exiger le paiement.</p>
+<table>
+<tr><th>Type d\'opération</th><th>Fait générateur</th><th>Exigibilité</th></tr>
+<tr><td><b>Livraison de biens</b></td><td>Livraison</td><td>Livraison (simultané)</td></tr>
+<tr><td><b>Prestations de services</b></td><td>Exécution du service</td><td>Encaissement (dissocié)</td></tr>
+<tr><td><b>Prestations (option débits)</b></td><td>Exécution</td><td>Facturation (option)</td></tr>
+</table>
+<h4>Conséquences pour les acomptes</h4>
+<ul>
+<li><b>Livraison de biens</b> : acompte reçu SANS TVA (livraison pas encore faite) → compte 4191</li>
+<li><b>Prestations de services</b> : acompte reçu AVEC TVA (encaissement = exigibilité) → TVA immédiate</li>
+</ul>
+<h3>II. Comptabilisation avec acompte — livraison de biens</h3>
+<p>Réception acompte : D 512 / C 4191 (sans TVA).<br>Facturation : D 411 / C 4191 + 707 + 44571 (TVA sur total).<br>Solde : D 512 / C 411.</p>
+<h3>III. Comptabilisation avec acompte — prestations de services</h3>
+<p>Réception acompte : D 512 / C 4191 + C 44571 (TVA immédiate) + D 44580 TVA à régulariser.<br>Facturation : D 411 / C 706 + 44580 + solde TVA.<br>Règlement solde : TVA sur solde via 44580.</p>
+<h3>IV. La déclaration de TVA (régime réel normal)</h3>
+<div class="formula-box">TVA à décaisser = TVA collectée (44571)
+                 − TVA déductible immobilisations (44562)
+                 − TVA déductible autres biens et services (44566)</div>
+<p>Déclaration <b>CA3</b> mensuelle (ou trimestrielle si TVA < 4 000 €/an). Versement entre le 15 et le 24 du mois suivant.</p>
+<h4>Écriture de liquidation — TVA à payer</h4>
+<table class="compta-table">
+<tr><td>D 44571 TVA collectée</td><td class="debit">XXX</td><td></td></tr>
+<tr><td>C 44562 TVA immo</td><td></td><td class="credit">XXX</td></tr>
+<tr><td>C 44566 TVA autres B&S</td><td></td><td class="credit">XXX</td></tr>
+<tr><td>C 44551 TVA à décaisser</td><td></td><td class="credit">Solde</td></tr>
+</table>
+<h4>Si crédit de TVA</h4>
+<table class="compta-table">
+<tr><td>D 44571 + D 44567 crédit de TVA à reporter</td><td class="debit">XXX</td><td></td></tr>
+<tr><td>C 44562 + C 44566</td><td></td><td class="credit">XXX</td></tr>
+</table>
+<h3>V. TVA intracommunautaire</h3>
+<ul>
+<li><b>Livraisons intracom.</b> (ventes vers UE) : exonérées de TVA (comme exportations)</li>
+<li><b>Acquisitions intracom.</b> (achats depuis UE) : autoliquidation → D 44566 / C 4452</li>
+</ul>
+<div class="formula-box">Acquisition intracom. :
+D 607 Achats de marchandises       HT
+D 44566(2) TVA déductible          TVA fr.
+  C 401(.12) Fournisseurs UE              HT
+  C 4452 TVA due intracom.               TVA fr.</div>
+<h3>VI. Régime réel simplifié</h3>
+<p>2 acomptes semestriels : <b>55 %</b> en juillet + <b>40 %</b> en décembre. Régularisation annuelle via déclaration <b>CA12</b> début mai N+1.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Biens</b> : TVA sur livraison ; acompte sans TVA</li>
+<li><b>Services</b> : TVA sur encaissement ; acompte avec TVA</li>
+<li><b>44551</b> TVA à décaisser ; <b>44567</b> crédit de TVA à reporter</li>
+<li><b>4452</b> TVA due intracommunautaire (acquisitions UE)</li>
+<li><b>Réel normal</b> : CA3 mensuelle ; <b>Réel simplifié</b> : acomptes + CA12 annuelle</li>
+</ul></div>`,
+  vocab:[
+    {t:'Fait générateur',d:'Événement qui crée la taxe. Pour les biens : livraison. Pour les services : exécution de la prestation.'},
+    {t:'Exigibilité',d:'Événement permettant au Trésor d\'exiger le paiement de la TVA. Peut être simultané au fait générateur (biens) ou décalé (services = encaissement).'},
+    {t:'44571 — TVA collectée',d:'Passif. TVA facturée sur les ventes. Doit être reversée à l\'État (nette des déductions).'},
+    {t:'44566 — TVA déductible (autres B&S)',d:'Actif. TVA payée sur les achats de biens et services courants.'},
+    {t:'44562 — TVA déductible (immobilisations)',d:'Actif. TVA payée sur les acquisitions d\'immobilisations.'},
+    {t:'44551 — TVA à décaisser',d:'TVA nette à verser à l\'État après liquidation mensuelle.'},
+    {t:'44567 — Crédit de TVA à reporter',d:'Quand la TVA déductible > TVA collectée : excédent reporté sur la déclaration suivante (ou remboursé).'},
+    {t:'4452 — TVA due intracommunautaire',d:'TVA auto-liquidée lors d\'acquisitions intracommunautaires (achats depuis un État UE).'},
+    {t:'CA3',d:'Déclaration mensuelle de TVA. Régime réel normal. À déposer entre le 15 et le 24 du mois suivant.'},
+    {t:'CA12',d:'Déclaration annuelle de TVA. Régime réel simplifié. Déposée début mai N+1.'},
+  ],
+  flashcards:[
+    {q:'Différence fait générateur / exigibilité pour les biens vs les services ?',a:'<b>Biens</b> : fait générateur = livraison ; exigibilité = livraison (simultané).<br><b>Services</b> : fait générateur = exécution ; exigibilité = <b>encaissement</b> (décalé).'},
+    {q:'Un acompte reçu sur une livraison de biens est-il soumis à TVA ?',a:'<b>NON.</b> La livraison n\'étant pas encore faite, le fait générateur n\'est pas réalisé. L\'acompte est enregistré en 4191 sans TVA.'},
+    {q:'Un acompte reçu sur une prestation de services est-il soumis à TVA ?',a:'<b>OUI.</b> L\'encaissement = exigibilité. TVA immédiate lors de la réception de l\'acompte.'},
+    {q:'Formule de la TVA à décaisser ?',a:'TVA collectée (44571)<br>− TVA déductible immo (44562)<br>− TVA déductible B&S (44566)<br>= <b>TVA à décaisser</b> (44551)'},
+    {q:'Comment fonctionne la TVA intracommunautaire sur les acquisitions ?',a:'<b>Autoliquidation</b> : l\'entreprise française calcule et déclare elle-même la TVA française sur la facture HT du fournisseur UE.<br>D 44566 / C 4452 (même montant : se compense dans la CA3).'},
+    {q:'Acomptes du régime réel simplifié ?',a:'<b>55 %</b> versé en juillet + <b>40 %</b> versé en décembre. Régularisation via CA12 début mai N+1.'},
+  ],
+  qcm:[
+    {q:'Pour une prestation de services, la TVA devient exigible lors :',opts:['A. De la signature du contrat','B. De l\'exécution du service (fait générateur)','C. De l\'encaissement des sommes','D. De la facturation'],correct:2,expl:'Pour les services, l\'exigibilité est dissociée du fait générateur : elle intervient à l\'encaissement (sauf option pour les débits).'},
+    {q:'Un acompte versé sur une commande de marchandises est enregistré :',opts:['A. Avec TVA dans le compte 4091','B. Sans TVA dans le compte 4091','C. Avec TVA dans le compte 4191','D. En charge directement'],correct:1,expl:'Livraison de biens : acompte sans TVA (livraison pas encore réalisée). Compte 4091 (chez l\'acheteur).'},
+    {q:'La déclaration CA3 est utilisée pour :',opts:['A. Déclarer l\'impôt sur les sociétés','B. Liquider la TVA dans le cadre du régime réel normal','C. Déclarer les salaires','D. Régulariser la TVA annuelle du régime simplifié'],correct:1,expl:'CA3 = déclaration mensuelle (ou trimestrielle) de TVA dans le régime réel normal.'},
+    {q:'Lors d\'une acquisition intracommunautaire, la TVA est :',opts:['A. Payée au fournisseur étranger','B. Autoliquidée par l\'entreprise française (D 44566 / C 4452)','C. Non applicable','D. Payée à la douane française'],correct:1,expl:'Autoliquidation intracommunautaire : TVA française calculée par l\'acheteur français. D 44566 / C 4452 pour le même montant.'},
+  ],
+  cas:{
+    contexte:'Fin du mois de mai N, l\'entreprise DCG présente : TVA collectée (44571) : 65 354 €. TVA déductible immobilisations (44562) : 14 326 €. TVA déductible autres biens et services (44566) : 18 653 €.',
+    questions:['<b>Q1</b> : Calculez la TVA à décaisser pour le mois de mai.','<b>Q2</b> : Passez l\'écriture de liquidation de la TVA au 31/05/N.'],
+    correction:`Q1 — Calcul TVA à décaisser (mai) :
+TVA collectée          : + 65 354
+TVA déductible immo    : −  14 326
+TVA déductible B&S     : −  18 653
+= TVA à décaisser      :  32 375 €
+
+Q2 — Écriture de liquidation au 31/05/N :
+D 44571 TVA collectée             65 354
+  C 44562 TVA déductible immo              14 326
+  C 44566 TVA déductible B&S               18 653
+  C 44551 TVA à décaisser                  32 375
+
+Paiement (15 ou 24 du mois suivant) :
+D 44551 TVA à décaisser           32 375
+  C 512 Banque                             32 375`
+  }
+},
+{
+  id:'4.2', partie:'P4 — Opérations liées aux règlements', title:'Les effets de commerce',
+  cours:`<h3>I. La lettre de change (traite)</h3>
+<p>Créée par le <b>créancier</b> (tireur), donnant ordre au <b>débiteur</b> (tiré) de payer une somme à une échéance donnée au profit d\'un bénéficiaire.</p>
+<ul>
+<li><b>Tireur</b> : créancier qui émet la traite (souvent = bénéficiaire)</li>
+<li><b>Tiré</b> : débiteur qui accepte et règle à l\'échéance</li>
+<li><b>Bénéficiaire</b> : personne qui encaisse (souvent = tireur)</li>
+<li><b>Domiciliataire</b> : banque du tiré qui paie à l\'échéance</li>
+</ul>
+<h3>II. Le billet à ordre</h3>
+<p>Créé par le <b>débiteur</b> (client), qui s\'engage à payer. ≠ Lettre de change (créée par le créancier). Moins utilisé en pratique.</p>
+<h3>III. Création de l\'effet</h3>
+<table class="compta-table">
+<tr><th></th><th>Chez le fournisseur (tireur)</th><th>Chez le client (tiré)</th></tr>
+<tr><td>Création</td><td>D 413 Clients-effets à recevoir / C 411</td><td>D 401 / C 403 Fournisseurs-effets à payer</td></tr>
+</table>
+<h3>IV. Remise à l\'encaissement</h3>
+<p>Le fournisseur dépose la traite en banque pour encaissement à l\'échéance. La banque prélève une <b>commission d\'encaissement</b> (TVA 20 %).</p>
+<table class="compta-table">
+<tr><td>Remise en banque</td><td>D 5113 Effets à l\'encaissement / C 413</td><td></td></tr>
+<tr><td>Encaissement + frais</td><td>D 627 Services bancaires + 44566 TVA / D 512 (net) / C 5113</td><td>D 403 / C 512</td></tr>
+</table>
+<h3>V. Remise à l\'escompte</h3>
+<p>La banque achète l\'effet avant l\'échéance et verse immédiatement la somme, diminuée des <b>agios</b> (intérêts + commissions).</p>
+<div class="formula-box">Intérêts = Valeur nominale × taux annuel × nombre de jours / 360
+Agios = Intérêts + Commissions diverses (TVA 20 % sur commissions fixes seulement)
+Montant net = Valeur nominale − Agios</div>
+<h4>Calcul du nombre de jours</h4>
+<p>1er mois : jours réels. Mois suivants entiers : 30 jours chacun. Dernier mois incomplet : jours réels.</p>
+<table class="compta-table">
+<tr><td>Remise à l\'escompte</td><td>D 5114 Effets à l\'escompte / C 413</td><td></td></tr>
+<tr><td>Réception bordereau</td><td>D 627 commissions + D 44566 TVA + D 6616 Escompte + D 512 (net) / C 5114</td><td></td></tr>
+<tr><td>Règlement à l\'échéance</td><td>—</td><td>D 403 / C 512</td></tr>
+</table>
+<h3>VI. LCR magnétique</h3>
+<p>Lettre de change dématérialisée. <b>Pas de compte 413/403</b> : la créance reste en 411 et la dette en 401 jusqu\'à l\'échéance. Si "escompte" de LCR → <b>concours bancaire courant (519)</b>, pas un vrai escompte.</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Lettre de change</b> = créée par le créancier ; <b>Billet à ordre</b> = créé par le débiteur</li>
+<li><b>413</b> Effets à recevoir (actif fournisseur) ; <b>403</b> Effets à payer (passif client)</li>
+<li><b>Encaissement</b> : commission (627) + TVA 20 %</li>
+<li><b>Escompte</b> : intérêts (6616) + commissions (627) + TVA sur commissions seulement</li>
+<li><b>LCR magnétique</b> : 411/401 maintenu ; escompte = CBC (519)</li>
+</ul></div>`,
+  vocab:[
+    {t:'Lettre de change (traite)',d:'Titre créé par le créancier (tireur) donnant ordre au débiteur (tiré) de payer à une échéance donnée.'},
+    {t:'Billet à ordre',d:'Titre créé par le débiteur qui s\'engage à payer à une échéance donnée. ≠ Lettre de change.'},
+    {t:'413 — Clients, effets à recevoir',d:'Actif. Créances matérialisées par une traite chez le fournisseur. Remplace le compte 411 lors de la création de l\'effet.'},
+    {t:'403 — Fournisseurs, effets à payer',d:'Passif. Dettes matérialisées par une traite chez le client. Remplace le compte 401 lors de l\'acceptation.'},
+    {t:'5113 — Effets à l\'encaissement',d:'Effets remis en banque pour encaissement. Intermédiaire entre 413 et 512.'},
+    {t:'5114 — Effets à l\'escompte',d:'Effets remis en banque pour escompte. Intermédiaire entre 413 et 512.'},
+    {t:'6616 — Intérêts sur effets escomptés',d:'Charge financière : intérêts payés à la banque lors de l\'escompte d\'un effet.'},
+    {t:'Agios',d:'Frais d\'escompte = intérêts prorata temporis + commissions diverses. TVA 20 % sur commissions fixes uniquement.'},
+    {t:'LCR magnétique',d:'Lettre de change dématérialisée. Pas de comptes 413/403. Escompte = concours bancaire courant (519).'},
+    {t:'519 — Concours bancaires courants',d:'Crédit à court terme de la banque. Utilisé pour l\'escompte de LCR magnétique.'},
+  ],
+  flashcards:[
+    {q:'Quelle est la différence entre une lettre de change et un billet à ordre ?',a:'<b>Lettre de change</b> : créée par le <b>créancier</b> (tireur).<br><b>Billet à ordre</b> : créé par le <b>débiteur</b> (souscripteur).'},
+    {q:'Quel compte utilise le fournisseur quand il reçoit une traite ?',a:'<b>D 413 Clients-effets à recevoir / C 411 Clients</b>. Le 413 remplace le 411.'},
+    {q:'Quelle est la différence entre remise à l\'encaissement et remise à l\'escompte ?',a:'<b>Encaissement</b> : dépôt en banque, fonds reçus après l\'échéance. Frais : commission 627.<br><b>Escompte</b> : vente de l\'effet à la banque avant l\'échéance. Fonds immédiats. Frais : intérêts 6616 + commissions 627.'},
+    {q:'Comment calcule-t-on les jours d\'escompte ?',a:'1er mois : jours réels jusqu\'à fin de mois.<br>Mois intermédiaires entiers : 30 jours chacun.<br>Dernier mois incomplet : jours réels.'},
+    {q:'Qu\'est-ce qu\'une LCR magnétique ? Différence avec la lettre de change papier ?',a:'LCR magnétique = traite dématérialisée. <b>Comptes 413/403 non utilisés</b> (créance reste en 411, dette en 401). L\'escompte d\'une LCR = concours bancaire courant (519), pas un vrai escompte.'},
+  ],
+  qcm:[
+    {q:'Lors de la création d\'une traite par le fournisseur DSCG sur son client DCG :',opts:['A. DSCG débite 411 et crédite 413','B. DSCG débite 413 et crédite 411','C. DCG débite 413 et crédite 401','D. DCG débite 411 et crédite 403'],correct:1,expl:'Chez le tireur (fournisseur) : D 413 Effets à recevoir / C 411 Clients. La créance change de compte.'},
+    {q:'La TVA s\'applique sur les agios d\'escompte :',opts:['A. Sur les intérêts seulement','B. Sur les commissions fixes seulement','C. Sur la totalité des agios','D. Il n\'y a pas de TVA sur les effets'],correct:1,expl:'TVA sur commissions fixes uniquement. Les intérêts (6616) ne sont pas soumis à TVA.'},
+    {q:'Pour une LCR magnétique, la créance du fournisseur reste en :',opts:['A. Compte 413','B. Compte 5114','C. Compte 411','D. Compte 5113'],correct:2,expl:'LCR magnétique : la créance n\'est pas transférée en 413. Elle reste en 411 jusqu\'à l\'encaissement à l\'échéance.'},
+    {q:'L\'escompte d\'une LCR magnétique se comptabilise comme :',opts:['A. Un vrai escompte commercial (5114)','B. Un concours bancaire courant (519)','C. Une remise à l\'encaissement (5113)','D. Une mobilisation Dailly'],correct:1,expl:'L\'escompte de LCR n\'est pas juridiquement un transfert de créance. C\'est un crédit bancaire adossé à une créance : compte 519 CBC.'},
+  ],
+  cas:{
+    contexte:'Le 1er décembre N, DSCG tire sur DCG une traite n°1 de 5 200 €. Le 12 décembre, DSCG remet la traite à l\'encaissement. Commission 40 € HT + TVA 8 €. Le 14 décembre, la banque crédite le compte (montant net). DCG règle à l\'échéance le 14/12.',
+    questions:['<b>Q1</b> : Passez l\'écriture de création de la traite chez DSCG et chez DCG.','<b>Q2</b> : Passez les écritures de remise à l\'encaissement chez DSCG.'],
+    correction:`Q1 — Création de la traite :
+
+CHEZ DSCG (fournisseur — tireur) :
+01/12/N
+D 413 Clients-effets à recevoir    5 200
+  C 411 Clients DCG                         5 200
+
+CHEZ DCG (client — tiré) :
+01/12/N
+D 401 Fournisseurs DSCG            5 200
+  C 403 Fournisseurs-effets à payer         5 200
+
+Q2 — Remise à l\'encaissement chez DSCG :
+
+12/12/N — Remise en banque :
+D 5113 Effets à l\'encaissement    5 200
+  C 413 Clients-effets à recevoir           5 200
+
+14/12/N — Crédit bancaire (net = 5 200 − 40 − 8 = 5 152) :
+D 627 Services bancaires              40
+D 44566 TVA déductible                 8
+D 512 Banque                       5 152
+  C 5113 Effets à l\'encaissement           5 200
+
+(DCG règle également le 14/12 : D 403 / C 512 pour 5 200 €)`
+  }
+},
+{
+  id:'4.3', partie:'P4 — Opérations liées aux règlements', title:'Rapprochement bancaire et lettrage',
+  cours:`<h3>I. Le rapprochement bancaire</h3>
+<p>Le compte <b>512 Banque</b> (actif, solde débiteur) et le relevé bancaire fonctionnent de façon <b>opposée</b> (miroir) : ce qui est débit chez l\'entreprise est crédit chez la banque.</p>
+<h4>Pourquoi des différences ?</h4>
+<ul>
+<li>Chèques émis non encore encaissés par les bénéficiaires</li>
+<li>Remises non encore créditées par la banque</li>
+<li>Opérations enregistrées par la banque non encore comptabilisées (agios, prélèvements)</li>
+</ul>
+<h4>Étapes du rapprochement bancaire</h4>
+<ol>
+<li>Vérifier les <b>soldes initiaux</b> (pointage si différence)</li>
+<li>Remplir l\'état de rapprochement : pointer les opérations communes</li>
+<li>Dans la colonne "512 Banque" : ajouter les opérations présentes sur le relevé mais pas encore comptabilisées</li>
+<li>Dans la colonne "Relevé banque" : ajouter les opérations comptabilisées mais pas encore sur le relevé</li>
+<li>Les soldes finaux des deux colonnes doivent être <b>égaux</b></li>
+<li>Enregistrer au journal les opérations non encore comptabilisées</li>
+</ol>
+<h3>II. Le lettrage</h3>
+<p>Technique permettant de <b>rapprocher des montants dans les comptes de tiers</b> (401 Fournisseurs, 411 Clients) : une facture et son règlement reçoivent la même lettre.</p>
+<h4>Intérêt du lettrage</h4>
+<ul>
+<li>Identifier les factures fournisseurs <b>non encore réglées</b></li>
+<li>Identifier les factures clients <b>en attente d\'encaissement</b></li>
+<li>Détecter des anomalies ou des doublons</li>
+</ul>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>512 Banque</b> et relevé fonctionnent en <b>miroir inverse</b></li>
+<li>Objectif rapprochement : deux soldes finaux <b>égaux</b></li>
+<li>Après rapprochement : enregistrer les opérations manquantes (agios, frais…)</li>
+<li><b>Lettrage</b> = rapprochement factures/règlements dans les comptes de tiers (401, 411)</li>
+</ul></div>`,
+  vocab:[
+    {t:'Rapprochement bancaire',d:'Vérification de la concordance entre le solde du compte 512 Banque et le solde du relevé bancaire. Permet de détecter les opérations manquantes.'},
+    {t:'État de rapprochement',d:'Document à deux colonnes (compte 512 / relevé banque) permettant d\'identifier les écarts et d\'atteindre des soldes ajustés identiques.'},
+    {t:'Lettrage',d:'Technique d\'apurement des comptes de tiers (401, 411) consistant à affecter une même lettre à une facture et à son règlement correspondant.'},
+  ],
+  flashcards:[
+    {q:'Pourquoi le compte 512 Banque et le relevé bancaire fonctionnent-ils en miroir ?',a:'Pour la banque, le compte de l\'entreprise est une <b>dette</b> (passif) : un dépôt est un crédit pour la banque. Pour l\'entreprise, la banque est un <b>actif</b> (512 débiteur). D\'où l\'inversion.'},
+    {q:'Quelles sont les étapes du rapprochement bancaire ?',a:'1) Vérifier soldes initiaux<br>2) Remplir l\'état : pointer opérations communes<br>3) Colonne 512 : + opérations relevé non comptabilisées<br>4) Colonne relevé : + opérations comptabilisées non sur relevé<br>5) Soldes finaux = égaux<br>6) Enregistrer les opérations manquantes'},
+    {q:'À quoi sert le lettrage ?',a:'À rapprocher des factures et leurs règlements dans les comptes de tiers (401, 411). Permet d\'identifier les factures non réglées et les créances en attente.'},
+  ],
+  qcm:[
+    {q:'Lors d\'un rapprochement bancaire, un chèque émis mais non encore encaissé par le bénéficiaire :',opts:['A. Apparaît dans les deux colonnes','B. Est dans la colonne 512 mais pas encore sur le relevé','C. Est sur le relevé mais pas dans le 512','D. Ne doit pas apparaître'],correct:1,expl:'Le chèque est déjà comptabilisé (C 512), mais la banque ne l\'a pas encore débité. Il sera donc à inscrire dans la colonne relevé pour équilibrer.'},
+    {q:'À la fin de l\'état de rapprochement bancaire :',opts:['A. Les soldes initiaux doivent être égaux','B. Les soldes finaux ajustés des deux colonnes doivent être égaux','C. Le solde du 512 doit toujours être débiteur','D. Il doit exister une différence entre les deux colonnes'],correct:1,expl:'L\'objectif est d\'aboutir à deux soldes finaux (ajustés) identiques, prouvant que les écarts sont expliqués.'},
+  ],
+  cas:{
+    contexte:'Compte 512 de l\'entreprise CRUNCH au 31/12 : solde débiteur 13 028 €. Relevé bancaire : solde créditeur 11 608 €. Écarts identifiés : remise chèque CARROUF comptabilisée mais pas créditée par la banque (3 020 €), frais bancaires débités par la banque non comptabilisés (120 €), prélèvement EDF (800 €) comptabilisé, virement fournisseur (250 €) non comptabilisé.',
+    questions:['<b>Q1</b> : Construisez l\'état de rapprochement pour égaliser les deux soldes.','<b>Q2</b> : Quelles écritures comptables faut-il passer après le rapprochement ?'],
+    correction:`Q1 — État de rapprochement (schéma simplifié) :
+
+Compte 512 Banque (entreprise)     | Relevé bancaire (banque)
+Solde initial : 13 028 (D)        | Solde initial : 11 608 (C)
+
+À ajouter dans 512 :               | À ajouter dans relevé :
+− Agios non comptabilisés : −120   | + Chèque CARROUF à créditer : +3 020
+− Virement fournisseur non         |
+  comptabilisé : −250              |
+
+Solde ajusté 512 : 13 028 − 120 − 250 = 12 658
+Solde ajusté relevé : 11 608 + 3 020 − (voir analyse) → 12 658
+
+(Le rapprochement complet nécessite de pointer toutes les opérations communes. Le solde final ajusté des deux colonnes doit être 12 658.)
+
+Q2 — Écritures à enregistrer (opérations trouvées lors du rapprochement) :
+
+Agios bancaires (120 €) :
+D 627 Services bancaires           100 (HT si TVA applicable)
+D 44566 TVA déductible              20
+  C 512 Banque                              120
+
+Virement fournisseur (250 €) :
+D 401 Fournisseurs                 250
+  C 512 Banque                              250`
+  }
+},
+{
+  id:'5.1', partie:'P5 — Investissement et financement', title:'Les immobilisations corporelles et incorporelles',
+  cours:`<h3>I. Définitions</h3>
+<p><b>Immobilisation corporelle</b> : actif physique destiné à être utilisé dans la production, loué à des tiers ou pour la gestion interne, dont l\'utilisation est attendue au-delà de l\'exercice.</p>
+<p><b>Immobilisation incorporelle</b> : actif non monétaire sans substance physique (logiciel, brevet, fonds commercial…).</p>
+<h3>II. Coût d\'acquisition</h3>
+<div class="formula-box">Coût d\'acquisition =
+  Prix d\'achat
+  + Droits de douane et taxes non récupérables
+  − Remises, rabais et escomptes
+  + Coûts directement attribuables (transport, installation, mise en service)
+  + Quote-part des coûts de démantèlement (si applicable)
+
+Optionnellement : frais d\'actes, honoraires, frais de mutation
+→ Au choix : intégrés au coût d\'acquisition OU en charges</div>
+<h4>Cas particulier : véhicule de tourisme</h4>
+<ul>
+<li>TVA non récupérable → intégrée au coût d\'entrée (TTC)</li>
+<li>Carte grise : tendance actuelle → immobilisation</li>
+<li>Essence : toujours en charge (606)</li>
+<li>Gazole : TVA déductible à <b>80 %</b> (tourisme) / 100 % (utilitaire)</li>
+</ul>
+<h3>III. La comptabilisation des immobilisations</h3>
+<table class="compta-table">
+<tr><th>Débit</th><th>N°</th><th>Intitulé</th><th>Crédit</th></tr>
+<tr><td class="debit">Coût</td><td>21xx</td><td>Immobilisation corporelle (ex: 2131 Bâtiments)</td><td></td></tr>
+<tr><td class="debit">TVA</td><td>44562</td><td>TVA déductible sur immobilisations</td><td></td></tr>
+<tr><td></td><td>404</td><td>Fournisseurs d\'immobilisations</td><td class="credit">TTC</td></tr>
+</table>
+<h4>Acomptes sur immobilisations</h4>
+<p>Utiliser le compte <b>238</b> (immo corporelles) ou <b>237</b> (immo incorporelles), pas le 4091.</p>
+<h3>IV. Production immobilisée (livraison à soi-même)</h3>
+<p>Quand l\'entreprise construit elle-même une immobilisation, on utilise le compte <b>722 Production immobilisée</b> (produit). Le coût comprend : matériaux + main d\'œuvre directe.</p>
+<table class="compta-table">
+<tr><td>D 2131 Bâtiments</td><td class="debit">Coût total</td><td></td></tr>
+<tr><td>C 722 Production immobilisée</td><td></td><td class="credit">Coût total</td></tr>
+</table>
+<p>Pour les travaux en cours (non terminés au 31/12) → compte <b>231 Immobilisations corporelles en cours</b>.</p>
+<h3>V. Le crédit-bail</h3>
+<p>Contrat de location avec <b>option d\'achat</b> en fin de période. L\'immobilisation n\'est comptabilisée qu\'à la <b>levée de l\'option</b>.</p>
+<ul>
+<li>Loyers → <b>612 Redevances de crédit-bail</b> (charge)</li>
+<li>Caution à la signature → <b>275 Dépôts et cautionnements</b></li>
+<li>Levée de l\'option → D 21xx + 44562 / C 404</li>
+</ul>
+<h3>VI. Les frais de développement</h3>
+<p>Frais de <b>recherche</b> : toujours en charges (non immobilisables).<br>Frais de <b>développement</b> : peuvent être activés (immobilisés) si 6 conditions sont réunies (faisabilité, intention, capacité à utiliser ou vendre, avantages futurs probables, ressources disponibles, évaluation fiable).</p>
+<h3>VII. Logiciels</h3>
+<p>Logiciel <b>acquis</b> : compte 205, amorti dès la date d\'acquisition.<br>Logiciel <b>créé</b> : coût = analyse organique + programmation + tests + documentation (pas la formation ni l\'analyse fonctionnelle).</p>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>Coût acquisition</b> = prix + frais directs − remises − TVA récupérable</li>
+<li><b>44562</b> = TVA déductible sur immobilisations (≠ 44566 pour autres achats)</li>
+<li><b>238</b> = acomptes immo corporelles ; <b>237</b> = acomptes immo incorporelles</li>
+<li><b>722</b> Production immobilisée = produit lors d\'une LASM</li>
+<li><b>Crédit-bail</b> : immo activée seulement à la levée d\'option</li>
+<li><b>Recherche → charges</b> ; <b>Développement → peut être immobilisé</b></li>
+<li><b>Logiciel créé</b> : analyse organique + code + tests + doc (pas formation)</li>
+</ul></div>`,
+  vocab:[
+    {t:'Immobilisation corporelle',d:'Actif physique utilisé durablement (> 1 exercice) dans la production, la location ou la gestion. Évalué au coût d\'acquisition ou de production.'},
+    {t:'Immobilisation incorporelle',d:'Actif non monétaire sans substance physique : logiciel, brevet, fonds commercial, frais de développement.'},
+    {t:'44562 — TVA déductible sur immobilisations',d:'TVA récupérable sur les acquisitions d\'immobilisations. Distincte du compte 44566 (autres achats).'},
+    {t:'238 — Avances sur commandes d\'immo corporelles',d:'Compte d\'actif pour les acomptes versés sur commandes d\'immobilisations corporelles (≠ 4091 pour les achats courants).'},
+    {t:'722 — Production immobilisée',d:'Compte de produit utilisé lors d\'une livraison à soi-même (LASM) : l\'entreprise construit pour elle-même une immobilisation.'},
+    {t:'231 — Immobilisations corporelles en cours',d:'Immobilisations en cours de construction, non encore terminées à la clôture de l\'exercice.'},
+    {t:'612 — Redevances de crédit-bail',d:'Charges correspondant aux loyers de crédit-bail (avant levée d\'option). TVA déductible.'},
+    {t:'Coût de production',d:'Coût d\'entrée d\'un actif fabriqué par l\'entreprise : matières + charges directes + quote-part charges indirectes. Exclut l\'administration générale.'},
+  ],
+  flashcards:[
+    {q:'Quels éléments composent le coût d\'acquisition d\'une immobilisation ?',a:'Prix d\'achat + droits/taxes non récupérables − remises − escomptes + <b>coûts directement attribuables</b> (transport, installation, mise en service) + démantèlement éventuel.'},
+    {q:'Quel compte utilise-t-on pour la TVA sur l\'achat d\'une immobilisation ?',a:'<b>44562 État, TVA déductible sur immobilisations</b> (pas le 44566 utilisé pour les achats courants).'},
+    {q:'Comment comptabilise-t-on un acompte sur commande d\'immobilisation corporelle ?',a:'D <b>238</b> Avances sur commandes d\'immo corporelles / C 512 Banque. Solde à la réception de l\'immobilisation.'},
+    {q:'Que se passe-t-il comptablement lors d\'une livraison à soi-même (LASM) ?',a:'D 21xx Immobilisation / C <b>722 Production immobilisée</b> (produit). Le coût comprend : matériaux + main d\'œuvre directe.'},
+    {q:'Quand l\'entreprise peut-elle activer des frais de développement ?',a:'Si 6 conditions sont réunies : faisabilité technique, intention d\'achever, capacité à utiliser/vendre, avantages futurs probables, ressources disponibles, évaluation fiable.'},
+    {q:'Le coût d\'un logiciel créé en interne comprend quoi ?',a:'<b>Analyse organique</b> + <b>programmation</b> + <b>tests et jeux d\'essais</b> + <b>documentation technique</b>.<br>Exclus : analyse préalable, analyse fonctionnelle, formation des utilisateurs.'},
+  ],
+  qcm:[
+    {q:'La TVA sur l\'acquisition d\'une immobilisation est enregistrée dans le compte :',opts:['A. 44566','B. 44571','C. 44562','D. 44551'],correct:2,expl:'44562 = TVA déductible sur immobilisations. Distincte du 44566 utilisé pour les achats courants.'},
+    {q:'Un logiciel acquis est amorti à compter de :',opts:['A. Sa mise en service','B. Sa date d\'acquisition','C. Sa date de commande','D. La date de paiement'],correct:1,expl:'Les logiciels acquis sont amortis dès la date d\'acquisition (pas d\'attente de mise en service).'},
+    {q:'En crédit-bail, l\'immobilisation est comptabilisée :',opts:['A. À la signature du contrat','B. Lors du premier loyer','C. À la levée de l\'option d\'achat','D. Jamais, c\'est une location'],correct:2,expl:'Le bien n\'appartient à l\'entreprise qu\'à la levée de l\'option. Avant : les loyers (612) sont des charges.'},
+    {q:'Les frais de recherche (phase de recherche) sont :',opts:['A. Immobilisables si les conditions sont réunies','B. Toujours comptabilisés en charges','C. Immobilisables sur option','D. Jamais enregistrés'],correct:1,expl:'Seuls les frais de développement peuvent être activés (sous conditions). Les frais de recherche sont toujours en charges.'},
+  ],
+  cas:{
+    contexte:'La SARL CHAMOGNIARD reçoit le 13/11/N la facture n°125 de BÉRANGÈRE pour agencements : montant brut 30 000 € HT, remise 10 %, port 500 € HT, frais d\'installation 1 500 € HT, TVA 20 %. Acompte versé en octobre : 5 000 €.',
+    questions:['<b>Q1</b> : Calculez le coût d\'acquisition des agencements.','<b>Q2</b> : Passez l\'écriture d\'acquisition au 13/11/N.'],
+    correction:`Q1 — Coût d\'acquisition des agencements :
+Prix brut HT                     : 30 000,00
+− Remise 10 %                     :  3 000,00
+= Net commercial (valeur achat)  : 27 000,00
++ Port (livraison)               :    500,00
++ Frais d'installation           :  1 500,00
+= Coût d'acquisition HT          : 29 000,00
+
+(L'escompte éventuel serait déduit pour le calcul de la TVA, mais ici pas d'escompte.)
+
+TVA 20 % sur 29 000             :  5 800,00
+TTC                              : 34 800,00
+
+Q2 — Écriture au 13/11/N :
+D 2184 Agencements               29 000,00
+D 44562 TVA déductible immo       5 800,00
+  C 238 Avances sur commandes immo        5 000,00  (solde de l'acompte)
+  C 404 Fournisseurs d'immo              29 800,00  (reste à payer TTC – acompte)
+
+Vérification : 34 800 − 5 000 = 29 800 € restant dû.`
+  }
+},
+{
+  id:'5.2', partie:'P5 — Investissement et financement', title:'Titres financiers et opérations de financement',
+  cours:`<h3>I. Classification des titres financiers</h3>
+<table>
+<tr><th>Nature</th><th>Intention</th><th>Compte PCG</th></tr>
+<tr><td><b>Valeurs mobilières de placement (VMP)</b></td><td>Placement court terme, plus-value rapide</td><td>50x (503 actions, 506 obligations, 507 bons)</td></tr>
+<tr><td><b>Titres de participation</b></td><td>Contrôle ou influence durable (> 10 %)</td><td>261</td></tr>
+<tr><td><b>Titres immobilisés</b></td><td>Détention durable mais pas participation</td><td>271 (propriété), 272 (créance)</td></tr>
+<tr><td><b>TIAP</b></td><td>Portefeuille détenu durablement pour rentabilité</td><td>273</td></tr>
+</table>
+<h3>II. Évaluation à l\'acquisition</h3>
+<div class="formula-box">Coût d\'acquisition = Prix d\'achat + coûts directement attribuables
+(Honoraires, commissions : en charges ou incorporés selon option)</div>
+<h4>Actions</h4>
+<ul>
+<li>Coût = prix par action × quantité + frais (selon option)</li>
+<li>Frais sur titres (6271) + TVA (44566) si en charges</li>
+</ul>
+<h4>Obligations</h4>
+<div class="formula-box">Prix d\'achat = cours hors fraction d'intérêt couru (% du nominal)
+             + fraction d'intérêt couru (calculée prorata temporis)
+Coupon suivant = intérêt couru déjà payé → produit financier réduit</div>
+<h3>III. Comptabilisation — Actions</h3>
+<table class="compta-table">
+<tr><td>D 261 Titres de participation (VMP si CT)</td><td class="debit">Prix achat</td><td></td></tr>
+<tr><td>C 404 ou 512</td><td></td><td class="credit">Prix achat</td></tr>
+</table>
+<h4>Obligations (VMP)</h4>
+<table class="compta-table">
+<tr><td>D 506 Obligations</td><td class="debit">Cours pied du coupon</td><td></td></tr>
+<tr><td>D 5088 Intérêts courus</td><td class="debit">Fraction intérêt couru</td><td></td></tr>
+<tr><td>C 512 Banque</td><td></td><td class="credit">Total payé</td></tr>
+</table>
+<h3>IV. Revenus des titres</h3>
+<table>
+<tr><th>Type de titre</th><th>Revenu</th><th>Compte produit</th></tr>
+<tr><td>Titres de participation</td><td>Dividendes</td><td>761</td></tr>
+<tr><td>Autres immo financières</td><td>Intérêts/dividendes</td><td>762</td></tr>
+<tr><td>VMP</td><td>Dividendes/intérêts</td><td>764</td></tr>
+</table>
+<h3>V. Les opérations de financement</h3>
+<h4>A. Financement par capitaux propres</h4>
+<ul>
+<li><b>Capital</b> : apports (101)</li>
+<li><b>Autofinancement</b> : bénéfices non distribués</li>
+<li><b>Subventions d\'investissement</b> (131, 138) : acquisition d\'immobilisation</li>
+<li><b>Subventions d\'exploitation</b> (740) : compenser un manque de produit</li>
+</ul>
+<h4>B. Financement par emprunt (164)</h4>
+<div class="formula-box">Annuité = Amortissement + Intérêts
+
+Intérêts = Capital restant dû début × taux
+
+3 types de remboursement :
+• Amortissements constants : remboursement capital fixe, intérêts décroissants
+• Annuités constantes : mensualité fixe (formule : a = C₀ × i / (1 − (1+i)^−n))
+• In fine : remboursement capital en une fois à l'échéance</div>
+<table class="compta-table">
+<tr><td>D 164 Emprunts (amortissement)</td><td class="debit">Remboursement</td><td></td></tr>
+<tr><td>D 661 Charges d\'intérêts</td><td class="debit">Intérêts</td><td></td></tr>
+<tr><td>C 512 Banque</td><td></td><td class="credit">Annuité</td></tr>
+</table>
+<div class="retain-box"><h3>📌 À retenir</h3><ul>
+<li><b>VMP</b> = court terme (50x) ; <b>Titres participation</b> = contrôle durable (261)</li>
+<li><b>Obligations</b> : coupon = cours pied + intérêts courus (5088)</li>
+<li><b>764</b> revenus VMP ; <b>761</b> produits participations</li>
+<li><b>Emprunt 164</b> : écriture de remboursement = 164 + 661 / C 512</li>
+<li>3 modes remboursement : constants / annuités constantes / in fine</li>
+</ul></div>`,
+  vocab:[
+    {t:'VMP — Valeurs Mobilières de Placement',d:'Titres achetés pour un placement de trésorerie à court terme, dans l\'intention de réaliser un gain rapide. Comptes 503 (actions), 506 (obligations).'},
+    {t:'Titres de participation (261)',d:'Titres dont la détention durable permet de contribuer à l\'activité d\'une société émettrice. Présumés tels si > 10 % du capital.'},
+    {t:'5088 — Intérêts courus sur obligations',d:'Fraction d\'intérêt déjà acquise mais pas encore encaissée, payée lors de l\'achat d\'une obligation entre deux coupons.'},
+    {t:'764 — Revenus des VMP',d:'Produit financier : dividendes et intérêts encaissés sur les valeurs mobilières de placement.'},
+    {t:'761 — Produits des participations',d:'Dividendes reçus sur les titres de participation.'},
+    {t:'Subvention d\'investissement (131)',d:'Aide reçue pour acquérir ou produire une immobilisation. ≠ Subvention d\'exploitation (740).'},
+    {t:'164 — Emprunts auprès des établissements de crédit',d:'Passif. Dette financière à long/moyen terme auprès des banques.'},
+    {t:'661 — Charges d\'intérêts',d:'Intérêts payés sur les dettes financières (emprunts, comptes courants…).'},
+  ],
+  flashcards:[
+    {q:'Quelle est la différence entre VMP (503) et titres de participation (261) ?',a:'<b>VMP (503)</b> : placement court terme, intention de plus-value rapide.<br><b>Participation (261)</b> : détention durable pour exercer un contrôle ou une influence (> 10 % du capital).'},
+    {q:'Lors de l\'achat d\'une obligation entre deux coupons, qu\'est-ce que le compte 5088 ?',a:'<b>5088 Intérêts courus</b> : fraction d\'intérêt déjà acquise mais non encore versée, payée à l\'acheteur par le vendeur. Lors du prochain coupon, cette somme est déduite du produit financier.'},
+    {q:'Écritures de remboursement d\'un emprunt ?',a:'D 164 Emprunts (montant remboursé — amortissement)<br>D 661 Charges d\'intérêts (intérêts)<br>C 512 Banque (annuité = amortissement + intérêts)'},
+    {q:'Différence entre subvention d\'investissement et subvention d\'exploitation ?',a:'<b>Investissement (131)</b> : pour acquérir ou produire une immobilisation.<br><b>Exploitation (740)</b> : pour compenser une insuffisance de produits ou un excès de charges.'},
+    {q:'3 modes de remboursement d\'un emprunt ?',a:'1) <b>Amortissements constants</b> : remboursement capital fixe, intérêts décroissants.<br>2) <b>Annuités constantes</b> : mensualité fixe.<br>3) <b>In fine</b> : capital remboursé en une seule fois à l\'échéance.'},
+  ],
+  qcm:[
+    {q:'Des actions achetées dans l\'intention de réaliser une plus-value rapide sont enregistrées en :',opts:['A. Compte 261 — Titres de participation','B. Compte 503 — VMP actions','C. Compte 272 — Titres immobilisés','D. Compte 271'],correct:1,expl:'VMP = valeurs mobilières de placement, court terme. Compte 503 (actions VMP).'},
+    {q:'Les dividendes reçus sur des VMP sont enregistrés dans le compte :',opts:['A. 761 Produits des participations','B. 764 Revenus des VMP','C. 762 Produits des autres immo fin.','D. 7486 Revenus divers'],correct:1,expl:'764 = revenus des VMP (dividendes, intérêts sur titres de placement court terme).'},
+    {q:'Lors de l\'achat d\'une obligation entre deux coupons, on débite le compte 5088 pour :',opts:['A. La valeur totale de l\'obligation','B. La fraction d\'intérêt couru déjà acquise','C. Les frais bancaires','D. La TVA'],correct:1,expl:'5088 = intérêts courus sur obligations. Représente la portion d\'intérêt acquise depuis le dernier coupon.'},
+    {q:'Dans un tableau d\'amortissement d\'emprunt à annuités constantes :',opts:['A. Le capital remboursé est constant','B. Les intérêts sont constants','C. L\'annuité (mensualité) est constante','D. Le capital est remboursé en fin d\'emprunt'],correct:2,expl:'Annuités constantes = mensualité/annuité fixe. Le capital remboursé augmente et les intérêts diminuent au fil du temps.'},
+  ],
+  cas:{
+    contexte:'L\'entreprise Jean Preinte emprunte 10 000 € le 1er janvier N à 3 % sur 4 ans avec remboursement par amortissements constants.',
+    questions:['<b>Q1</b> : Construisez le tableau d\'amortissement (amortissements constants).','<b>Q2</b> : Passez l\'écriture comptable du 31/12/N (1ère année).'],
+    correction:`Q1 — Tableau d'amortissement (capital constant) :
+
+Amortissement annuel constant = 10 000 / 4 = 2 500 €
+
+Année | Cap. début | Intérêts (3%) | Amort. | Annuité | Cap. fin
+N     | 10 000    |    300,00     |  2 500 |  2 800  |  7 500
+N+1   |  7 500    |    225,00     |  2 500 |  2 725  |  5 000
+N+2   |  5 000    |    150,00     |  2 500 |  2 650  |  2 500
+N+3   |  2 500    |     75,00     |  2 500 |  2 575  |      0
+Total |           |    750,00     | 10 000 | 10 750  |
+
+Q2 — Écriture du 31/12/N :
+D 164 Emprunts           2 500  (remboursement capital)
+D 661 Charges d'intérêts   300  (intérêts année N : 10 000 × 3 %)
+  C 512 Banque                      2 800  (annuité totale)`
+  }
+}
+];
+   // ============================================================
+// APPLICATION LOGIC (Moteur interactif du site)
 // ============================================================
-// APPLICATION LOGIC
-// ============================================================
+let currentSubject = 'droit';
 let currentCh = null;
 let currentMode = 'cours';
 let flashIdx = 0;
 let flashFlipped = false;
 let qcmAnswered = {};
 
+function getChapters() {
+  return currentSubject === 'droit' ? DROIT_CHAPTERS : COMPTA_CHAPTERS;
+}
+
+function changeSubject(subj) {
+  currentSubject = subj;
+  document.body.className = 'theme-' + subj;
+  
+  // Update UI texts depending on subject
+  const brand = document.querySelector('.brand');
+  const selector = document.getElementById('subject-selector');
+  if (subj === 'droit') {
+    brand.innerHTML = 'DCG1 <span>Droit</span>';
+    selector.value = 'droit';
+  } else {
+    brand.innerHTML = 'DCG <span>Compta</span>';
+    selector.value = 'compta';
+  }
+
+  currentCh = null;
+  buildNav();
+  renderWelcome();
+  closeSidebar();
+}
+
 function buildNav() {
   const tree = document.getElementById('nav-tree');
+  tree.innerHTML = '';
   const parties = {};
-  CHAPTERS.forEach(ch => {
+  
+  const chaptersList = getChapters();
+  
+  chaptersList.forEach(ch => {
     if (!parties[ch.partie]) parties[ch.partie] = [];
     parties[ch.partie].push(ch);
   });
+  
   Object.entries(parties).forEach(([p, chs]) => {
     const g = document.createElement('div');
     g.className = 'partie-group';
@@ -1904,7 +2859,7 @@ function buildNav() {
 }
 
 function loadChapter(id) {
-  currentCh = CHAPTERS.find(c => c.id === id);
+  currentCh = getChapters().find(c => c.id === id);
   flashIdx = 0; flashFlipped = false; qcmAnswered = {};
   document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
   const nb = document.getElementById('nav-' + id);
@@ -1916,13 +2871,13 @@ function loadChapter(id) {
 
 function setMode(m) {
   currentMode = m;
-  const labels = {cours:'📖 Cours', vocab:'📚 Vocabulaire', flash:'🃏 Flashcards', qcm:'✅ QCM', cas:'✍️ Cas pratique'};
+  const labels = {cours:'📖 Cours', vocab:'📚 Vocabulaire', flash:'🃏 Flashcards', qcm:'✅ QCM', cas:'✍️ Pratique'};
   document.querySelectorAll('.mode-btn').forEach(b => {
     b.classList.toggle('active', b.textContent.trim() === labels[m]);
   });
   document.querySelectorAll('.mob-mode-btn').forEach(b => {
-    const txt = b.querySelector('.mob-icon')?.nextSibling?.textContent?.trim() || '';
-    const map = {Cours:'cours', Vocab:'vocab', Flash:'flash', QCM:'qcm', Cas:'cas'};
+    const txt = b.textContent.replace(/[^a-zA-ZÀ-ÿ]/g,'').trim();
+    const map = {'Cours':'cours','Vocab':'vocab','Flash':'flash','QCM':'qcm','Pratique':'cas'};
     b.classList.toggle('active', map[txt] === m);
   });
   flashIdx = 0; flashFlipped = false; qcmAnswered = {};
@@ -1936,11 +2891,13 @@ function renderMode() {
   c.innerHTML = '';
   void c.offsetWidth;
   c.classList.add('fade-up');
+  
   const header = `<div class="section-header">
     <div class="partie-tag">${currentCh.partie}</div>
     <div class="ch-id-tag">${currentCh.id}</div>
     <h2>${currentCh.title}</h2>
   </div>`;
+  
   if (currentMode === 'cours') c.innerHTML = header + `<div class="cours-body">${currentCh.cours}</div>`;
   else if (currentMode === 'vocab') renderVocab(c, header);
   else if (currentMode === 'flash') renderFlash(c, header);
@@ -1950,20 +2907,25 @@ function renderMode() {
 
 function renderWelcome() {
   const c = document.getElementById('content');
-  const total = CHAPTERS.length;
-  const totalQcm = CHAPTERS.reduce((a,ch)=>a+(ch.qcm||[]).length,0);
-  const totalFlash = CHAPTERS.reduce((a,ch)=>a+(ch.flashcards||[]).length,0);
-  const totalVocab = CHAPTERS.reduce((a,ch)=>a+(ch.vocab||[]).length,0);
+  const chaptersList = getChapters();
+  
+  const title = currentSubject === 'droit' ? 'DCG1 Droit<br>Programme Complet' : 'DCG<br>Introduction à la Compta';
+  const total = chaptersList.length;
+  const totalQcm = chaptersList.reduce((a,ch)=>a+(ch.qcm||[]).length,0);
+  const totalFlash = chaptersList.reduce((a,ch)=>a+(ch.flashcards||[]).length,0);
+  const totalVocab = chaptersList.reduce((a,ch)=>a+(ch.vocab||[]).length,0);
+  
   c.innerHTML = `<div class="welcome-screen fade-up">
-    <h2>DCG1 Droit<br>Tout le programme</h2>
-    <p>Cours complets, vocabulaire juridique, flashcards, QCM et cas pratiques — tout le programme DCG1 pour réussir l'examen national.</p>
+    <h2>${title}</h2>
+    <p>Sélectionnez une matière en haut à gauche. Cours complets, vocabulaire juridique/comptable, flashcards, QCM et cas pratiques pour réussir l'examen national.</p>
     <div class="welcome-grid">
       <div class="welcome-card"><div class="wc-num">${total}</div><div class="wc-label">Chapitres</div></div>
-      <div class="welcome-card"><div class="wc-num">${totalVocab}</div><div class="wc-label">Termes juridiques</div></div>
+      <div class="welcome-card"><div class="wc-num">${totalVocab}</div><div class="wc-label">Termes clés</div></div>
       <div class="welcome-card"><div class="wc-num">${totalFlash}</div><div class="wc-label">Flashcards</div></div>
       <div class="welcome-card"><div class="wc-num">${totalQcm}</div><div class="wc-label">Questions QCM</div></div>
     </div>
   </div>`;
+  document.getElementById('chapter-title-bar').textContent = 'Bienvenue';
 }
 
 function renderVocab(c, header) {
@@ -1974,6 +2936,7 @@ function renderVocab(c, header) {
      <div class="vocab-grid" id="vocab-grid"></div>`;
   renderVocabCards(terms);
 }
+
 function renderVocabCards(terms) {
   const grid = document.getElementById('vocab-grid');
   if (!grid) return;
@@ -1983,12 +2946,14 @@ function renderVocabCards(terms) {
       <div class="vd">${t.d}</div>
     </div>`).join('');
 }
+
 function filterVocab() {
   const q = document.getElementById('vocab-input').value.toLowerCase();
   const terms = (currentCh.vocab||[]).filter(t => t.t.toLowerCase().includes(q) || t.d.toLowerCase().includes(q));
   document.getElementById('vocab-count').textContent = terms.length + ' terme' + (terms.length>1?'s':'');
   renderVocabCards(terms);
 }
+
 function toggleVocab(i) {
   const card = document.getElementById('vc-'+i);
   if (card) card.classList.toggle('open');
@@ -2006,7 +2971,7 @@ function renderFlash(c, header) {
      <div class="flashcard-wrapper">
        <div class="flashcard${flashFlipped?' flipped':''}" id="fc" onclick="flipCard()">
          <div class="card-face front"><div class="card-label">Question</div><div class="card-text">${card.q}</div></div>
-         <div class="card-face back"><div class="card-label">Réponse</div><div class="card-text back-text">${card.a}</div></div>
+         <div class="card-face back"><div class="card-label">Réponse</div><div class="card-text">${card.a}</div></div>
        </div>
      </div>
      <div class="flash-nav">
@@ -2014,11 +2979,13 @@ function renderFlash(c, header) {
        <button onclick="flashNav(1)">Suivante →</button>
      </div>`;
 }
+
 function flipCard() {
   flashFlipped = !flashFlipped;
   const fc = document.getElementById('fc');
   if (fc) fc.classList.toggle('flipped');
 }
+
 function flashNav(dir) {
   const cards = currentCh.flashcards || [];
   flashIdx = (flashIdx + dir + cards.length) % cards.length;
@@ -2045,7 +3012,7 @@ function renderQCM(c, header) {
             if (oi === q.correct) cls = 'correct';
             else if (qcmAnswered[qi]?.chosen === oi) cls = 'wrong';
           }
-          return `<button class="opt-btn ${cls}" ${isAns?'disabled':''} onclick="answerQCM(${qi},${oi})">${o}</button>`;
+          return \`<button class="opt-btn \${cls}" \${isAns?'disabled':''} onclick="answerQCM(\${qi},\${oi})">\${o}</button>\`;
         }).join('')}
       </div>
       <div class="expl-box${isAns?' show':''}">${q.expl}</div>
@@ -2054,6 +3021,7 @@ function renderQCM(c, header) {
   html += `<button class="qcm-reset" onclick="resetQCM()">🔄 Recommencer</button>`;
   c.innerHTML = html;
 }
+
 function answerQCM(qi, chosen) {
   const q = currentCh.qcm[qi];
   qcmAnswered[qi] = { chosen, correct: chosen === q.correct };
@@ -2063,14 +3031,18 @@ function answerQCM(qi, chosen) {
     if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
   }, 100);
 }
+
 function resetQCM() { qcmAnswered = {}; renderMode(); }
 
 function renderCas(c, header) {
   const cas = currentCh.cas;
-  if (!cas) { c.innerHTML = header + '<p style="color:var(--text-dim)">Pas de cas pratique disponible.</p>'; return; }
+  if (!cas) { c.innerHTML = header + '<p style="color:var(--text-dim)">Pas d\\'exercice disponible.</p>'; return; }
   const qs = cas.questions || [];
-  c.innerHTML = header +
-    `<div class="metho-box">
+  
+  // Custom method box depending on subject
+  let methoHtml = '';
+  if (currentSubject === 'droit') {
+    methoHtml = `<div class="metho-box">
       <h4>🔑 Méthode du cas pratique (4 étapes)</h4>
       <div class="metho-steps">
         <div class="metho-step"><div class="step-num">01</div><div class="step-title">Faits qualifiés</div><div class="step-desc">Extraire et qualifier juridiquement les faits</div></div>
@@ -2078,12 +3050,27 @@ function renderCas(c, header) {
         <div class="metho-step"><div class="step-num">03</div><div class="step-title">Règle de droit</div><div class="step-desc">Définitions + principe + exceptions + sanctions</div></div>
         <div class="metho-step"><div class="step-num">04</div><div class="step-title">Application aux faits</div><div class="step-desc">Commence par « En l'espèce… »</div></div>
       </div>
-    </div>
-    <div class="cas-context"><h4>📋 Contexte</h4><p>${cas.contexte}</p></div>
-    ${qs.map(q=>`<div class="cas-q-block"><h4>${q}</h4><textarea placeholder="Rédigez votre réponse en utilisant les 4 étapes de la méthode..."></textarea></div>`).join('')}
+    </div>`;
+  } else {
+    methoHtml = `<div class="metho-box">
+      <h4>🔑 Méthode de résolution — Exercice comptable</h4>
+      <div class="metho-steps">
+        <div class="metho-step"><div class="step-num">01</div><div class="step-title">Analyser</div><div class="step-desc">Identifier la nature de l'opération</div></div>
+        <div class="metho-step"><div class="step-num">02</div><div class="step-title">Identifier</div><div class="step-desc">Quels comptes ? Actif/passif/charge/produit ?</div></div>
+        <div class="metho-step"><div class="step-num">03</div><div class="step-title">Calculer</div><div class="step-desc">Montants exacts (HT, TVA, TTC)</div></div>
+        <div class="metho-step"><div class="step-num">04</div><div class="step-title">Enregistrer</div><div class="step-desc">Débit = Crédit (partie double)</div></div>
+      </div>
+    </div>`;
+  }
+
+  c.innerHTML = header +
+    methoHtml + 
+    `<div class="cas-context"><h4>📋 Énoncé</h4><p>${cas.contexte}</p></div>
+    ${qs.map(q=>`<div class="cas-q-block"><h4>${q}</h4><textarea placeholder="Rédigez votre réponse en utilisant la méthode appropriée..."></textarea></div>`).join('')}
     <button class="corr-toggle-btn" onclick="toggleCorr(this)">👁 Afficher le corrigé</button>
     <div class="corr-body" id="corr-body">${cas.correction}</div>`;
 }
+
 function toggleCorr(btn) {
   const body = document.getElementById('corr-body');
   const show = body.classList.toggle('show');
@@ -2094,12 +3081,13 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('overlay').classList.toggle('show');
 }
+
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
 }
 
-// Init
+// Initialisation au chargement
 buildNav();
 renderWelcome();
 setMode('cours');
