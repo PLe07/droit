@@ -2922,7 +2922,140 @@ function closeSidebar() {
   .welcome-icon { font-size:4rem; margin-bottom:1.5rem; }
   .welcome-screen h2 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 12px; color: var(--text); }
   .welcome-screen p { color: var(--text-dim); line-height: 1.6; }
-  `; // <- AJOUT DE L'ACCENT GRAVE ICI AVANT LE POINT-VIRGULE
+  
+  /* ==========================================
+     DESIGN DES FLASHCARDS
+     ========================================== */
+  .flash-wrap {
+    max-width: 550px;
+    margin: 2rem auto;
+  }
+
+  .flash-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .flash-card {
+    background: linear-gradient(135deg, var(--bg2), var(--bg3));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-height: 240px;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s;
+  }
+
+  .flash-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+
+  .flash-face p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .flash-face small {
+    display: block;
+    margin-top: 24px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-mute);
+  }
+  
+  .flash-card:hover .flash-face small {
+    color: var(--accent2);
+  }
+
+  .flash-controls {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .flash-controls button {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text-dim);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .flash-controls button:hover:not(:disabled) {
+    background: var(--bg2);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .flash-controls button:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  /* ==========================================
+     DESIGN DE LA PRATIQUE (CAS PRATIQUES)
+     ========================================== */
+  .cas-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 1rem;
+  }
+
+  .cas-contexte {
+    background: var(--bg2);
+    border-left: 4px solid var(--gold);
+    border-radius: 4px var(--radius) var(--radius) 4px;
+    padding: 22px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .cas-question {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .cas-correction {
+    background: rgba(240, 192, 64, 0.02);
+    border: 1px solid rgba(240, 192, 64, 0.15);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 12px;
+  }
+
+  .cas-correction pre {
+    white-space: pre-wrap;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--text-dim);
+  }`; // <- AJOUT DE L'ACCENT GRAVE ICI AVANT LE POINT-VIRGULE
   document.head.appendChild(s);
 })();
 
