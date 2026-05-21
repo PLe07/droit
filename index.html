@@ -2817,7 +2817,9 @@ function closeSidebar() {
 
 (function injectQCMStyles() {
   const s = document.createElement('style');
-  s.textContent = /* Styles pour les titres des grandes sections de la Sidebar */
+  // AJOUT DE L'ACCENT GRAVE ICI AVANT LE TEXTE CSS
+  s.textContent = `
+  /* Styles pour les titres des grandes sections de la Sidebar */
   .nav-part-header {
     font-size: 11px;
     font-weight: 700;
@@ -2911,7 +2913,6 @@ function closeSidebar() {
   .qcm-opt.wrong { 
     background: rgba(248, 113, 113, 0.15) !important; 
     border-color: var(--red) !important; 
-    color: #f87171 !important; 
   }
 
   /* Conteneurs spécifiques et fiches */
@@ -2920,7 +2921,8 @@ function closeSidebar() {
   .welcome-screen { text-align:center; padding:5rem 1rem; max-width: 600px; margin: 0 auto; }
   .welcome-icon { font-size:4rem; margin-bottom:1.5rem; }
   .welcome-screen h2 { font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 12px; color: var(--text); }
-  .welcome-screen p { color: var(--text-dim); line-height: 1.6; };
+  .welcome-screen p { color: var(--text-dim); line-height: 1.6; }
+  `; // <- AJOUT DE L'ACCENT GRAVE ICI AVANT LE POINT-VIRGULE
   document.head.appendChild(s);
 })();
 
