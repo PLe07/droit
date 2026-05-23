@@ -22,7 +22,15 @@ body.theme-compta {
   --gold:#f0c040; --blue:#60a5fa; --red:#f87171; --orange:#fb923c;
   --text:#e2e8f0; --text-dim:#8899aa; --text-mute:#445566; --box-accent:#60a5fa;
 }
-
+body.theme-sig {
+  --bg:#0f1419; --bg2:#1a2027; --bg3:#222a33;
+  --border:#2d3741; --border2:#3d4751;
+  --accent:#7c5cff; --accent2:#9d83ff;
+  --gold:#f4c145; --green:#2ecc71; --red:#ff6b6b; --orange:#ffb84d;
+  --text:#e8eaed; --text-dim:#a8b3bd; --text-mute:#6b7680; --box-accent:#9d83ff;
+  --p:#7c5cff; --p2:#9d83ff; --ok:#2ecc71; --ko:#ff6b6b; --wn:#ffb84d; --info:#4dabf7;
+}
+  
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px}
 body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s}
@@ -185,14 +193,91 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--tex
 .mob-mode-btn:hover{color:var(--text)}
 .mob-mode-btn.active{color:var(--accent2);background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15)}
 .mob-icon{font-size:16px}
+/* ===== SIG COMPONENTS ===== */
+.sig-wrap h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.sig-wrap h2 .badge{font-size:11px;background:var(--accent);color:#fff;padding:3px 9px;border-radius:10px;margin-left:8px;vertical-align:middle;font-weight:500}
+.sig-wrap h2 .badge.gold{background:var(--gold);color:#1a1a1a}
+.sig-sub{color:var(--text-dim);font-size:13px;margin-bottom:20px}
+.sig-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:14px}
+.sig-card h3{font-size:14px;color:var(--accent2);font-weight:600;margin-bottom:8px}
+.sig-card h4{font-size:13px;color:var(--text);font-weight:600;margin:10px 0 6px}
+.sig-card p,.sig-card li{font-size:13px;color:var(--text);margin-bottom:5px}
+.sig-card ul,.sig-card ol{padding-left:18px;margin:6px 0 8px}
+.dossier{background:var(--bg3);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:6px;padding:14px 18px;margin-bottom:14px}
+.dossier-h{font-size:14px;color:var(--accent2);font-weight:600;margin-bottom:4px}
+.dossier-c{font-size:12px;color:var(--text-dim);margin-bottom:10px;font-style:italic}
+.q-block{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:13px 15px;margin:10px 0}
+.q-num{display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-right:8px}
+.q-text{font-size:13px;color:var(--text);margin-bottom:8px}
+.sig-btn{background:var(--bg3);color:var(--text);border:1px solid var(--border);padding:6px 14px;border-radius:5px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.sig-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.sig-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sig-btn.sm{padding:4px 10px;font-size:11px}
+.corr{margin-top:10px;padding:12px 14px;background:rgba(46,204,113,.08);border-left:3px solid var(--green);border-radius:0 5px 5px 0;font-size:12.5px;display:none}
+.corr.show{display:block}
+.corr strong{color:var(--green)}
+.corr code,.corr pre{background:var(--bg);color:var(--accent2);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.corr pre{padding:10px 12px;display:block;overflow-x:auto;margin:6px 0;line-height:1.7;white-space:pre-wrap;word-wrap:break-word}
+.note{background:rgba(255,184,77,.1);border-left:3px solid var(--orange);padding:9px 13px;border-radius:0 5px 5px 0;font-size:12.5px;margin:8px 0;color:var(--text)}
+.danger{background:rgba(255,107,107,.1);border-left:3px solid var(--red);padding:9px 13px;border-radius:0 5px 5px 0;font-size:12.5px;margin:8px 0;color:var(--text)}
+.info{background:rgba(77,171,247,.1);border-left:3px solid var(--info);padding:9px 13px;border-radius:0 5px 5px 0;font-size:12.5px;margin:8px 0;color:var(--text)}
+.ok-box{background:rgba(46,204,113,.1);border-left:3px solid var(--green);padding:9px 13px;border-radius:0 5px 5px 0;font-size:12.5px;margin:8px 0;color:var(--text)}
+.gold-box{background:rgba(244,193,69,.08);border-left:3px solid var(--gold);padding:10px 14px;border-radius:0 5px 5px 0;font-size:12.5px;margin:10px 0;color:var(--text)}
+.sig-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}
+.sig-table th{background:var(--bg3);padding:7px 10px;text-align:left;font-weight:600;border:1px solid var(--border);color:var(--accent2)}
+.sig-table td{padding:6px 10px;border:1px solid var(--border);color:var(--text);vertical-align:top}
+.sig-table tr:hover td{background:var(--bg3)}
+pre.code{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;overflow-x:auto;color:var(--text);margin:8px 0;line-height:1.7}
+.kw{color:#ff79c6}.str{color:#50fa7b}.com{color:#6272a4;font-style:italic}.fn{color:#ffb86c}
+.sig-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sig-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sig-grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:12px 14px}
+.tile-l{font-size:10px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;font-weight:600}
+.tile-v{font-size:18px;color:var(--text);font-weight:600}
+.tile-s{font-size:11px;color:var(--text-dim);margin-top:2px}
+.chk{display:flex;align-items:flex-start;gap:8px;padding:6px 0;cursor:pointer;font-size:13px}
+.chk input{margin-top:3px;cursor:pointer}.chk.done{color:var(--text-mute);text-decoration:line-through}
+.sig-flash{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:24px;text-align:center;min-height:180px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;transition:all .2s}
+.sig-flash:hover{border-color:var(--accent)}
+.sig-flash-q{font-size:14px;color:var(--text);font-weight:500}
+.sig-flash-a{font-size:13.5px;color:var(--text-dim);text-align:left;line-height:1.7}
+.sig-flash-a strong{color:var(--accent2)}
+.sig-flash-a code{background:var(--bg);color:var(--accent2);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.sig-flash-a pre{background:var(--bg);color:var(--text);padding:8px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;margin:6px 0;line-height:1.6;text-align:left;white-space:pre-wrap;word-wrap:break-word}
+.sig-flash-nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px}
+.sig-flash-nav .ctr{font-size:12px;color:var(--text-dim)}
+.exam-intro{background:linear-gradient(135deg,rgba(124,92,255,.2),rgba(124,92,255,.1));border:1px solid var(--accent);border-radius:8px;padding:18px 22px;margin-bottom:18px}
+.exam-intro h3{color:var(--accent2);font-size:15px;margin-bottom:8px}
+.examq{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;transition:border-color .2s}
+.examq.answered{border-color:var(--green);background:rgba(46,204,113,.05)}
+textarea.ans{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:5px;padding:10px;font-size:12.5px;line-height:1.6;resize:vertical;min-height:60px;font-family:inherit}
+textarea.ans:focus{outline:none;border-color:var(--accent)}
+.bo-part{background:linear-gradient(135deg,rgba(124,92,255,.08),rgba(124,92,255,.02));border:1px solid var(--accent);border-radius:8px;padding:16px 20px;margin-bottom:16px}
+.bo-part-h{font-size:15px;color:var(--accent2);font-weight:700;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bo-part-h .hours{font-size:11px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-weight:500}
+.bo-part-c{font-size:12px;color:var(--text-dim);margin-bottom:10px;font-style:italic}
+.bo-sub{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:11px 14px;margin:8px 0}
+.bo-sub-h{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px}
+.bo-sub ul{padding-left:18px;margin:4px 0}.bo-sub li{font-size:12.5px;margin-bottom:3px}
+.cov{display:inline-block;font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600;margin-left:6px;vertical-align:middle}
+.cov.ok{background:rgba(46,204,113,.15);color:var(--green)}
+.cov.partial{background:rgba(255,184,77,.15);color:var(--orange)}
+.cov.todo{background:rgba(255,107,107,.15);color:var(--red)}
+.sig-timer{position:fixed;top:14px;right:18px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:20px;font-weight:600;font-size:13px;font-family:'JetBrains Mono',monospace;box-shadow:0 4px 12px rgba(124,92,255,.3);z-index:150;display:none}
+.sig-timer.on{display:block}.sig-timer.warn{background:var(--orange)}.sig-timer.danger{background:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.05)}}
+@media(max-width:768px){.sig-grid2,.sig-grid3,.sig-grid4{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="theme-droit">
+<div class="sig-timer" id="sig-timer">⏱ 00:00</div>
 <header id="topbar">
   <button id="hamburger" onclick="toggleSidebar()">☰</button>
   <select class="subject-selector" id="subject-selector" onchange="changeSubject(this.value)">
     <option value="droit">⚖️ DCG Droit</option>
     <option value="compta">📊 DCG Compta</option>
+    <option value="sig">🎯 DCG UE8 — SIG</option>
   </select>
   <!-- Ici l'ID est corrigé en "chapter-title" -->
   <span id="chapter-title">Sélectionnez un chapitre</span>
@@ -205,6 +290,729 @@ body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--tex
   </div>
 </header>
 <div id="overlay" onclick="closeSidebar()"></div>
+<div id="sig-pages" style="display:none">
+
+<!-- BO -->
+<div id="sig-page-bo">
+<div class="sig-wrap">
+<h2>📜 Programme officiel BO <span class="badge gold">Arrêté DCG</span></h2>
+<p class="sig-sub">Référentiel officiel de l'UE8 «&nbsp;Système d'information de gestion&nbsp;» — <b>200 heures, 14 crédits ECTS, épreuve écrite 4h, coefficient 1</b>. Structure en 4 parties.</p>
+<div class="sig-grid4">
+<div class="tile"><div class="tile-l">Durée épreuve</div><div class="tile-v">4h</div><div class="tile-s">Écrit, 1 ou plusieurs cas</div></div>
+<div class="tile"><div class="tile-l">Coefficient</div><div class="tile-v">1</div><div class="tile-s">14 crédits ECTS</div></div>
+<div class="tile"><div class="tile-l">Réussite 2024</div><div class="tile-v">43,4%</div><div class="tile-s">Moyenne ~9/20</div></div>
+<div class="tile"><div class="tile-l">Volume</div><div class="tile-v">200h</div><div class="tile-s">Aucun prérequis</div></div>
+</div>
+<div class="info">💡 <b>Jury :</b> questions techniques et questions d'analyse pèsent chacune <b>~50% du barème</b>. Maîtriser la technique ne suffit pas — il faut <b>justifier, commenter, analyser en phrases rédigées</b>.</div>
+<div class="bo-part">
+<div class="bo-part-h"><span>📘 Partie 1 — Le SI dans son environnement</span><span class="hours">~30h</span></div>
+<div class="bo-part-c">Bases conceptuelles : ressources, acteurs, infrastructure, projet SI</div>
+<div class="bo-sub"><div class="bo-sub-h">1.1 — Rôle et composantes du SI</div>
+<ul><li>Définir le SI et identifier ses composantes : matérielle, logicielle, humaine, organisationnelle, informationnelle</li>
+<li>Distinguer SI / système informatique / SIG</li>
+<li>Acteurs : <b>DSI, RSSI, DPO, MOA/MOE</b></li>
+<li>Place du SI dans la stratégie : avantage concurrentiel</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">1.2 — Infrastructure matérielle et logicielle</div>
+<ul><li>Composants d'un poste : CPU, RAM, stockage (HDD, SSD)</li>
+<li>Logiciels : OS, ERP/PGI, CRM, GED, BI</li>
+<li>Réseaux : LAN, WAN, intranet, extranet</li>
+<li>Adressage <b>IPv4/IPv6</b>, DHCP, DNS, NAT</li>
+<li>Protocoles : HTTP/HTTPS, FTP, SMTP, POP3, IMAP</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">1.3 — Cloud computing et mobilité</div>
+<ul><li>Modèles : <b>SaaS, PaaS, IaaS</b> + on-premise</li>
+<li>Déploiement : public, privé, hybride, multi-cloud</li>
+<li>Mobilité : BYOD, MDM, travail hybride</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">1.4 — Conduite de projet SI</div>
+<ul><li>Cycle : étude d'opportunité → CDC → développement → recette → déploiement</li>
+<li><b>MOA</b> : exprime le besoin métier — <b>MOE</b> : réalise la solution</li>
+<li>Méthodes agiles (Scrum) vs cycle en V</li></ul></div>
+</div>
+<div class="bo-part">
+<div class="bo-part-h"><span>📗 Partie 2 — Gestion des données du SI</span><span class="hours">~80h</span></div>
+<div class="bo-part-c">Cœur technique de l'épreuve : modélisation, SQL, tableur, programmation</div>
+<div class="bo-sub"><div class="bo-sub-h">2.1 — Modélisation des données (Merise)</div>
+<ul><li><b>MCD</b> : entités, associations, attributs, cardinalités (0,1 / 1,1 / 0,n / 1,n)</li>
+<li><b>Spécialisation et héritage</b> — tombé en 2025</li>
+<li>Passage MCD → <b>MLD</b> / schéma relationnel</li>
+<li><b>Dépendances fonctionnelles</b> et formes normales <b>1FN / 2FN / 3FN</b></li>
+<li>Contraintes : PK, FK, NOT NULL, UNIQUE, CHECK</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">2.2 — SQL</div>
+<ul><li><b>DQL</b> : SELECT, FROM, WHERE, DISTINCT, ORDER BY, AS</li>
+<li><b>Jointures</b> : INNER JOIN, LEFT JOIN, auto-jointure</li>
+<li><b>Agrégations</b> : COUNT, SUM, AVG, MIN, MAX + GROUP BY, HAVING</li>
+<li><b>Sous-requêtes</b> : scalaires, IN/NOT IN, EXISTS/NOT EXISTS</li>
+<li><b>DML</b> : INSERT, UPDATE, DELETE</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">2.3 — Tableur (Excel)</div>
+<ul><li>Logique : <b>SI, ET, OU, SI.CONDITIONS</b></li>
+<li>Recherche : <b>RECHERCHEV, RECHERCHEX, INDEX/EQUIV</b></li>
+<li>Gestion erreurs : <b>SIERREUR, ESTVIDE</b></li>
+<li>Agrégations : <b>SOMME.SI(.ENS), NB.SI(.ENS)</b></li>
+<li>Références absolues ($), TCD</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">2.4 — VBA</div>
+<ul><li>Variables, types (Integer, Double, String, Boolean)</li>
+<li><b>If/ElseIf/Else, Select Case</b></li>
+<li><b>For, Do While, For Each</b></li>
+<li><b>Sub</b> vs <b>Function</b></li>
+<li><b>InputBox, MsgBox, Cells(l,c).Value</b></li></ul></div>
+</div>
+<div class="bo-part">
+<div class="bo-part-h"><span>📙 Partie 3 — SI et performance des processus</span><span class="hours">~50h</span></div>
+<div class="bo-part-c">Modélisation des processus, progiciels métier, technologies émergentes</div>
+<div class="bo-sub"><div class="bo-sub-h">3.1 — Modélisation des processus</div>
+<ul><li><b>Schéma événement-résultat (MOT)</b> : acteurs, événements ◊, opérations □, règles d'émission, synchronisation ET/OU</li>
+<li>Notation <b>CIMS</b> : Consultation, Insertion, Modification, Suppression</li>
+<li>BPMN (notions), workflow</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">3.2 — Progiciels et dématérialisation</div>
+<ul><li><b>PGI/ERP</b> : base unique partagée, modules intégrés</li>
+<li>Dématérialisation : <b>facture électronique (Factur-X, UBL, CII), PDP agréée DGFIP</b></li>
+<li>Signature électronique : niveaux eIDAS</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">3.3 — Technologies émergentes <span class="cov ok">2024+</span></div>
+<ul><li><b>IA et Machine Learning</b> : IA générative, LLM, RPA</li>
+<li><b>Blockchain</b> : registre distribué, smart contracts</li>
+<li><b>Big Data</b> : 4V, data warehouse, ETL, BI</li>
+<li><b>IoT</b> : capteurs, maintenance prédictive</li></ul></div>
+</div>
+<div class="bo-part">
+<div class="bo-part-h"><span>📕 Partie 4 — Sécurité et durabilité du SI</span><span class="hours">~40h</span></div>
+<div class="bo-part-c">Cybersécurité, RGPD, empreinte environnementale</div>
+<div class="bo-sub"><div class="bo-sub-h">4.1 — Cybersécurité</div>
+<ul><li>Critères <b>DICP</b> : Disponibilité, Intégrité, Confidentialité, Preuve</li>
+<li>Menaces : malware, phishing, ransomware, DDoS, injection SQL</li>
+<li>Mesures : pare-feu, chiffrement (AES/RSA), VPN, TLS, 2FA</li>
+<li>Sauvegardes : règle <b>3-2-1</b>, RTO, RPO, PCA, PRA</li>
+<li>ANSSI, NIS2, ISO 27001, SecNumCloud</li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">4.2 — RGPD</div>
+<ul><li><b>7 principes</b> : licéité, finalité, minimisation, exactitude, conservation limitée, intégrité/confidentialité, responsabilité</li>
+<li>Acteurs : responsable de traitement, sous-traitant, <b>DPO</b>, CNIL</li>
+<li><b>6 droits</b> : information, accès, rectification, effacement, portabilité, opposition</li>
+<li>Obligations : registre, <b>AIPD</b>, notification CNIL <b>72h</b></li>
+<li>Sanctions : <b>20 M€ ou 4% CA mondial</b></li></ul></div>
+<div class="bo-sub"><div class="bo-sub-h">4.3 — Durabilité numérique <span class="cov ok">Nouveauté</span></div>
+<ul><li>Empreinte : ~4% des GES mondiaux, fabrication = ~78%</li>
+<li><b>Loi REEN</b> (15 nov. 2021) ; <b>RGESN</b></li>
+<li>Indicateur <b>PUE</b> (Power Usage Effectiveness)</li>
+<li>Actions : allonger durée de vie, reconditionner, hébergeur vert</li></ul></div>
+</div>
+</div>
+</div>
+
+<!-- COUVERTURE -->
+<div id="sig-page-couv">
+<div class="sig-wrap">
+<h2>📊 Tableau de couverture <span class="badge">Programme vs Site</span></h2>
+<p class="sig-sub"><span class="cov ok">OK</span> traité — <span class="cov partial">PARTIEL</span> à compléter — <span class="cov todo">À FAIRE</span> manquant</p>
+<div class="sig-card"><h3>Partie 2 — Gestion des données (~80h)</h3>
+<table class="sig-table"><tr><th style="width:55%">Compétence BO</th><th>Couverture</th></tr>
+<tr><td>MCD : entités, associations, cardinalités</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Spécialisation / héritage</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Formes normales 1FN/2FN/3FN</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>SQL : SELECT, WHERE, jointures</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>SQL : GROUP BY, HAVING, agrégations</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>SQL : sous-requêtes, NOT EXISTS</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>SQL : UPDATE, DELETE</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Excel : SI, RECHERCHEV, SIERREUR</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Excel : SOMME.SI, NB.SI, TCD</td><td><span class="cov partial">PARTIEL</span></td></tr>
+<tr><td>VBA : Sub, Function, InputBox, MsgBox</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>VBA : If, For, Do While, boucles</td><td><span class="cov ok">OK</span></td></tr>
+</table></div>
+<div class="sig-card"><h3>Partie 3 — Processus (~50h)</h3>
+<table class="sig-table"><tr><th style="width:55%">Compétence BO</th><th>Couverture</th></tr>
+<tr><td>Schéma événement-résultat (MOT)</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Notation CIMS</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>PGI / ERP — concepts, avantages, risques</td><td><span class="cov partial">PARTIEL</span></td></tr>
+<tr><td>Facture électronique (Factur-X, PDP)</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>IA, blockchain, RPA, Big Data</td><td><span class="cov ok">OK</span></td></tr>
+</table></div>
+<div class="sig-card"><h3>Partie 4 — Sécurité et durabilité (~40h)</h3>
+<table class="sig-table"><tr><th style="width:55%">Compétence BO</th><th>Couverture</th></tr>
+<tr><td>Critères DICP</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Menaces : phishing, ransomware, DDoS</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Chiffrement AES/RSA, VPN, TLS, 2FA</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Sauvegardes 3-2-1, RTO/RPO, PCA/PRA</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>RGPD : DCP, droits, sanctions</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>Numérique responsable, Loi REEN, RGESN</td><td><span class="cov ok">OK</span></td></tr>
+<tr><td>ANSSI, NIS2, ISO 27001</td><td><span class="cov ok">OK</span></td></tr>
+</table></div>
+<div class="ok-box">✅ <b>Bilan :</b> ~92% du programme couvert.</div>
+</div>
+</div>
+
+<!-- IA & DURABILITÉ -->
+<div id="sig-page-ia_dur">
+<div class="sig-wrap">
+<h2>🤖 IA, blockchain & durabilité <span class="badge gold">Programme rénové</span></h2>
+<p class="sig-sub">Thématiques récentes (depuis 2024). Tombent en questions d'analyse rédigées.</p>
+<div class="sig-card"><h3>🧠 1. Intelligence artificielle</h3>
+<table class="sig-table"><tr><th>Terme</th><th>Définition</th></tr>
+<tr><td><b>IA générative</b></td><td>Produit du contenu nouveau (texte, image, code) à partir d'un prompt</td></tr>
+<tr><td><b>Machine learning</b></td><td>La machine apprend à partir de données sans être explicitement programmée</td></tr>
+<tr><td><b>RPA</b></td><td>Robotic Process Automation : automatise les tâches répétitives</td></tr>
+<tr><td><b>OCR</b></td><td>Reconnaissance optique de caractères : facture papier → texte exploitable</td></tr>
+<tr><td><b>LLM</b></td><td>Large Language Model — modèle entraîné sur de grands corpus textuels</td></tr>
+<tr><td><b>AI Act (UE 2024/1689)</b></td><td>Encadre l'IA par niveaux de risque (interdit / haut / limité / minimal)</td></tr>
+</table>
+<div class="danger">⚠️ <b>Hallucinations</b> : l'IA peut produire des infos fausses → vérification humaine obligatoire.</div>
+<div class="danger">⚠️ <b>RGPD</b> : envoyer des données client à une IA publique peut violer le RGPD.</div>
+<div class="danger">⚠️ <b>Responsabilité</b> : l'expert-comptable reste responsable même si l'IA a produit une erreur.</div>
+</div>
+<div class="sig-card"><h3>⛓️ 2. Blockchain</h3>
+<p>Registre distribué où les transactions sont enregistrées dans des <b>blocs chaînés cryptographiquement</b>. <b>Immuable</b> et <b>transparent</b>.</p>
+<table class="sig-table"><tr><th>Caractéristique</th><th>Explication</th></tr>
+<tr><td><b>Décentralisation</b></td><td>Pas d'autorité centrale</td></tr>
+<tr><td><b>Immuabilité</b></td><td>Bloc inscrit = non modifiable</td></tr>
+<tr><td><b>Traçabilité</b></td><td>Historique complet et horodaté</td></tr>
+</table>
+<div class="info">💡 <b>Réponse type :</b> « La blockchain est un registre distribué et immuable garantissant traçabilité et intégrité sans tiers de confiance. »</div>
+</div>
+<div class="sig-card"><h3>📊 3. Big Data — les 4V</h3>
+<table class="sig-table"><tr><th>V</th><th>Définition</th><th>Exemple</th></tr>
+<tr><td><b>Volume</b></td><td>Quantité massive</td><td>Logs serveurs</td></tr>
+<tr><td><b>Vélocité</b></td><td>Vitesse de génération</td><td>Tweets, bourse</td></tr>
+<tr><td><b>Variété</b></td><td>Formats hétérogènes</td><td>CSV + PDF + images</td></tr>
+<tr><td><b>Véracité</b></td><td>Qualité et fiabilité</td><td>Data quality</td></tr>
+</table></div>
+<div class="sig-card"><h3>🌱 4. Numérique responsable</h3>
+<div class="info">📊 Le numérique = <b>~4% des GES mondiaux</b>. Fabrication = <b>~78%</b> de l'impact.</div>
+<ul><li><b>Loi REEN</b> (15 nov. 2021) + <b>RGESN</b></li>
+<li>Allonger durée de vie du parc, reconditionnement</li>
+<li>Hébergeur cloud vert (PUE &lt; 1,3)</li></ul>
+<div class="gold-box">📝 <b>Réponse modèle :</b> « 1. Allonger la durée de vie (fabrication = ~78%). 2. Hébergeur certifié énergies renouvelables. 3. Charte numérique responsable. »</div>
+</div>
+</div>
+</div>
+
+<!-- PLAN D'ATTAQUE -->
+<div id="sig-page-plan">
+<div class="sig-wrap">
+<h2>🎯 Plan d'attaque J-1 <span class="badge">4h d'épreuve</span></h2>
+<div class="sig-grid3">
+<div class="tile"><div class="tile-l">Réussite UE8 2024</div><div class="tile-v">43,4%</div><div class="tile-s">Moyenne ~9/20</div></div>
+<div class="tile"><div class="tile-l">Tableur + SQL</div><div class="tile-v">100%</div><div class="tile-s">Toujours dans le sujet</div></div>
+<div class="tile"><div class="tile-l">VBA</div><div class="tile-v">100%</div><div class="tile-s">Systématique depuis 2020</div></div>
+</div>
+<div class="sig-card"><h3>⏰ Ce soir (2h max)</h3>
+<div class="chk" onclick="this.classList.toggle('done')"><input type="checkbox"><div><b>20 min</b> — Lis « Erreurs classiques du jury »</div></div>
+<div class="chk" onclick="this.classList.toggle('done')"><input type="checkbox"><div><b>30 min</b> — Drill flash : 40 questions éclair</div></div>
+<div class="chk" onclick="this.classList.toggle('done')"><input type="checkbox"><div><b>40 min</b> — Refais mentalement les questions SQL de l'annale 2025</div></div>
+<div class="chk" onclick="this.classList.toggle('done')"><input type="checkbox"><div><b>30 min</b> — Mémorise les squelettes VBA + pièges Excel</div></div>
+<div class="chk" onclick="this.classList.toggle('done')"><input type="checkbox"><div><b>Au lit</b> avant 23h. Sommeil &gt; révision panique.</div></div>
+</div>
+<div class="sig-card"><h3>📋 Gestion du temps (4h)</h3>
+<table class="sig-table"><tr><th>Étape</th><th>Temps</th><th>Action</th></tr>
+<tr><td>Lecture intégrale</td><td>15 min</td><td>Lis TOUT. Note les points par dossier.</td></tr>
+<tr><td>Dossier le plus fort</td><td>~1h</td><td>Commence par ce que tu maîtrises</td></tr>
+<tr><td>Dossiers techniques</td><td>~2h</td><td>SQL/VBA/Excel. Une feuille double par dossier.</td></tr>
+<tr><td>Dossier rédactionnel</td><td>~30 min</td><td>RGPD/cloud/IA — phrases courtes, structurées</td></tr>
+<tr><td>Relecture</td><td>15 min</td><td>Vérifier numéros questions, syntaxe SQL</td></tr>
+</table>
+<div class="note">⚠️ <b>Règle d'or :</b> NE LAISSE AUCUNE QUESTION VIDE.</div>
+</div>
+<div class="sig-card"><h3>🎁 Prédictions 2026</h3>
+<ul>
+<li><b>Sous-requête NOT EXISTS</b> : tombé 2025 + 2023 → peut revenir</li>
+<li><b>Héritage/spécialisation</b> : tombé 2025 → exercice type à maîtriser</li>
+<li><b>IA générative + limites</b> : sujet d'actualité très probable</li>
+<li><b>Facture électronique 2026</b> : encore très d'actualité</li>
+<li><b>Numérique responsable</b> : nouveau programme, attendu</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- ERREURS JURY -->
+<div id="sig-page-jury">
+<div class="sig-wrap">
+<h2>🚨 Erreurs classiques pénalisées par le jury</h2>
+<div class="sig-card"><h3>💀 Top 10 des erreurs sans raison</h3>
+<table class="sig-table"><tr><th>#</th><th>Erreur</th><th>Solution</th></tr>
+<tr><td>1</td><td>Oublier le <code>;</code> à la fin d'une requête SQL</td><td>Toujours terminer par <code>;</code></td></tr>
+<tr><td>2</td><td>Confondre <code>WHERE</code> et <code>HAVING</code></td><td><code>WHERE</code> avant agrégation, <code>HAVING</code> après GROUP BY</td></tr>
+<tr><td>3</td><td>GROUP BY incomplet</td><td>TOUS les champs SELECT non-agrégés → GROUP BY</td></tr>
+<tr><td>4</td><td>VBA sans <code>End Sub</code> / <code>End If</code></td><td>Fermer toutes les structures</td></tr>
+<tr><td>5</td><td>Excel : oublier les <code>$</code></td><td>Tester mentalement : que bouge à la recopie ?</td></tr>
+<tr><td>6</td><td>RECHERCHEV sans <code>FAUX</code></td><td>Toujours <code>FAUX</code> pour une recherche exacte</td></tr>
+<tr><td>7</td><td>Schéma E-R sans acteurs</td><td>3 colonnes mini, événements + opérations + résultats</td></tr>
+<tr><td>8</td><td>Réponse RGPD sans définir DCP</td><td>Toujours rappeler : <b>DCP = Données à Caractère Personnel</b></td></tr>
+<tr><td>9</td><td>Confondre SaaS/PaaS/IaaS</td><td>SaaS = utilise, PaaS = développe, IaaS = loue serveurs</td></tr>
+<tr><td>10</td><td>Phrases non rédigées</td><td>Sujet + verbe + complément obligatoires</td></tr>
+</table></div>
+<div class="sig-card"><h3>📜 Citations du rapport du jury</h3>
+<div class="info">« Le jury insiste sur le respect des règles de syntaxe lors de la rédaction des requêtes, des formules de tableur et des lignes d'algorithme. »</div>
+<div class="danger">« Le thème de cette UE ne dispense pas d'une rédaction de qualité, avec des phrases complètes. »</div>
+</div>
+</div>
+</div>
+
+<!-- DRILL FLASH -->
+<div id="sig-page-drill">
+<div class="sig-wrap">
+<h2>⚡ Drill flash — 40 questions éclair</h2>
+<p class="sig-sub">Clique sur la carte pour révéler. Si tu hésites &gt; 10 secondes → à réviser.</p>
+<div class="sig-flash" id="sigflashcard" onclick="sigFlipFlash()">
+<div class="sig-flash-q" id="sig-fq">Chargement...</div>
+<div class="sig-flash-a" id="sig-fa" style="display:none"></div>
+</div>
+<div class="sig-flash-nav">
+<button class="sig-btn" onclick="sigPrevFlash()">← Précédent</button>
+<span class="ctr" id="sig-fctr"></span>
+<button class="sig-btn primary" onclick="sigNextFlash()">Suivant →</button>
+</div>
+</div>
+</div>
+
+<!-- ANNALE 2025 -->
+<div id="sig-page-a2025">
+<div class="sig-wrap">
+<h2>📅 Session 2025 — SAS Ambulance Est <span class="badge">20 pts</span></h2>
+<p class="sig-sub">Transport sanitaire (200 salariés, 145 véhicules). Logiciel <b>GestAmbulances</b>.</p>
+<div class="dossier"><div class="dossier-h">📂 Dossier 1 — État des lieux du SI (7,5 pts)</div>
+<div class="q-block"><div><span class="q-num">Q1</span><span class="q-text">Patients affiliés au régime "Alsace-Lorraine" : code, nom, prénom.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> CodePatient, NomPatient, PrenomPatient
+<span class="kw">FROM</span> PATIENT
+<span class="kw">WHERE</span> RegimeAssMaladie = <span class="str">'Alsace-Lorraine'</span>;</pre></div></div>
+<div class="q-block"><div><span class="q-num">Q2</span><span class="q-text">Prix moyens par type de véhicule, classés du plus cher au moins cher.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> TypeVehicule, <span class="fn">AVG</span>(PrixVehicule) <span class="kw">AS</span> PrixMoyen
+<span class="kw">FROM</span> VEHICULE
+<span class="kw">GROUP BY</span> TypeVehicule
+<span class="kw">ORDER BY</span> PrixMoyen <span class="kw">DESC</span>;</pre></div></div>
+<div class="q-block"><div><span class="q-num">Q3</span><span class="q-text">Patients enregistrés mais n'ayant JAMAIS été transportés.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> CodePatient, NomPatient
+<span class="kw">FROM</span> PATIENT
+<span class="kw">WHERE NOT EXISTS</span> (
+  <span class="kw">SELECT</span> * <span class="kw">FROM</span> TRANSPORT
+  <span class="kw">WHERE</span> TRANSPORT.CodePatient = PATIENT.CodePatient
+);</pre></div></div>
+<div class="q-block"><div><span class="q-num">Q4</span><span class="q-text">Suppression d'un type de véhicule — risque et solutions.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr">Refus probable : <b>contrainte d'intégrité référentielle</b>.<br><b>Solutions :</b> ON DELETE CASCADE / supprimer d'abord les véhicules / réaffecter.</div></div>
+<div class="q-block"><div><span class="q-num">Q5</span><span class="q-text"><b>Héritage</b> : adapter le schéma pour SALADMIN et SALSANI.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><ol><li>Garder <code>SALARIE</code> (mère) : attributs communs</li>
+<li><code>SALSANI</code> (NumSalSani, NumDiplome, DateVisiteMed) — PK + FK vers SALARIE</li>
+<li><code>SALADMIN</code> (NumSalAdmin, NomService) — idem</li></ol>
+<b>Concept :</b> spécialisation / héritage / sous-typage.</div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 2 — Cloud + RGPD (4 pts)</div>
+<div class="q-block"><div><span class="q-num">Q7</span><span class="q-text">Externalisation BDD cloud : 2 avantages et 2 risques.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><b>Avantages :</b> réduction coûts, scalabilité.<br><b>Risques :</b> dépendance prestataire, données de santé → hébergeur certifié <b>HDS</b> obligatoire.</div></div>
+<div class="q-block"><div><span class="q-num">Q8</span><span class="q-text">Pourquoi le RGPD s'applique-t-il particulièrement à Ambulance Est ?</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr">Traite des <b>données sensibles art. 9</b> : données de santé.<br><b>Obligations :</b> DPO, hébergeur HDS, registre des traitements, AIPD.</div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 3 — Facturation électronique (1,5 pts)</div>
+<div class="q-block"><div><span class="q-num">Q10</span><span class="q-text">À quoi sert la facturation électronique ? Quel format ?</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr">Format <b>XML structuré</b>. Standards : <b>Factur-X</b> (PDF+XML), UBL, CII.<br><b>Calendrier :</b> 1er sept. 2026 : GE+ETI émettent, toutes reçoivent — 1er sept. 2027 : PME+micro émettent.</div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 4 — Tableur + VBA + RSE (7 pts)</div>
+<div class="q-block"><div><span class="q-num">Q12</span><span class="q-text">Formule prime carburant : 0,05 €/km × distance × 2 × jours. Si vide → "N/A".</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre>=SI(ESTVIDE(B2);"N/A";B2*0,05*2*C2)</pre></div></div>
+<div class="q-block"><div><span class="q-num">Q13</span><span class="q-text">Macro VBA <code>PrimeCarburant</code> : InputBox distance + jours → calcul → MsgBox.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">Sub</span> <span class="fn">PrimeCarburant</span>()
+    <span class="kw">Dim</span> distance <span class="kw">As Double</span>
+    <span class="kw">Dim</span> nbJours <span class="kw">As Integer</span>
+    <span class="kw">Dim</span> prime <span class="kw">As Double</span>
+    distance = <span class="fn">InputBox</span>(<span class="str">"Distance (km) :"</span>)
+    nbJours = <span class="fn">InputBox</span>(<span class="str">"Jours travaillés :"</span>)
+    prime = distance * 0.05 * 2 * nbJours
+    <span class="fn">MsgBox</span> <span class="str">"Prime : "</span> &amp; prime &amp; <span class="str">" €"</span>, vbInformation
+<span class="kw">End Sub</span></pre></div></div>
+<div class="q-block"><div><span class="q-num">Q14</span><span class="q-text">3 actions pour réduire l'empreinte numérique.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><ul><li>Hébergeur cloud vert</li><li>Allonger durée de vie du matériel</li><li>Charte numérique responsable</li></ul></div></div>
+</div>
+</div>
+</div>
+
+<!-- ANNALE 2023 -->
+<div id="sig-page-a2023">
+<div class="sig-wrap">
+<h2>📅 Session 2023 — Domaine viticole <span class="badge">20 pts</span></h2>
+<div class="dossier"><div class="dossier-h">📂 Dossier 1 — Schéma relationnel</div>
+<div class="q-block"><div><span class="q-num">Q1</span><span class="q-text">Le schéma permet-il d'enregistrer plusieurs vins dans une même commande ?</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><b>Oui</b> via la relation <code>PASSER</code> avec clé concaténée (IdVin + IdCommande). Ajouter <code>Quantite</code>.</div></div>
+<div class="q-block"><div><span class="q-num">Q2</span><span class="q-text">Le schéma respecte-t-il la composition d'un vin avec % par cépage ?</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><b>Non.</b> Ajouter <code>Pourcentage</code> dans ASSEMBLER.</div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 3 — SQL modification et suppression</div>
+<div class="q-block"><div><span class="q-num">Q7</span><span class="q-text">Modifier le nom Despret → "Despret-Martin".</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">UPDATE</span> CLIENT
+<span class="kw">SET</span> NomClient = <span class="str">'Despret-Martin'</span>
+<span class="kw">WHERE</span> NomClient = <span class="str">'Despret'</span>;</pre>
+<b>JAMAIS oublier le WHERE</b> sinon tous les clients sont modifiés.</div></div>
+<div class="q-block"><div><span class="q-num">Q8</span><span class="q-text">Supprimer un client. Incidence et solutions.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">DELETE FROM</span> CLIENT <span class="kw">WHERE</span> IdClient = <span class="str">'CLI01512'</span>;</pre>
+Refus probable (intégrité référentielle). Solutions : ON DELETE CASCADE / supprimer les commandes d'abord.</div></div>
+</div>
+</div>
+</div>
+
+<!-- ANNALE 2021 -->
+<div id="sig-page-a2021">
+<div class="sig-wrap">
+<h2>📅 Session 2021 — Entreprise sportive <span class="badge">20 pts</span></h2>
+<div class="dossier"><div class="dossier-h">📂 Dossier 1 — SQL</div>
+<div class="q-block"><div><span class="q-num">Q1</span><span class="q-text">Clients ayant passé au moins une commande en 2024, classés par nom.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT DISTINCT</span> CLIENT.NomClient, CLIENT.PrenomClient
+<span class="kw">FROM</span> CLIENT
+<span class="kw">INNER JOIN</span> COMMANDE <span class="kw">ON</span> CLIENT.IdClient = COMMANDE.IdClient
+<span class="kw">WHERE</span> <span class="fn">YEAR</span>(COMMANDE.DateCom) = 2024
+<span class="kw">ORDER BY</span> CLIENT.NomClient;</pre></div></div>
+<div class="q-block"><div><span class="q-num">Q2</span><span class="q-text">Produits dont le prix est supérieur à la moyenne.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> NomProduit, PrixProduit <span class="kw">FROM</span> PRODUIT
+<span class="kw">WHERE</span> PrixProduit &gt; (<span class="kw">SELECT</span> <span class="fn">AVG</span>(PrixProduit) <span class="kw">FROM</span> PRODUIT);</pre></div></div>
+<div class="q-block"><div><span class="q-num">Q3</span><span class="q-text">Par catégorie, nb produits + prix moyen — seulement si plus de 5 produits.</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> CodeCategorie, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> NbProduits, <span class="fn">AVG</span>(PrixProduit) <span class="kw">AS</span> PrixMoyen
+<span class="kw">FROM</span> PRODUIT
+<span class="kw">GROUP BY</span> CodeCategorie
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt; 5;</pre></div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 2 — Excel RECHERCHEV</div>
+<div class="q-block"><div><span class="q-num">Q4</span><span class="q-text">RECHERCHEV depuis TARIFS!A2:C100 — nom (col 2) et prix HT (col 3).</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><b>Nom :</b> <code>=RECHERCHEV(B5;TARIFS!$A$2:$C$100;2;FAUX)</code><br>
+<b>Prix HT :</b> <code>=RECHERCHEV(B5;TARIFS!$A$2:$C$100;3;FAUX)</code></div></div>
+<div class="q-block"><div><span class="q-num">Q5</span><span class="q-text">Afficher "Produit inconnu" si code absent (#N/A).</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre>=SIERREUR(RECHERCHEV(B5;TARIFS!$A$2:$C$100;2;FAUX);"Produit inconnu")</pre></div></div>
+</div>
+</div>
+</div>
+
+<!-- ANNALE 2020 -->
+<div id="sig-page-a2020">
+<div class="sig-wrap">
+<h2>📅 Session 2020 — Activité portuaire <span class="badge">20 pts</span></h2>
+<div class="dossier"><div class="dossier-h">📂 Dossier 1 — Formes normales</div>
+<div class="q-block"><div><span class="q-num">Q1</span><span class="q-text">NAVIRE(NumOMI, NomNav, IdTypeNav, LibelleTypeNav) — en 3FN ?</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><code>NumOMI → IdTypeNav → LibelleTypeNav</code> = <b>dépendance transitive</b> → <b>pas en 3FN</b>.<br>
+Correction :<br><code>NAVIRE (#NumOMI, NomNav, #IdTypeNav)</code><br>
+<code>TYPE_NAVIRE (#IdTypeNav, LibelleTypeNav)</code></div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 2 — SQL</div>
+<div class="q-block"><div><span class="q-num">Q2</span><span class="q-text">Navires ayant fait au moins une escale au quai "Q5".</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT DISTINCT</span> NAVIRE.NumOMI, NAVIRE.NomNav
+<span class="kw">FROM</span> NAVIRE
+<span class="kw">INNER JOIN</span> ESCALE <span class="kw">ON</span> NAVIRE.NumOMI = ESCALE.NumOMI
+<span class="kw">WHERE</span> ESCALE.IdQuai = <span class="str">'Q5'</span>;</pre></div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 3 — Excel formule imbriquée</div>
+<div class="q-block"><div><span class="q-num">Q3</span><span class="q-text">1ère lettre de C31 → RECHERCHEV dans CODES. Si C31 vide → "".</span></div>
+<button class="sig-btn sm" onclick="sigToggleC(this)">Voir corrigé</button>
+<div class="corr"><pre>=SI(ESTVIDE(C31);"";RECHERCHEV(GAUCHE(C31;1);$A$1:$B$10;2;FAUX))</pre></div></div>
+</div>
+</div>
+</div>
+
+<!-- EXAMEN BLANC -->
+<div id="sig-page-blanc">
+<div class="sig-wrap">
+<h2>⚡ Examen blanc 2026 <span class="badge">⏱ 4h</span></h2>
+<div class="exam-intro">
+<h3>🏢 Contexte : SARL «&nbsp;EcoLivre&nbsp;»</h3>
+<p>Librairie en ligne (180 salariés, CA 25 M€). Directrice IT Léa CHEN supervise modernisation BDD, facturation électronique, sécurisation données clients.</p>
+<button class="sig-btn primary" onclick="sigStartTimer(240)">▶ Démarrer timer 4h</button>
+<button class="sig-btn" onclick="sigStopTimer()">⏸ Arrêter</button>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 1 — Base de données (6 pts)</div>
+<p style="font-size:12.5px;color:var(--text-dim);margin:6px 0 12px"><b>Schéma :</b> CLIENT(#IdCli, NomCli, PrenomCli, EmailCli) — LIVRE(#IdLivre, Titre, PrixVente, #IdCategorie) — CATEGORIE(#IdCategorie, NomCategorie) — COMMANDE(#NumCom, DateCom, #IdCli) — LIGNE_CMD(#NumCom, #IdLivre, Quantite)</p>
+<div class="examq"><span class="q-num">Q1.1</span><span class="q-text"><b>(1pt)</b> Livres "Roman policier" triés par prix décroissant.</span>
+<textarea class="ans" placeholder="SELECT ..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> LIVRE.Titre, LIVRE.PrixVente
+<span class="kw">FROM</span> LIVRE <span class="kw">INNER JOIN</span> CATEGORIE <span class="kw">ON</span> LIVRE.IdCategorie = CATEGORIE.IdCategorie
+<span class="kw">WHERE</span> CATEGORIE.NomCategorie = <span class="str">'Roman policier'</span>
+<span class="kw">ORDER BY</span> LIVRE.PrixVente <span class="kw">DESC</span>;</pre></div></div>
+<div class="examq"><span class="q-num">Q1.2</span><span class="q-text"><b>(1,5pt)</b> Clients qui n'ont jamais commandé.</span>
+<textarea class="ans" placeholder="SELECT ..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">SELECT</span> NomCli, PrenomCli <span class="kw">FROM</span> CLIENT
+<span class="kw">WHERE NOT EXISTS</span> (
+  <span class="kw">SELECT</span> * <span class="kw">FROM</span> COMMANDE <span class="kw">WHERE</span> COMMANDE.IdCli = CLIENT.IdCli
+);</pre></div></div>
+<div class="examq"><span class="q-num">Q1.3</span><span class="q-text"><b>(1pt)</b> Augmenter de 10% le prix des livres "Roman policier".</span>
+<textarea class="ans" placeholder="UPDATE ..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">UPDATE</span> LIVRE <span class="kw">SET</span> PrixVente = PrixVente * 1.1
+<span class="kw">WHERE</span> IdCategorie = (<span class="kw">SELECT</span> IdCategorie <span class="kw">FROM</span> CATEGORIE <span class="kw">WHERE</span> NomCategorie = <span class="str">'Roman policier'</span>);</pre></div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 2 — Excel & VBA (6 pts)</div>
+<div class="examq"><span class="q-num">Q2.1</span><span class="q-text"><b>(1pt)</b> "Cher" si HT &gt; 50, "Moyen" si ≥ 20, "Pas cher" sinon.</span>
+<textarea class="ans" placeholder="=SI(...)"></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><pre>=SI(B2&gt;50;"Cher";SI(B2&gt;=20;"Moyen";"Pas cher"))</pre></div></div>
+<div class="examq"><span class="q-num">Q2.2</span><span class="q-text"><b>(2pt)</b> Macro <code>CalculerRemise</code> : CA &lt; 1000 → 0%, [1000;5000[ → 5%, ≥ 5000 → 10%.</span>
+<textarea class="ans" placeholder="Sub CalculerRemise()..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">Sub</span> <span class="fn">CalculerRemise</span>()
+    <span class="kw">Dim</span> ca <span class="kw">As Double</span>, remise <span class="kw">As Double</span>
+    ca = <span class="fn">InputBox</span>(<span class="str">"CA annuel (€) :"</span>)
+    <span class="kw">If</span> ca &lt; 1000 <span class="kw">Then</span>
+        remise = 0
+    <span class="kw">ElseIf</span> ca &lt; 5000 <span class="kw">Then</span>
+        remise = 5
+    <span class="kw">Else</span>
+        remise = 10
+    <span class="kw">End If</span>
+    <span class="fn">MsgBox</span> <span class="str">"Remise : "</span> &amp; remise &amp; <span class="str">" %"</span>, vbInformation
+<span class="kw">End Sub</span></pre></div></div>
+<div class="examq"><span class="q-num">Q2.3</span><span class="q-text"><b>(2pt)</b> Macro <code>BoucleClients</code> : A2:A100 — si non vide → gras + "OK" en col B.</span>
+<textarea class="ans" placeholder="Sub BoucleClients()..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><pre><span class="kw">Sub</span> <span class="fn">BoucleClients</span>()
+    <span class="kw">Dim</span> i <span class="kw">As Integer</span>
+    <span class="kw">For</span> i = 2 <span class="kw">To</span> 100
+        <span class="kw">If</span> <span class="fn">Cells</span>(i, 1).Value &lt;&gt; <span class="str">""</span> <span class="kw">Then</span>
+            <span class="fn">Cells</span>(i, 1).Font.Bold = <span class="kw">True</span>
+            <span class="fn">Cells</span>(i, 2).Value = <span class="str">"OK"</span>
+        <span class="kw">End If</span>
+    <span class="kw">Next</span> i
+    <span class="fn">MsgBox</span> <span class="str">"Terminé"</span>, vbInformation
+<span class="kw">End Sub</span></pre></div></div>
+</div>
+<div class="dossier"><div class="dossier-h">📂 Dossier 3 — Cloud, RGPD, sécurité (5 pts)</div>
+<div class="examq"><span class="q-num">Q3.1</span><span class="q-text"><b>(2pt)</b> Comparer SaaS/PaaS/IaaS et recommander pour EcoLivre.</span>
+<textarea class="ans" placeholder="SaaS = ..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><table class="sig-table"><tr><th>Modèle</th><th>Tu gères</th><th>Exemple</th></tr>
+<tr><td>SaaS</td><td>Données seules</td><td>Office 365</td></tr>
+<tr><td>PaaS</td><td>Appli + données</td><td>Heroku</td></tr>
+<tr><td>IaaS</td><td>OS + appli + données</td><td>AWS EC2, OVH</td></tr></table>
+<b>Recommandation :</b> IaaS — maîtrise du PGI interne. Hébergeur UE obligatoire (RGPD).</div></div>
+<div class="examq"><span class="q-num">Q3.2</span><span class="q-text"><b>(1,5pt)</b> Newsletter mensuelle. Obligations RGPD ?</span>
+<textarea class="ans" placeholder="..."></textarea>
+<button class="sig-btn sm" onclick="sigToggleC(this)" style="margin-top:6px">Voir corrigé</button>
+<div class="corr"><ol><li>Base légale = <b>consentement</b> (opt-in)</li>
+<li>Information préalable : finalité, durée, droits</li>
+<li>Lien de désinscription dans CHAQUE email</li></ol></div></div>
+</div>
+<div class="ok-box">✅ <b>Total : 20 pts / 4h.</b> Vise minimum 12/20.</div>
+</div>
+</div>
+
+<!-- MÉMO SQL -->
+<div id="sig-page-m_sql">
+<div class="sig-wrap">
+<h2>📘 SQL — 8 patterns annales</h2>
+<div class="sig-card"><h3>Pattern 1 — SELECT simple + filtre</h3>
+<pre class="code"><span class="kw">SELECT</span> champ1, champ2 <span class="kw">FROM</span> TABLE <span class="kw">WHERE</span> condition;</pre></div>
+<div class="sig-card"><h3>Pattern 2 — Jointure INNER JOIN</h3>
+<pre class="code"><span class="kw">SELECT</span> A.champ, B.champ
+<span class="kw">FROM</span> TableA A <span class="kw">INNER JOIN</span> TableB B <span class="kw">ON</span> A.cle = B.cle
+<span class="kw">WHERE</span> condition;</pre></div>
+<div class="sig-card"><h3>Pattern 3 — Agrégation + GROUP BY</h3>
+<pre class="code"><span class="kw">SELECT</span> champ_g, <span class="fn">COUNT</span>(*), <span class="fn">SUM</span>(...), <span class="fn">AVG</span>(...)
+<span class="kw">FROM</span> TABLE <span class="kw">GROUP BY</span> champ_g;</pre>
+<div class="danger">⚠️ TOUS les champs SELECT non-agrégés → GROUP BY</div></div>
+<div class="sig-card"><h3>Pattern 4 — GROUP BY + HAVING</h3>
+<pre class="code"><span class="kw">SELECT</span> champ, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> nb
+<span class="kw">FROM</span> TABLE <span class="kw">GROUP BY</span> champ <span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt; 5;</pre>
+<div class="info">WHERE filtre AVANT. HAVING filtre APRÈS agrégation.</div></div>
+<div class="sig-card"><h3>Pattern 5 — Sous-requête scalaire</h3>
+<pre class="code"><span class="kw">SELECT</span> champ <span class="kw">FROM</span> TABLE
+<span class="kw">WHERE</span> champ &gt; (<span class="kw">SELECT</span> <span class="fn">AVG</span>(champ) <span class="kw">FROM</span> TABLE);</pre></div>
+<div class="sig-card"><h3>Pattern 6 — NOT EXISTS (négation)</h3>
+<pre class="code"><span class="kw">SELECT</span> * <span class="kw">FROM</span> TableA
+<span class="kw">WHERE NOT EXISTS</span> (<span class="kw">SELECT</span> * <span class="kw">FROM</span> TableB <span class="kw">WHERE</span> B.cle = A.cle);</pre>
+<div class="info">« Jamais commandé » → NOT EXISTS préférable à NOT IN</div></div>
+<div class="sig-card"><h3>Pattern 7 — UPDATE</h3>
+<pre class="code"><span class="kw">UPDATE</span> TABLE <span class="kw">SET</span> champ = valeur <span class="kw">WHERE</span> condition;</pre>
+<div class="danger">⚠️ JAMAIS de UPDATE sans WHERE</div></div>
+<div class="sig-card"><h3>Pattern 8 — DELETE</h3>
+<pre class="code"><span class="kw">DELETE FROM</span> TABLE <span class="kw">WHERE</span> condition;</pre>
+<div class="info">Mentionner le risque d'intégrité référentielle si demandé</div></div>
+</div>
+</div>
+
+<!-- MÉMO VBA -->
+<div id="sig-page-m_vba">
+<div class="sig-wrap">
+<h2>🤖 VBA — squelettes par cœur</h2>
+<div class="sig-card"><h3>Squelette 1 — Sub + InputBox + MsgBox</h3>
+<pre class="code"><span class="kw">Sub</span> <span class="fn">NomMacro</span>()
+    <span class="kw">Dim</span> variable <span class="kw">As Double</span>
+    variable = <span class="fn">InputBox</span>(<span class="str">"Question ?"</span>)
+    <span class="fn">MsgBox</span> <span class="str">"Résultat : "</span> &amp; variable, vbInformation
+<span class="kw">End Sub</span></pre></div>
+<div class="sig-card"><h3>Squelette 2 — If / ElseIf / Else</h3>
+<pre class="code"><span class="kw">If</span> condition1 <span class="kw">Then</span>
+    <span class="com">' instructions</span>
+<span class="kw">ElseIf</span> condition2 <span class="kw">Then</span>
+    <span class="com">' instructions</span>
+<span class="kw">Else</span>
+    <span class="com">' par défaut</span>
+<span class="kw">End If</span></pre>
+<div class="danger">⚠️ TOUJOURS End If à la fin</div></div>
+<div class="sig-card"><h3>Squelette 3 — Boucle For</h3>
+<pre class="code"><span class="kw">Dim</span> i <span class="kw">As Integer</span>
+<span class="kw">For</span> i = 1 <span class="kw">To</span> 100
+    <span class="fn">Cells</span>(i, 1).Value = i
+<span class="kw">Next</span> i</pre></div>
+<div class="sig-card"><h3>Squelette 4 — Do While (fin de liste)</h3>
+<pre class="code"><span class="kw">Dim</span> i <span class="kw">As Integer</span>
+i = 2
+<span class="kw">Do While</span> <span class="fn">Cells</span>(i, 1).Value &lt;&gt; <span class="str">""</span>
+    <span class="com">' traiter la cellule</span>
+    i = i + 1
+<span class="kw">Loop</span></pre></div>
+<div class="sig-card"><h3>Squelette 5 — Function</h3>
+<pre class="code"><span class="kw">Function</span> <span class="fn">CalculPrime</span>(salaire <span class="kw">As Double</span>) <span class="kw">As Double</span>
+    <span class="kw">If</span> salaire &gt; 3000 <span class="kw">Then</span>
+        CalculPrime = salaire * 0.05
+    <span class="kw">Else</span>
+        CalculPrime = salaire * 0.02
+    <span class="kw">End If</span>
+<span class="kw">End Function</span></pre>
+<div class="info">Utilisable depuis Excel : <code>=CalculPrime(B2)</code></div></div>
+<div class="sig-card"><h3>📋 Types + pièges</h3>
+<table class="sig-table"><tr><th>Type</th><th>Usage</th></tr>
+<tr><td><code>Integer</code></td><td>Entier</td></tr>
+<tr><td><code>Double</code></td><td>Décimal (montants)</td></tr>
+<tr><td><code>String</code></td><td>Texte</td></tr>
+<tr><td><code>Boolean</code></td><td>True / False</td></tr>
+</table>
+<div class="danger">❌ Concat avec <code>+</code> → utiliser <code>&amp;</code></div>
+<div class="danger">❌ Décimale VBA = <b>point</b> : <code>0.05</code></div>
+<div class="danger">❌ Oublier <code>End If</code>, <code>End Sub</code>, <code>Next</code></div></div>
+</div>
+</div>
+
+<!-- MÉMO EXCEL -->
+<div id="sig-page-m_excel">
+<div class="sig-wrap">
+<h2>📊 Excel — formules et pièges</h2>
+<div class="sig-card"><h3>Top formules</h3>
+<table class="sig-table"><tr><th>Formule</th><th>Syntaxe</th><th>Usage</th></tr>
+<tr><td><b>SI</b></td><td><code>=SI(test;vrai;faux)</code></td><td>Condition simple</td></tr>
+<tr><td><b>RECHERCHEV</b></td><td><code>=RECHERCHEV(val;plage;col;FAUX)</code></td><td>Lookup vertical</td></tr>
+<tr><td><b>SIERREUR</b></td><td><code>=SIERREUR(formule;"-")</code></td><td>Gérer #N/A</td></tr>
+<tr><td><b>SOMME.SI</b></td><td><code>=SOMME.SI(plage;critère;somme)</code></td><td>Somme conditionnelle</td></tr>
+<tr><td><b>NB.SI</b></td><td><code>=NB.SI(plage;critère)</code></td><td>Compter selon critère</td></tr>
+<tr><td><b>ESTVIDE</b></td><td><code>=SI(ESTVIDE(A1);"";...)</code></td><td>Tester vide</td></tr>
+<tr><td><b>GAUCHE</b></td><td><code>=GAUCHE(A1;3)</code></td><td>Extraire caractères</td></tr>
+</table></div>
+<div class="sig-card"><h3>🔑 Références ($)</h3>
+<table class="sig-table"><tr><th>Notation</th><th>Comportement</th></tr>
+<tr><td><code>A1</code></td><td>Tout bouge (relative)</td></tr>
+<tr><td><code>$A$1</code></td><td>Rien ne bouge (absolue)</td></tr>
+<tr><td><code>$A1</code></td><td>Colonne fixée, ligne bouge</td></tr>
+<tr><td><code>A$1</code></td><td>Ligne fixée, colonne bouge</td></tr>
+</table></div>
+<div class="sig-card"><h3>🚨 Pièges pénalisés</h3>
+<div class="danger">❌ Séparateur : <code>;</code> en France (pas <code>,</code>)</div>
+<div class="danger">❌ Décimale : <code>,</code> en France</div>
+<div class="danger">❌ RECHERCHEV sans <code>FAUX</code> en 4e argument</div>
+<div class="danger">❌ Oublier les <code>$</code> sur les plages</div>
+</div>
+</div>
+</div>
+
+<!-- MÉMO PROCESSUS -->
+<div id="sig-page-m_proc">
+<div class="sig-wrap">
+<h2>🔀 Schéma événement-résultat</h2>
+<div class="sig-card"><h3>📐 5 règles</h3>
+<ol style="padding-left:18px;margin:8px 0">
+<li style="margin-bottom:6px"><b>Une colonne par acteur</b></li>
+<li style="margin-bottom:6px"><b>Événements en losange ◊</b></li>
+<li style="margin-bottom:6px"><b>Opérations en rectangle □</b></li>
+<li style="margin-bottom:6px"><b>Synchronisation</b> (ET / OU) si convergence</li>
+<li style="margin-bottom:6px"><b>Règles d'émission</b> : Toujours / Si... / Sinon...</li>
+</ol></div>
+<div class="sig-card"><h3>📋 Notation CIMS</h3>
+<table class="sig-table"><tr><th>Lettre</th><th>Action</th><th>SQL</th></tr>
+<tr><td><b>C</b></td><td>Consultation</td><td>SELECT</td></tr>
+<tr><td><b>I</b></td><td>Insertion</td><td>INSERT INTO</td></tr>
+<tr><td><b>M</b></td><td>Modification</td><td>UPDATE</td></tr>
+<tr><td><b>S</b></td><td>Suppression</td><td>DELETE FROM</td></tr>
+</table></div>
+</div>
+</div>
+
+<!-- MÉMO RGPD -->
+<div id="sig-page-m_rgpd">
+<div class="sig-wrap">
+<h2>🔐 RGPD, cloud, réseaux</h2>
+<div class="sig-card"><h3>📜 RGPD — réflexes immédiats</h3>
+<table class="sig-table"><tr><th>Terme</th><th>Définition</th></tr>
+<tr><td><b>DCP</b></td><td>Donnée à Caractère Personnel : info sur personne identifiable</td></tr>
+<tr><td><b>Donnée sensible</b></td><td>Art. 9 RGPD : santé, religion, opinion politique</td></tr>
+<tr><td><b>DPO</b></td><td>Délégué à la Protection des Données</td></tr>
+<tr><td><b>AIPD</b></td><td>Analyse d'Impact — obligatoire pour traitements à risque élevé</td></tr>
+<tr><td><b>CNIL</b></td><td>Autorité de contrôle française</td></tr>
+</table></div>
+<div class="sig-card"><h3>👤 6 droits des personnes</h3>
+<ol style="padding-left:18px;margin:8px 0">
+<li>Information</li><li>Accès</li><li>Rectification</li>
+<li>Effacement</li><li>Portabilité</li><li>Opposition</li>
+</ol>
+<div class="danger">Sanctions : <b>20 M€ ou 4% CA mondial</b></div></div>
+<div class="sig-card"><h3>☁️ SaaS / PaaS / IaaS</h3>
+<table class="sig-table"><tr><th>Modèle</th><th>Tu gères</th><th>Exemple</th></tr>
+<tr><td><b>SaaS</b></td><td>Données seules</td><td>Office 365</td></tr>
+<tr><td><b>PaaS</b></td><td>Appli + données</td><td>Heroku</td></tr>
+<tr><td><b>IaaS</b></td><td>OS + appli + données</td><td>AWS EC2</td></tr>
+</table></div>
+<div class="sig-card"><h3>📅 Facture électronique — calendrier</h3>
+<table class="sig-table"><tr><th>Date</th><th>Entreprises</th><th>Obligation</th></tr>
+<tr><td><b>1er sept. 2026</b></td><td>Toutes</td><td>RECEVOIR</td></tr>
+<tr><td><b>1er sept. 2026</b></td><td>GE + ETI</td><td>ÉMETTRE</td></tr>
+<tr><td><b>1er sept. 2027</b></td><td>PME + micro</td><td>ÉMETTRE</td></tr>
+</table>
+<div class="info">Format : <b>Factur-X</b> (PDF + XML), UBL, CII. Via <b>PDP</b> agréée DGFIP.</div></div>
+</div>
+</div>
+
+<!-- MÉMO CYBER -->
+<div id="sig-page-m_cyber">
+<div class="sig-wrap">
+<h2>🛡️ Cybersécurité <span class="badge gold">NEW</span></h2>
+<div class="sig-card"><h3>🎯 Critères DICP</h3>
+<table class="sig-table"><tr><th>Critère</th><th>Définition</th><th>Mesures</th></tr>
+<tr><td><b>Disponibilité</b></td><td>Info accessible quand besoin</td><td>Redondance, sauvegardes, PCA/PRA</td></tr>
+<tr><td><b>Intégrité</b></td><td>Info non altérée</td><td>Hash, signature numérique</td></tr>
+<tr><td><b>Confidentialité</b></td><td>Accès limité aux autorisés</td><td>Chiffrement, habilitations</td></tr>
+<tr><td><b>Preuve</b></td><td>Identifier l'auteur</td><td>2FA, signature électronique, logs</td></tr>
+</table></div>
+<div class="sig-card"><h3>🦠 Principales menaces</h3>
+<table class="sig-table"><tr><th>Menace</th><th>Description</th><th>Parade</th></tr>
+<tr><td><b>Phishing</b></td><td>Email frauduleux → vol identifiants</td><td>Sensibilisation, 2FA</td></tr>
+<tr><td><b>Ransomware</b></td><td>Chiffre les fichiers → rançon</td><td>Sauvegardes hors ligne</td></tr>
+<tr><td><b>DDoS</b></td><td>Saturation d'un service</td><td>Anti-DDoS, CDN</td></tr>
+<tr><td><b>Injection SQL</b></td><td>Code SQL malveillant</td><td>Requêtes paramétrées</td></tr>
+</table></div>
+<div class="sig-card"><h3>💾 Sauvegardes — règle 3-2-1</h3>
+<div class="info">📌 <b>3</b> copies — <b>2</b> supports différents — <b>1</b> hors site</div>
+<ul><li><b>RTO</b> : durée max d'interruption acceptable</li>
+<li><b>RPO</b> : perte de données max acceptable</li>
+<li><b>PCA</b> : maintenir l'activité pendant l'incident</li>
+<li><b>PRA</b> : restaurer après un sinistre</li></ul></div>
+<div class="sig-card"><h3>🏛️ Organismes</h3>
+<table class="sig-table"><tr><th>Sigle</th><th>Définition</th></tr>
+<tr><td><b>ANSSI</b></td><td>Agence Nationale de la Sécurité des SI</td></tr>
+<tr><td><b>NIS2</b></td><td>Directive UE cybersécurité</td></tr>
+<tr><td><b>ISO 27001</b></td><td>Norme internationale sécurité SI</td></tr>
+<tr><td><b>HDS</b></td><td>Hébergeur de Données de Santé</td></tr>
+</table></div>
+</div>
+</div>
+
+</div><!-- fin #sig-pages -->
 <nav id="sidebar"><div id="nav-list"></div></nav>
 <main id="main"><div id="content"></div></main>
   <div id="mobile-modes">
@@ -3059,6 +3867,205 @@ function closeSidebar() {
   document.head.appendChild(s);
 })();
 
+// ═══════════════════════════════════════════
+//  SIG — Navigation
+// ═══════════════════════════════════════════
+const SIG_NAV = [
+  { section:'📜 Programme officiel', items:[
+    {id:'bo', label:'Programme BO — 4 parties'},
+    {id:'couv', label:'Tableau de couverture'},
+    {id:'ia_dur', label:'IA, blockchain & durabilité', badge:'NEW'},
+  ]},
+  { section:'📊 Stratégie', items:[
+    {id:'plan', label:"Plan d'attaque J-1"},
+    {id:'jury', label:'Erreurs classiques jury'},
+    {id:'drill', label:'Drill flash (40 cartes)'},
+  ]},
+  { section:'📝 Annales', items:[
+    {id:'a2025', label:'2025 — Ambulance Est', pts:'20pts'},
+    {id:'a2023', label:'2023 — Domaine viticole', pts:'20pts'},
+    {id:'a2021', label:'2021 — Entreprise sportive', pts:'20pts'},
+    {id:'a2020', label:'2020 — Activité portuaire', pts:'20pts'},
+  ]},
+  { section:'⚡ Examen blanc', items:[
+    {id:'blanc', label:'Sujet pronostic 2026', pts:'4h'},
+  ]},
+  { section:'🛠 Mémos express', items:[
+    {id:'m_sql', label:'SQL — 8 patterns'},
+    {id:'m_vba', label:'VBA — squelettes'},
+    {id:'m_excel', label:'Excel — pièges'},
+    {id:'m_proc', label:'Schéma événement-résultat'},
+    {id:'m_rgpd', label:'RGPD / cloud / réseaux'},
+    {id:'m_cyber', label:'Cybersécurité', badge:'NEW'},
+  ]},
+];
+
+function buildSIGNav() {
+  const nav = document.getElementById('nav-list');
+  let html = '';
+  SIG_NAV.forEach(section => {
+    html += `<div class="nav-part-header">${section.section}</div>`;
+    section.items.forEach(item => {
+      const extra = item.badge
+        ? `<span class="nav-badge">${item.badge}</span>`
+        : item.pts ? `<span class="nav-pts">${item.pts}</span>` : '';
+      html += `<div class="nav-item sig-nav-item" id="signav-${item.id}" onclick="loadSIGPage('${item.id}')">${item.label}${extra}</div>`;
+    });
+  });
+  nav.innerHTML = html;
+}
+
+function loadSIGPage(id) {
+  document.querySelectorAll('.sig-nav-item').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById('signav-' + id);
+  if (navEl) navEl.classList.add('active');
+  const src = document.getElementById('sig-page-' + id);
+  if (!src) { document.getElementById('content').innerHTML = '<p>Page introuvable.</p>'; return; }
+  document.getElementById('content').innerHTML = src.innerHTML;
+  document.getElementById('main').scrollTop = 0;
+  if (id === 'drill') sigInitFlash();
+  closeSidebar();
+}
+
+// ═══════════════════════════════════════════
+//  SIG — Flashcards (40 cartes)
+// ═══════════════════════════════════════════
+const SIG_FLASH = [
+  {q:'Syntaxe SELECT avec WHERE ?',a:'<pre>SELECT champ1, champ2\nFROM TABLE\nWHERE condition;</pre>'},
+  {q:'Différence WHERE et HAVING ?',a:'<b>WHERE</b> filtre AVANT agrégation. <b>HAVING</b> filtre APRÈS GROUP BY.'},
+  {q:"SQL : clients qui n'ont jamais commandé ?",a:'<pre>SELECT * FROM CLIENT\nWHERE NOT EXISTS (\n  SELECT * FROM COMMANDE\n  WHERE COMMANDE.IdCli = CLIENT.IdCli\n);</pre>'},
+  {q:'=RECHERCHEV(B2;A1:C100;3;FAUX) fait quoi ?',a:'Cherche B2 dans la 1ère colonne et retourne la <b>3e colonne</b>. Recherche exacte.'},
+  {q:'Pourquoi le $ dans une formule Excel ?',a:'Pour <b>verrouiller</b> une référence lors de la recopie.'},
+  {q:"Qu'est-ce que SIERREUR ?",a:'<code>=SIERREUR(formule; valeur_secours)</code> — affiche la valeur si erreur.'},
+  {q:'Séparateur décimale en France dans Excel ?',a:'La <b>virgule</b> : écrire <code>0,05</code>. Séparateur arguments : <b>point-virgule</b>.'},
+  {q:'Squelette Sub VBA ?',a:'<pre>Sub Nom()\n    Dim x As Double\n    x = InputBox("Valeur ?")\n    MsgBox "Résultat : " & x\nEnd Sub</pre>'},
+  {q:'Concaténer en VBA ?',a:'Avec <code>&amp;</code>. PAS avec <code>+</code>.'},
+  {q:'Squelette If ElseIf en VBA ?',a:'<pre>If cond1 Then\n    ...\nElseIf cond2 Then\n    ...\nElse\n    ...\nEnd If</pre>'},
+  {q:'Squelette boucle For en VBA ?',a:'<pre>For i = 1 To 100\n    Cells(i, 1).Value = i\nNext i</pre>'},
+  {q:'Différence Function vs Sub VBA ?',a:'<b>Sub</b> exécute. <b>Function</b> renvoie une valeur → utilisable depuis Excel.'},
+  {q:"Qu'est-ce qu'une DCP (RGPD) ?",a:'<b>Donnée à Caractère Personnel</b> : toute info relative à une personne physique identifiable.'},
+  {q:'Sanctions max RGPD ?',a:'<b>20 M€ ou 4% du CA mondial</b>.'},
+  {q:'SaaS / PaaS / IaaS — différence ?',a:'<b>SaaS</b> = utilise (Office 365). <b>PaaS</b> = développe. <b>IaaS</b> = loue des serveurs.'},
+  {q:"Qu'est-ce qu'un VPN ?",a:'Tunnel chiffré entre un client et un serveur. Télétravail sécurisé.'},
+  {q:'3 mesures de sécurité du SI ?',a:'1. Sauvegardes 3-2-1 — 2. 2FA — 3. Chiffrement des données sensibles.'},
+  {q:'Calendrier facture électronique PME ?',a:'<b>1er sept. 2026</b> : toutes reçoivent. <b>1er sept. 2027</b> : PME émettent.'},
+  {q:'Format de la facture électronique ?',a:'<b>XML</b>. Standards : <b>Factur-X</b>, UBL, CII. Via <b>PDP</b> agréée DGFIP.'},
+  {q:'5 règles du schéma événement-résultat ?',a:'1 colonne/acteur — Événements ◊ — Opérations □ — Synchronisation ET/OU — Règles émission.'},
+  {q:'Notation CIMS ?',a:'<b>C</b>onsultation, <b>I</b>nsertion, <b>M</b>odification, <b>S</b>uppression.'},
+  {q:'1FN ?',a:'Clé primaire + attributs <b>atomiques</b>.'},
+  {q:'2FN ?',a:'1FN + dépendance pleine de la clé primaire.'},
+  {q:'3FN ?',a:'2FN + <b>pas de dépendance transitive</b>.'},
+  {q:"Qu'est-ce qu'une clé étrangère ?",a:'Attribut qui référence la PK d\'une autre table. Garantit l\'<b>intégrité référentielle</b>.'},
+  {q:'Identification relative ?',a:'Entité <b>faible</b> : identifiant n\'a de sens que par rapport à son parent.'},
+  {q:'Erreur lors d\'une suppression SQL ?',a:'ON DELETE CASCADE / supprimer d\'abord les enfants.'},
+  {q:"Qu'est-ce qu'un PGI/ERP ?",a:'Logiciel unique, base partagée, modules intégrés (compta, RH, achats).'},
+  {q:'Critères DICP ?',a:'<b>D</b>isponibilité — <b>I</b>ntégrité — <b>C</b>onfidentialité — <b>P</b>reuve.'},
+  {q:"Qu'est-ce qu'un ransomware ?",a:'Chiffre les fichiers et exige une rançon. Parade : sauvegardes hors ligne.'},
+  {q:'Règle 3-2-1 des sauvegardes ?',a:'<b>3</b> copies — <b>2</b> supports — <b>1</b> hors site.'},
+  {q:'RTO vs RPO ?',a:'<b>RTO</b> = durée max interruption. <b>RPO</b> = perte de données max acceptable.'},
+  {q:'Délai notification CNIL fuite ?',a:'<b>72 heures</b> (art. 33 RGPD).'},
+  {q:"Qu'est-ce qu'un HDS ?",a:'Hébergeur de Données de Santé — certification obligatoire.'},
+  {q:'Les 4V du Big Data ?',a:'<b>V</b>olume — <b>V</b>élocité — <b>V</b>ariété — <b>V</b>éracité.'},
+  {q:'Loi REEN ?',a:'Réduction de l\'Empreinte Environnementale du Numérique (15 nov. 2021).'},
+  {q:'Part de l\'impact due à la fabrication ?',a:'<b>~78%</b> → allonger la durée de vie est la priorité.'},
+  {q:"Qu'est-ce qu'un AIPD ?",a:'Analyse d\'Impact sur la Protection des Données — obligatoire pour traitements à risque élevé.'},
+  {q:'IA générative — 2 risques majeurs ?',a:'1. <b>Hallucinations</b>.<br>2. <b>RGPD</b> : données client vers IA publique.'},
+  {q:"Qu'est-ce que le RPA ?",a:'Robotic Process Automation : automatise les tâches répétitives.'},
+];
+
+let sigFIdx = 0;
+let sigFFlip = false;
+
+function sigInitFlash() {
+  sigFIdx = 0; sigFFlip = false; sigRenderFlash();
+}
+function sigRenderFlash() {
+  const fq = document.getElementById('sig-fq');
+  const fa = document.getElementById('sig-fa');
+  const ctr = document.getElementById('sig-fctr');
+  if (!fq) return;
+  const card = SIG_FLASH[sigFIdx];
+  fq.innerHTML = card.q;
+  fa.innerHTML = card.a;
+  fa.style.display = sigFFlip ? 'block' : 'none';
+  fq.style.display = sigFFlip ? 'none' : 'block';
+  if (ctr) ctr.textContent = 'Carte ' + (sigFIdx + 1) + ' / ' + SIG_FLASH.length;
+}
+function sigFlipFlash() { sigFFlip = !sigFFlip; sigRenderFlash(); }
+function sigNextFlash() { sigFIdx = (sigFIdx + 1) % SIG_FLASH.length; sigFFlip = false; sigRenderFlash(); }
+function sigPrevFlash() { sigFIdx = (sigFIdx - 1 + SIG_FLASH.length) % SIG_FLASH.length; sigFFlip = false; sigRenderFlash(); }
+
+// ═══════════════════════════════════════════
+//  SIG — Timer
+// ═══════════════════════════════════════════
+let sigTimerInt = null;
+let sigSecsLeft = 0;
+
+function sigStartTimer(min) {
+  sigStopTimer();
+  sigSecsLeft = min * 60;
+  document.getElementById('sig-timer').classList.add('on');
+  sigUpdateTimer();
+  sigTimerInt = setInterval(() => {
+    sigSecsLeft--;
+    sigUpdateTimer();
+    if (sigSecsLeft <= 0) { sigStopTimer(); alert('⏰ Temps écoulé !'); }
+  }, 1000);
+}
+function sigStopTimer() {
+  if (sigTimerInt) clearInterval(sigTimerInt);
+  sigTimerInt = null;
+  const t = document.getElementById('sig-timer');
+  if (t) t.classList.remove('on','warn','danger');
+}
+function sigUpdateTimer() {
+  const h = Math.floor(sigSecsLeft / 3600);
+  const m = Math.floor((sigSecsLeft % 3600) / 60);
+  const s = sigSecsLeft % 60;
+  const t = document.getElementById('sig-timer');
+  if (!t) return;
+  t.textContent = '⏱ ' + h + 'h' + String(m).padStart(2,'0') + "'" + String(s).padStart(2,'0') + '"';
+  t.classList.remove('warn','danger');
+  if (sigSecsLeft < 600) t.classList.add('danger');
+  else if (sigSecsLeft < 1800) t.classList.add('warn');
+}
+function sigToggleC(btn) {
+  const c = btn.nextElementSibling;
+  if (!c) return;
+  c.classList.toggle('show');
+  btn.textContent = c.classList.contains('show') ? 'Masquer' : 'Voir corrigé';
+}
+
+// ═══════════════════════════════════════════
+//  SIG — Patch changeSubject (remplace l'existante)
+// ═══════════════════════════════════════════
+// IMPORTANT : supprime ton ancienne fonction changeSubject et remplace-la par celle-ci
+function changeSubject(val) {
+  currentSubject = val;
+  document.body.className = 'theme-' + val;
+  currentCh = null;
+  flashIdx = 0;
+  const modeBar = document.querySelector('.mode-bar');
+  const mobileModes = document.getElementById('mobile-modes');
+  const chTitle = document.getElementById('chapter-title');
+  if (val === 'sig') {
+    if (modeBar) modeBar.style.display = 'none';
+    if (mobileModes) mobileModes.style.display = 'none';
+    buildSIGNav();
+    if (chTitle) chTitle.textContent = 'UE8 — SIG';
+    loadSIGPage('bo');
+  } else {
+    if (modeBar) modeBar.style.display = '';
+    if (mobileModes) mobileModes.style.display = '';
+    buildNav();
+    if (chTitle) chTitle.textContent = val === 'droit' ? 'DCG Droit' : 'DCG Comptabilité';
+    renderWelcome();
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      const m = btn.getAttribute('data-mode');
+      btn.classList.toggle('active', m === currentMode);
+    });
+  }
+}  
 // Lancement au démarrage de la page
 buildNav();
 renderWelcome();
